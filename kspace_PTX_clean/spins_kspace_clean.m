@@ -1,4 +1,5 @@
-%addpath util/
+addpath utils/
+addpath utils/VERSE/
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problem parameters
@@ -30,7 +31,7 @@ switch(b1MapSelect)
         
     case '24loopsMartin'
 
-        load('MGH24loop_head1_128_2.mat')
+        load('~/Dropbox/kspacePTX_data/MGH24loop_head1_128_2.mat')
 
         undersamp=4;  %Important parameter undersampling factor for b1 maps
         b1 = B1p3dxyz128;
@@ -394,10 +395,13 @@ toc
 
 
 %%
+disp 'Filling W matrix'
 tic
-clear Wentries
+clear Wentries 
+% get total number of non-zero entries - can this be done more efficiently,
+% earlier in script? 
+totalnonzero = 0;
 for ii = 1:length(segCenters(:)) % loop over sectors
-
     
     if ~isempty(shift_c_mex{ii})
         
@@ -408,30 +412,29 @@ for ii = 1:length(segCenters(:)) % loop over sectors
         
         [i,j] = ndgrid(kTrajIndsAll(:),1:segWidth^3);
         Wentries{ii} = sparse(i,j,double(coeff_c{ii}(:)),nCoils*length(kxTraj),segWidth^3);
+        totalnonzero = totalnonzero + nCoils * length(kTrajInds_ii{ii}(:)) * segWidth^3;
         
-    else
-
-        Wentries{ii} = spalloc(nCoils*length(kxTraj),segWidth^3,0);
-        
-     end
-
+    end
+    
 end
 
-
-W = spalloc(length(kxTraj(:))*nCoils,xyDim^2*xyDimz,0);
+W = spalloc(length(kxTraj(:))*nCoils,xyDim^2*xyDimz,totalnonzero);
 for ii = 1:length(segCenters(:))
-  centerInd = segCenters(ii);
-  centerIndRow = xI(centerInd)+xyDim;
-  centerIndCol = yI(centerInd)+xyDim;
-  centerIndHih = zI(centerInd)+xyDimz;
-  kSolveInds = col(linearIndsTile(centerIndRow:centerIndRow+segWidth-1,...
-                          centerIndCol:centerIndCol+segWidth-1,...
-                          centerIndHih:centerIndHih+segWidth-1));
-  %%% When xyDim cannot be devided by segWidth, the last few kSolve wraps back
-
-  W(:,kSolveInds) = Wentries{ii};
+    if ~isempty(shift_c_mex{ii})
+        centerInd = segCenters(ii);
+        centerIndRow = xI(centerInd)+xyDim;
+        centerIndCol = yI(centerInd)+xyDim;
+        centerIndHih = zI(centerInd)+xyDimz;
+        kSolveInds = col(linearIndsTile(centerIndRow:centerIndRow+segWidth-1,...
+            centerIndCol:centerIndCol+segWidth-1,...
+            centerIndHih:centerIndHih+segWidth-1));
+        W(:,kSolveInds) = Wentries{ii};
+    end
 end
+toc
 
+disp 'Getting RF'
+tic
 %rf = reshape(W*pDes(:)/numel(d_smooth),[length(kxTraj) nCoils]);
 rf = reshape(W*pDes(:)/numel(d),[length(kxTraj) nCoils]);
 
