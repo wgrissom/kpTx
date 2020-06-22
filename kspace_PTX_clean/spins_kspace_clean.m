@@ -23,6 +23,8 @@ ifOffRes=true;
 
 ifOpenMP=true; % IN OpemMP, number of thread has to be change in the .c file and then re-compile
 
+nThreads = 8;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Load b1 maps, k-space trajectory, target pattern
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -379,14 +381,14 @@ tic
 if ifOffRes 
     if  ifOpenMP
         %[coeff_c]=LS_fft_mex_clean_OpenMP_SetMaxNhNSize_ForB0(shift_c_mex, nCoils*Lseg, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly,nCoils,BFull_c,kTrajInds_ii);
-        [coeff_c]=LS_fft_mex_clean_OpenMP_Calloc_ForB0(shift_c_mex, nCoils*Lseg, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly,nCoils,BFull_c,kTrajInds_ii);
+        [coeff_c]=LS_fft_mex_clean_OpenMP_Calloc_ForB0(shift_c_mex, nCoils*Lseg, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly,nCoils,BFull_c,kTrajInds_ii, nThreads);
     else
         [coeff_c]=LS_fft_mex_clean_ForB0(shift_c_mex, nCoils*Lseg, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly,nCoils,BFull_c,kTrajInds_ii);   
     end
 else
     if  ifOpenMP
         %[coeff_c]=LS_fft_mex_clean_OpenMP_SetMaxNhNSize(shift_c_mex, nCoils, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly);
-        [coeff_c]=LS_fft_mex_clean_OpenMP_Calloc(shift_c_mex, nCoils, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly);
+        [coeff_c]=LS_fft_mex_clean_OpenMP_Calloc(shift_c_mex, nCoils, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly, nThreads);
     else
         [coeff_c]=LS_fft_mex_clean(shift_c_mex, nCoils, Tik, F_c, idgrid, shSolve', F_c_SensMapOnly);
     end

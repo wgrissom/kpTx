@@ -38,8 +38,6 @@
 #include <stddef.h> /* common macros: size_t, ptrdiff_t, etc. */
 #include <omp.h>
 
-#define NTHREADS 4
-
 /* def of GRID
  * GIM GCO GNO are defined w/ ptrdiff_t as they are used in signed index
  * calculation in LS_init()
@@ -254,38 +252,11 @@ void LS_free(struct LS *ls)
   }
 }
 
-/* Double destruct is not allowed tho */
-void LS_dtor(struct LS **ls_list)
-{
-  /* LS_free(ls); */ /* non- var are taken cared by matlab */
-    for (int ii = 0; ii < NTHREADS; ii++)
-    {
-      mxFree(ls_list[ii]->NhN_BPL);
-      mxFree(ls_list[ii]->NhN_BPU);
-      mxFree(ls_list[ii]->NhC_BPL);
-
-      mxFree(ls_list[ii]->IC);
-      mxFree(ls_list[ii]->GD);
-
-      mxFree(ls_list[ii]);
-    }
-    mxFree(ls_list);
-}
-
 static struct GRID *grid;
 static struct LS **ls_list;
 static int    constructed = 0;
 static float  *coef_m;
 static size_t *nNgbCUMSUM;
-
-
-// It seems since everything is allocated with mxCalloc, so mex will automatically free the memory
-// So maybe don't need freepersistant
-void freePersistent(void)
-{
-  Grid_dtor(grid); //since grid and ls_list is already static
-  LS_dtor(ls_list);// I think this two function can be make into void input?
-}
 
 /*
  * core part
@@ -594,12 +565,12 @@ void mexFunction(
   int nrhs, const mxArray *prhs[])
 {
   
-  if (!mxIsSingle(mxGetCell(prhs[0],0))) {mexErrMsgTxt("Require single shifts input");}
+  if (!mxIsSingle(mxGetCell(prhs[0], 0))) {mexErrMsgTxt("Require single shifts input");}
   const size_t nDim = mxGetM(prhs[5]);
   size_t nNgb; //= mxGetN(prhs[0]);
   const size_t nSolve = mxGetN(prhs[5]);
   const size_t nSeg = mxGetN(prhs[0]);
-  const size_t nC= (size_t)mxGetScalar(prhs[1]);
+  const size_t nC = (size_t)mxGetScalar(prhs[1]);
 
   /* handling INPUTS */
   //if( !mxIsSingle(prhs[0]) ) { mexErrMsgTxt( "sh: single precision" ); }
@@ -610,17 +581,19 @@ void mexFunction(
   float  Tik = (float) mxGetScalar(prhs[2]);
   int nNgbSUM=0;
   
+  int nThreads = (int) mxGetScalar(prhs[7]);
+  
 
     if( !mxIsSingle(prhs[4]) ) { mexErrMsgTxt( "dgrid: single precision" ); }
     GIU = (float *)mxGetData(prhs[4]);
     // GIU is idgrid, it just two single (in 2D case)
     
     /* Initialize the two essential structs */
-    grid = Grid_ctor(nDim, nC, nSolve, Tik, GIU, prhs[3],prhs[6]); /* persistent static var */
+    grid = Grid_ctor(nDim, nC, nSolve, Tik, GIU, prhs[3], prhs[6]); /* persistent static var */
     //GIU is idgrid (2 singles). prhs[3] is F_c, the oversampled FFT of the coil-combination-image
     
-    ls_list=mxCalloc(NTHREADS, sizeof(struct LS*));
-    for (int ii = 0; ii < NTHREADS; ii++)
+    ls_list = mxCalloc(nThreads, sizeof(struct LS*));
+    for (int ii = 0; ii < nThreads; ii++)
     {
         ls_list[ii] = LS_ctor(grid);
     }
@@ -645,7 +618,7 @@ void mexFunction(
   mxArray *coef_c = mxCreateCellMatrix((mwSize)nSeg,1);
   mxArray *coef_t;
  
-  #pragma omp parallel private(nSeg_t,sh,nNgb,N,NhN,NhC) shared(prhs,grid,shSolve,ls_list,coef_c,coef_m,nNgbCUMSUM,NRHS) num_threads(NTHREADS)
+  #pragma omp parallel private(nSeg_t,sh,nNgb,N,NhN,NhC) shared(prhs,grid,shSolve,ls_list,coef_c,coef_m,nNgbCUMSUM,NRHS) num_threads(nThreads)
   {
   #pragma omp for schedule(dynamic)
   for (nSeg_t = 0; nSeg_t < nSeg; nSeg_t++)

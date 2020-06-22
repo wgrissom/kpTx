@@ -40,9 +40,6 @@
 #include <stddef.h> /* common macros: size_t, ptrdiff_t, etc. */
 #include <omp.h>
 
-
-#define NTHREADS 2
-
 /* def of GRID
  * GIM GCO GNO are defined w/ ptrdiff_t as they are used in signed index
  * calculation in LS_init()
@@ -268,24 +265,6 @@ void LS_free(struct LS *ls)
     mxFree(ls->NhC);
     ls->NhC = NULL;
   }
-}
-
-/* Double destruct is not allowed tho */
-void LS_dtor(struct LS **ls_list)
-{
-  /* LS_free(ls); */ /* non- var are taken cared by matlab */
-    for (int ii = 0; ii < NTHREADS; ii++)
-    {
-      mxFree(ls_list[ii]->NhN_BPL);
-      mxFree(ls_list[ii]->NhN_BPU);
-      mxFree(ls_list[ii]->NhC_BPL);
-
-      mxFree(ls_list[ii]->IC);
-      mxFree(ls_list[ii]->GD);
-
-      mxFree(ls_list[ii]);
-    }
-    mxFree(ls_list);
 }
 
 
@@ -656,16 +635,16 @@ void mexFunction(
     // GIU is idgrid, it just two single (in 2D case)
     
     /* Initialize the two essential structs */
-    struct GRID *grid = Grid_ctor(nDim, nC, nC_actual, nSolve, Tik, GIU, prhs[3],prhs[6]); /* persistent static var */
+    struct GRID *grid = Grid_ctor(nDim, nC, nC_actual, nSolve, Tik, GIU, prhs[3], prhs[6]); /* persistent static var */
     //grid = Grid_ctor(nDim, nC, nSolve, Tik, GIU, prhs[3],prhs[6]); /* persistent static var */
     //GIU is idgrid (2 singles). prhs[3] is F_c, the oversampled FFT of the coil-combination-image
     
-    
+  int nThreads = (int) mxGetScalar(prhs[10]);  
 
     
-    struct LS **ls_list=mxCalloc(NTHREADS, sizeof(struct LS*));
+    struct LS **ls_list=mxCalloc(nThreads, sizeof(struct LS*));
     
-    for (int ii = 0; ii < NTHREADS; ii++)
+    for (int ii = 0; ii < nThreads; ii++)
     {
         ls_list[ii] = LS_ctor(grid);
     }  
@@ -678,7 +657,7 @@ void mexFunction(
 
   
 
-  #pragma omp parallel private(nSeg_t,sh,kTrajInds,nNgb,N,NhN,NhC) shared(prhs,grid,shSolve,ls_list,NRHS) num_threads(NTHREADS)
+  #pragma omp parallel private(nSeg_t,sh,kTrajInds,nNgb,N,NhN,NhC) shared(prhs,grid,shSolve,ls_list,NRHS) num_threads(nThreads)
   {
   #pragma omp for schedule(dynamic)
   for (nSeg_t = 0; nSeg_t < nSeg; nSeg_t++)
