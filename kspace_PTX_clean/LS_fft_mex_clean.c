@@ -37,7 +37,6 @@
 #include <string.h>
 #include <lapack.h>
 #include <stddef.h> /* common macros: size_t, ptrdiff_t, etc. */
-#include <omp.h>
 
 /* def of GRID
  * GIM GCO GNO are defined w/ ptrdiff_t as they are used in signed index
