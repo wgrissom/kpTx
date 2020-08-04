@@ -1,6 +1,15 @@
 addpath utils/
 addpath utils/VERSE/
 
+if ~exist('LS_fft_mex_clean.mexa64', 'file')
+    mex -largeArrayDims -lmwlapack LS_fft_mex_clean.c
+end
+
+%%%% Uncomment only if want OpenMP
+%if ~exist('LS_fft_mex_clean_OpenMP_Calloc.mexa64', 'file')
+%    mex -largeArrayDims -lmwlapack CXXFLAGS="$CXXFLAGS -fopenmp" LDFLAGS="$LDFLAGS -fopenmp" COPTIMFLAGS="$COPTIMFLAGS -fopenmp -O2" LDOPTIMFLAGS="$LDOPTIMFLAGS -fopenmp -O2" DEFINES="$DEFINES -fopenmp" LS_fft_mex_clean_OpenMP_Calloc.c
+%end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problem parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

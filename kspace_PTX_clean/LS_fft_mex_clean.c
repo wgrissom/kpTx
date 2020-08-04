@@ -6,7 +6,7 @@
 
 /* LS_fft_mex.c
  *
- * compile with "mex -largeArrayDims -lmwlapack LS_fft_mex_clean_ForB0orNot.c
+ * compile with "mex -largeArrayDims -lmwlapack LS_fft_mex_clean.c
  *
  * As the FFT trick grid may be large, here we enforce using
  *   size_t:    for (large-sized) grid indexing

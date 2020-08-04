@@ -8,7 +8,7 @@
 /* LS_fft_mex.c
  *
  * compile with
- * mex -largeArrayDims -lmwlapack CXXFLAGS="$CXXFLAGS -fopenmp" LDFLAGS="$LDFLAGS -fopenmp" COPTIMFLAGS="$COPTIMFLAGS -fopenmp -O2" LDOPTIMFLAGS="$LDOPTIMFLAGS -fopenmp -O2" DEFINES="$DEFINES -fopenmp" LS_fft_mex_clean_OpenMP_Calloc_ForB0orNot.c
+ * mex -largeArrayDims -lmwlapack CXXFLAGS="$CXXFLAGS -fopenmp" LDFLAGS="$LDFLAGS -fopenmp" COPTIMFLAGS="$COPTIMFLAGS -fopenmp -O2" LDOPTIMFLAGS="$LDOPTIMFLAGS -fopenmp -O2" DEFINES="$DEFINES -fopenmp" LS_fft_mex_clean_OpenMP_Calloc.c
  * As the FFT trick grid may be large, here we enforce using
  *   size_t:    for (large-sized) grid indexing
  *   ptrdiff_t: to address negative offsets from grid center
