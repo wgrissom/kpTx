@@ -1,12 +1,14 @@
 // Important:
-// This is a direct OpenMP version from the LS_fft_mex_clean
-// assuming mex functions are thread safe in OpenMP
+// This is a most direct implementation of LS_fft_mex_clean_ForB0 into OpenMP
+// Assuming mxCalloc is thread safe
+// And not even using coef_m to pre-store all the coef within openMP
+// but use mxSetCell within openMP
 
 
 /* LS_fft_mex.c
  *
  * compile with
- * mex -largeArrayDims -lmwlapack CXXFLAGS="$CXXFLAGS -fopenmp" LDFLAGS="$LDFLAGS -fopenmp" COPTIMFLAGS="$COPTIMFLAGS -fopenmp -O2" LDOPTIMFLAGS="$LDOPTIMFLAGS -fopenmp -O2" DEFINES="$DEFINES -fopenmp" LS_fft_mex_clean_OpenMP_Calloc.c
+ * mex -largeArrayDims -lmwlapack CXXFLAGS="$CXXFLAGS -fopenmp" LDFLAGS="$LDFLAGS -fopenmp" COPTIMFLAGS="$COPTIMFLAGS -fopenmp -O2" LDOPTIMFLAGS="$LDOPTIMFLAGS -fopenmp -O2" DEFINES="$DEFINES -fopenmp" LS_fft_mex_clean_OpenMP_Calloc_ForB0orNot.c
  * As the FFT trick grid may be large, here we enforce using
  *   size_t:    for (large-sized) grid indexing
  *   ptrdiff_t: to address negative offsets from grid center
@@ -45,7 +47,8 @@
 struct GRID
 {
   float      Tik;  /* (1,), Tik regularizor coeff */
-  size_t     nC;   /* (1,), number of coils */
+  size_t     nC;   /* (1,), number of coils*Lseg */
+  size_t     nC_actual;   /* (1,), number of actual coils */
   size_t     nSolve;   /* (1,), number of solved points (delta function) */
   size_t     nDim; /* (1,), number of dimensions (1|2|3) */
   size_t     nVtx; /* (1,), number of lin-interp ngbs, (2|4|8) */
@@ -62,6 +65,7 @@ struct GRID
 struct GRID *Grid_ctor(
   const size_t   nDim,
   const size_t   nC,
+  const size_t   nC_actual,
   const size_t   nSolve,
   const float    Tik,
   const float   *GIU,
@@ -76,13 +80,12 @@ struct GRID *Grid_ctor(
 
   grid->Tik  = Tik;
   grid->nC   = nC;
+  grid->nC_actual   = nC_actual;
   grid->nSolve   = nSolve;
   grid->nDim = nDim;
   grid->nVtx = nVtx;
-
   grid->nd = mxCalloc(nDim, sizeof(size_t));
   memcpy(grid->nd, mxGetDimensions(mxGetCell(G,0)), nDim*sizeof(mwSize));
-  
   grid->G  = (G);
   grid->G_NhC  = (G_NhC);
 
@@ -98,7 +101,7 @@ struct GRID *Grid_ctor(
   GCO = &(grid->GCO);
   GNO =   grid->GNO + nVtx-1;
   GIM =   grid->GIM + nDim;
- 
+  
   switch(nDim)
   {
     case 3:
@@ -129,7 +132,6 @@ struct GRID *Grid_ctor(
 void Grid_dtor(struct GRID *grid)
 {
   mxFree(grid->nd);
-
   mxFree(grid->GIU);
   mxFree(grid->GIM);
   mxFree(grid->GNO);
@@ -143,7 +145,6 @@ void Grid_dtor(struct GRID *grid)
  */
 struct LS
 {
-  //size_t  nNgb;
 
   float  *NhN;       /* (2*nC*nNgb, nC*nNgb), 2 for complex */
   float  *NhC;       /* (2*nC*nNgb, nSolve), 2 for complex */
@@ -152,6 +153,7 @@ struct LS
   float **NhN_BPL; /* L->(nC*(nC+1)/2,): L-triangle w/ Diag */
   float **NhN_BPU; /* U->(nC*(nC-1)/2,): U-triangle */
   float **NhC_BPL;
+
   /* _Interpolation _Coefficients (_Reversed ptr) */
   float  *IC;        /* (nVtx,) container for interpolation coeffs */
   float  *GD;        /* (nDim,) container for floored _Grid _Distance */
@@ -162,9 +164,10 @@ struct LS *LS_ctor(const struct GRID *grid)
   struct LS *ls = mxCalloc(1, sizeof(struct LS));
   const size_t nC = grid->nC;
   const size_t nSolve = grid->nSolve;
+
   ls->NhN = NULL;
   ls->NhC = NULL;
- 
+
   ls->NhN_BPL = mxCalloc((nC*(nC+1))/2, sizeof(float*));
   ls->NhN_BPU = mxCalloc((nC*(nC-1))/2, sizeof(float*));
   ls->NhC_BPL = mxCalloc(nC, sizeof(float*));
@@ -176,6 +179,64 @@ struct LS *LS_ctor(const struct GRID *grid)
 }
 
 /* prepare block indices */
+void LS_BP_prep_forB0(
+  const size_t  nNgb,
+  const size_t  nC,
+  const size_t  nC_actual,
+  const struct LS *ls)
+{
+  /* setup ls->NhN_BP & ls->NhC_BP, 2 for Fortran */
+  const size_t nNgb2     = 2*nNgb;
+  const size_t nNgbSq2   = nNgb*nNgb2;
+  const size_t nCnNgbSq2 = nC_actual*nNgbSq2;  //For B0
+  size_t nC_actual_count_Ref,nC_actual_count_Qry;
+  
+  size_t  CoilRef_i, CoilQry_i;
+  float **NhN_BPL_t = ls->NhN_BPL;
+  float **NhN_BPU_t = ls->NhN_BPU;
+  float **NhC_BPL_t = ls->NhC_BPL;
+  float  *NhN_Lt, *NhC_Lt, *NhN_Ut; /* _Lower & _Upper triangle _tmp */
+  
+  nC_actual_count_Ref=0;
+  for (CoilRef_i = 0; CoilRef_i < nC; CoilRef_i++)
+  {
+    /* _Upper triangle _temp current value is not used, just to update offset */
+    *NhN_BPL_t++ = (NhN_Ut = NhN_Lt = ls->NhN + nC_actual_count_Ref*(nCnNgbSq2+nNgb2));
+    //Do the diagnal blocks first
+
+    *NhC_BPL_t++ = ls->NhC + nC_actual_count_Ref*(nNgb2); //NhC_BPL for kptx
+
+    nC_actual_count_Ref++;
+
+    nC_actual_count_Qry=nC_actual_count_Ref;
+
+    for (CoilQry_i = CoilRef_i+1; CoilQry_i < nC; CoilQry_i++)
+    {
+      if (nC_actual_count_Qry >= nC_actual)
+      {
+          nC_actual_count_Qry=0; //This is esentially mod operation
+          NhN_Lt -= nNgb2*nC_actual;
+          NhN_Ut -= nCnNgbSq2*nC_actual;
+      }
+
+      *NhN_BPL_t++ = (NhN_Lt += nNgb2);
+
+      *NhN_BPU_t++ = (NhN_Ut += nCnNgbSq2);
+
+      nC_actual_count_Qry++;
+    }
+
+    if (nC_actual_count_Ref >= nC_actual)
+    {
+          nC_actual_count_Ref=0; //This is esentially mod operation
+    }
+
+  }
+}
+
+
+
+/* prepare block indices */
 void LS_BP_prep(
   const size_t  nNgb,
   const size_t  nC,
@@ -184,7 +245,6 @@ void LS_BP_prep(
   /* setup ls->NhN_BP & ls->NhC_BP, 2 for Fortran */
   const size_t nNgb2     = 2*nNgb;
   const size_t nNgbSq2   = nNgb*nNgb2;
-  const size_t nCnNgb2   = nC*nNgb2;
   const size_t nCnNgbSq2 = nC*nNgbSq2;  //nC*nNgb*nNgb*2
 
   size_t  CoilRef_i, CoilQry_i;
@@ -212,25 +272,31 @@ void LS_BP_prep(
   }
 }
 
+
 void LS_init(
   const size_t       nNgb,
   const size_t       nSolve,
   const struct GRID *grid,
-        struct LS   *ls)
+        struct LS   *ls,
+  const int ifOffRes)
 {
   const size_t nC = grid->nC;
+  const size_t nC_actual = grid->nC_actual;
 
-   // Important:  
-   // // It seems we should be able to use mxCalloc in openMP
-   //ls->NhN  = mxCalloc(2*(nC*nNgb)*(nC*nNgb), sizeof(float)); /* 2 for cmplx */
-   //ls->NhC  = mxCalloc(2*(nC*nNgb)*nSolve,        sizeof(float));
-  ls->NhN  = calloc(2*(nC*nNgb)*(nC*nNgb), sizeof(float)); /* 2 for cmplx */
-  ls->NhC  = calloc(2*(nC*nNgb)*nSolve,        sizeof(float));
-
-  LS_BP_prep(nNgb, nC, ls);
+  if (ifOffRes)
+  {
+      ls->NhN  = mxCalloc(2*(nC_actual*nNgb)*(nC_actual*nNgb), sizeof(float)); /* 2 for cmplx */
+      ls->NhC  = mxCalloc(2*(nC_actual*nNgb)*nSolve,        sizeof(float));
+      LS_BP_prep_forB0(nNgb, nC, nC_actual, ls);
+  }
+  else
+  {
+      ls->NhN  = mxCalloc(2*(nC*nNgb)*(nC*nNgb), sizeof(float)); /* 2 for cmplx */
+      ls->NhC  = mxCalloc(2*(nC*nNgb)*nSolve,        sizeof(float));
+      LS_BP_prep(nNgb, nC, ls);
+  }
+  
 }
-
-
 
 /* This only frees some struct members */
 /* Double free for this struct is allowed, as it has member being persistent */
@@ -238,29 +304,22 @@ void LS_free(struct LS *ls)
 {
   if(NULL != ls->NhN)
   {
-    // Important
-    // // It seems we should be able to use mxFree in openMP
-    //mxFree(ls->NhN);
-    free(ls->NhN);
+    mxFree(ls->NhN);
     ls->NhN = NULL;
   }
   if(NULL != ls->NhC)
   {
-    //mxFree(ls->NhC);
-    free(ls->NhC);
+    mxFree(ls->NhC);
     ls->NhC = NULL;
   }
 }
 
-static struct GRID *grid;
-static struct LS **ls_list;
-static int    constructed = 0;
-static float  *coef_m;
-static size_t *nNgbCUMSUM;
 
 /*
  * core part
  */
+
+
 void IC_calc(
   const size_t  nVtx, /* (1,), # of vertices used for interpolation 2/4/8 */
         float  *GD,   /* (nDim,), shortest Grid Distance of each _dim */
@@ -311,7 +370,6 @@ float doInterp(
   return res;
 }
 
-
 void update_GDGI(
   const size_t     nDim,
   const float     *GIU,
@@ -343,6 +401,216 @@ void update_GDGI(
     }
   }
 }
+
+void LS_NhN_form_forB0(
+  const size_t       nNgb,
+  const float       *sh,
+  const struct GRID *grid,
+        struct LS   *ls,
+  const mxArray       *BFull,
+  const float       *kTrajInds)
+{
+  const float     *shRef   = sh;
+  const float     *shQry_t = NULL; /* needs reset for each Ref */
+  /* Para from grid */
+  const float     *GIU = grid->GIU;
+  const ptrdiff_t *GIM = grid->GIM;
+  const ptrdiff_t *GNO = grid->GNO;
+  const mxArray   *G   = grid->G;
+  const float     *G_R, *G_I;
+  const float      Tik = grid->Tik;
+  const size_t nC = grid->nC, nC_actual = grid->nC_actual, nDim = grid->nDim, nVtx = grid->nVtx;
+
+  /* interp containers: coefficients, grid_dist, grid_ind */
+  float *IC = ls->IC, *GD = ls->GD;
+  ptrdiff_t GI = 0;  /* _Grid _Ind to the 1st neighbor for interp */
+  size_t    GI0 = 0; /* _Grid _Ind, starting at 0 */
+
+  /* BPL & BPU iteraters */
+  size_t   inc = 2*nC_actual*nNgb - 1; /* 2 for cplx, -1 shift from imag to real */
+  size_t   NhN_BPL_i, NhN_BPU_i;
+  float  **NhN_BPL_t = ls->NhN_BPL, **NhN_BPU_t = ls->NhN_BPU;
+
+  /* for-loop vars */
+  size_t   NgbRef_i, NgbQry_i, CoilRef_i, CoilQry_i;
+  float    R, I;
+
+
+  float    R_interp, I_interp;  
+  int B_index_Ref, B_index_Qry;
+  const float *B_r, *B_i;
+  B_r=(const float*) mxGetData(mxGetCell(BFull, 0));
+  B_i=(const float*) mxGetImagData(mxGetCell(BFull, 0));
+ 
+  float B_index_Ref_R,B_index_Ref_I,B_index_Qry_R,B_index_Qry_I;
+  
+  size_t nTime=mxGetM(mxGetCell(BFull, 0));
+  
+    NhN_BPL_i = NhN_BPU_i = 0;
+
+    for(CoilRef_i = 0; CoilRef_i < nC; CoilRef_i++)
+    {
+        for(CoilQry_i = CoilRef_i; CoilQry_i < nC; CoilQry_i++)
+        {
+            G_R = (const float*)    mxGetData(mxGetCell(G, NhN_BPL_i));
+            G_I = (const float*)mxGetImagData(mxGetCell(G, NhN_BPL_i)) ;
+
+          shRef   = sh;
+
+          for(NgbRef_i = 0; NgbRef_i < nNgb; NgbRef_i++)
+          {
+            shQry_t = sh;     /* reset to the 1st shift  */
+            for(NgbQry_i = 0; NgbQry_i < nNgb; NgbQry_i++)
+            {
+              update_GDGI(nDim, GIU, GIM, shQry_t, shRef, GD, &GI);
+
+              GI0 = grid->GCO + GI; /* center offset */
+
+              /* update coefficients & do interpolation */
+              IC_calc(nVtx, GD, IC);
+
+              B_index_Ref=((int)(CoilRef_i/nC_actual))*nTime+kTrajInds[NgbRef_i]-1; //-1 is from matlab index to c++ index
+              B_index_Qry=((int)(CoilQry_i/nC_actual))*nTime+kTrajInds[NgbQry_i]-1;
+              B_index_Ref_R=B_r[B_index_Ref];
+              B_index_Ref_I=B_i[B_index_Ref];
+              B_index_Qry_R=B_r[B_index_Qry];
+              B_index_Qry_I=B_i[B_index_Qry];
+              
+              R_interp=doInterp(G_R, GI0, GNO, IC, nVtx, 0);
+              I_interp=doInterp(G_I, GI0, GNO, IC, nVtx, 0);
+              
+              R=R_interp*(B_index_Ref_R*B_index_Qry_R+B_index_Ref_I*B_index_Qry_I)-I_interp*(B_index_Ref_I*B_index_Qry_R-B_index_Ref_R*B_index_Qry_I);
+              I=R_interp*(B_index_Ref_I*B_index_Qry_R-B_index_Ref_R*B_index_Qry_I)+I_interp*(B_index_Ref_R*B_index_Qry_R+B_index_Ref_I*B_index_Qry_I);
+
+              *(NhN_BPL_t[NhN_BPL_i]++) += R;
+              *(NhN_BPL_t[NhN_BPL_i]++) += I;
+
+              if (CoilRef_i != CoilQry_i)
+              {
+                  *(NhN_BPU_t[NhN_BPU_i]++) += R;
+                  *(NhN_BPU_t[NhN_BPU_i]) += -I; /* pointing in-row next element */
+                  NhN_BPU_t[NhN_BPU_i] += inc;
+                  
+              }
+             
+              shQry_t += nDim; /* next query shift */
+            }
+
+            NhN_BPL_t[NhN_BPL_i] += 2*((nC_actual-1)*nNgb);
+            if (CoilRef_i != CoilQry_i)
+            {NhN_BPU_t[NhN_BPU_i] -= 2*(nC_actual*nNgb*nNgb - 1);}
+
+            shRef += nDim;     /* next reference shift */
+          }
+          NhN_BPL_i++;
+          if (CoilRef_i != CoilQry_i)
+          {NhN_BPU_i++;}
+        }        
+    }
+  /* apply the Tik reg */
+  size_t Tik_i = 0, Tik_inc = 2*(nC_actual*nNgb+1), nTik = nC_actual*nNgb;
+  float  *NhN_t = ls->NhN, nNgbTik = Tik;//nNgbTik = nNgb*Tik;
+  if (Tik)
+  {
+    for(Tik_i = 0; Tik_i < nTik; Tik_i++)
+    {
+      *NhN_t += nNgbTik;
+      NhN_t  += Tik_inc;
+    }
+  }
+}
+
+
+void LS_NhC_form_forB0(
+  const size_t       nNgb,
+  const size_t       nSolve,
+  const float       *sh,
+  const float       *shSolve,
+  const struct GRID *grid,
+        struct LS   *ls,
+  const mxArray       *BFull,
+  const float       *kTrajInds)
+{
+  const float     *shQry_t = sh;
+  const float     *shSolve_t = shSolve; //shifts for solving points
+  /* Paras from grid */
+  const float     *GIU = grid->GIU;
+  const ptrdiff_t *GIM = grid->GIM;
+  const ptrdiff_t *GNO = grid->GNO;
+  const mxArray   *G_NhC = grid->G_NhC;
+  const float     *G_R, *G_I;
+  
+  float    R_interp, I_interp;  
+  int B_index_Ref, B_index_Qry;
+  const float *B_r, *B_i;
+  B_r=(const float*) mxGetData(mxGetCell(BFull, 0));
+  B_i=(const float*) mxGetImagData(mxGetCell(BFull, 0));
+ 
+  float B_index_Ref_R,B_index_Ref_I,B_index_Qry_R,B_index_Qry_I;
+  
+  size_t nTime=mxGetM(mxGetCell(BFull, 0));
+  
+  
+  const size_t nC = grid->nC, nC_actual = grid->nC_actual, nDim = grid->nDim, nVtx = grid->nVtx;
+
+  /* interp containers: coefficients, grid_dist, grid_ind */
+  float *IC = ls->IC, *GD = ls->GD;
+  ptrdiff_t GI = 0;  /* _Grid _Ind to the 1st neighbor for interpolation */
+  size_t    GI0_L = 0, GI0_U = 0; /* _Grid _Ind, starting at 0 */
+
+  /* BPL & BPU iteraters */
+  size_t   NhC_BPL_i; 
+  float  **NhC_BPL_t = ls->NhC_BPL; 
+
+  /* for-loop vars */
+  size_t  CtrQry_i = 0, SolveQry_i = 0, CoilRef_i = 0, CoilQry_i = 0;
+  
+  NhC_BPL_i = 0; 
+  for(CoilRef_i = 0; CoilRef_i < nC; CoilRef_i++)
+  {
+      G_R = (const float*)    mxGetData(mxGetCell(G_NhC, NhC_BPL_i));
+      G_I = (const float*)mxGetImagData(mxGetCell(G_NhC, NhC_BPL_i));
+
+      shSolve_t = shSolve;
+      
+      // SolveQry_i should be the column number of NhC
+      for(SolveQry_i = 0; SolveQry_i < nSolve; SolveQry_i++)    
+      {
+          shQry_t = sh;     /* reset to the 1st shift  */
+          for(CtrQry_i = 0; CtrQry_i < nNgb; CtrQry_i++)
+          {
+            update_GDGI(nDim, GIU, GIM, shSolve_t, shQry_t, GD, &GI);
+            
+            GI0_L = grid->GCO + GI; /* nd-array center offset */
+
+            /* update coefficients & do interpolation */
+            IC_calc(nVtx, GD, IC);
+            
+            B_index_Ref=((int)(CoilRef_i/nC_actual))*nTime+kTrajInds[CtrQry_i]-1; //-1 is from matlab index to c++ index
+            B_index_Ref_R=B_r[B_index_Ref];
+            B_index_Ref_I=B_i[B_index_Ref];
+              
+              
+            R_interp=doInterp(G_R, GI0_L, GNO, IC, nVtx, 0);
+            I_interp=doInterp(G_I, GI0_L, GNO, IC, nVtx, 0);
+            
+            *(NhC_BPL_t[NhC_BPL_i]++) += B_index_Ref_R*R_interp-B_index_Ref_I*I_interp;
+            *(NhC_BPL_t[NhC_BPL_i]++) += -(B_index_Ref_R*I_interp+B_index_Ref_I*R_interp);
+            // in kptx, Srhs needs to be conjugated
+
+            shQry_t += nDim; /* next query shift */
+          }
+
+        NhC_BPL_t[NhC_BPL_i] += 2*((nC_actual-1)*nNgb); 
+
+        shSolve_t += nDim; /* next shift for kSolve*/  
+      }
+      NhC_BPL_i++;
+  }
+     
+}
+
+
 
 void LS_NhN_form(
   const size_t       nNgb,
@@ -515,6 +783,8 @@ void LS_NhC_form(
      
 }
 
+
+
 /*
  * Convert Fortran complex storage to MATLAB real and imaginary parts.
  * X = fort2mat(Z,ldz,m,n) copies Z to X, producing a complex mxArray
@@ -551,7 +821,7 @@ mxArray* fort2mat(
 }
 
 /*
- * Function [coeff] = LS_fft_mex(sh, nC, Tik, F_c, dgrid, shSolve, F_c_NhC)
+ * Function [coeff] = LS_fft_mex(sh, nC, Tik, F_c, dgrid, shSolve, F_c_NhC,nC_actual,BFull,kTrajInds)
  * INPUTS:
  *  - sh (nDim, nNgb) single, shifts, NOTICE the dimensions
  *  - ->Tik (1,), Tiknov regularizer
@@ -564,115 +834,127 @@ void mexFunction(
   int nlhs,       mxArray *plhs[],
   int nrhs, const mxArray *prhs[])
 {
+  if ((nrhs != 8) && (nrhs != 11))
+    mexErrMsgTxt("Wrong Input");
   
-  if (!mxIsSingle(mxGetCell(prhs[0], 0))) {mexErrMsgTxt("Require single shifts input");}
+  
+  int ifOffRes;
+  const mxArray *BFull;
+  float *kTrajInds;
+  size_t nC_actual;
+  int nThreads;
+  
+  if (nrhs == 8)
+  {
+      ifOffRes=0;
+      //nC_actual=(size_t)mxGetScalar(prhs[1]);  //Not used
+      nThreads = (int) mxGetScalar(prhs[7]);  
+  }
+  if (nrhs == 11)
+  {
+      ifOffRes=1;
+      BFull = prhs[8];
+      nC_actual  = (size_t)mxGetScalar(prhs[7]);
+      nThreads = (int) mxGetScalar(prhs[10]); 
+  }  
+    
+    
+  if (!mxIsSingle(mxGetCell(prhs[0],0))) {mexErrMsgTxt("Require single shifts input");}
   const size_t nDim = mxGetM(prhs[5]);
-  size_t nNgb; //= mxGetN(prhs[0]);
+  size_t nNgb;
   const size_t nSolve = mxGetN(prhs[5]);
   const size_t nSeg = mxGetN(prhs[0]);
-  const size_t nC = (size_t)mxGetScalar(prhs[1]);
+
 
   /* handling INPUTS */
-  //if( !mxIsSingle(prhs[0]) ) { mexErrMsgTxt( "sh: single precision" ); }
   float *sh;
   const float *shSolve = (float*)mxGetData(prhs[5]);
-
+  
+  size_t nC;
   float *GIU;
   float  Tik = (float) mxGetScalar(prhs[2]);
-  int nNgbSUM=0;
   
-  int nThreads = (int) mxGetScalar(prhs[7]);
+  nC  = (size_t)mxGetScalar(prhs[1]);
   
-
     if( !mxIsSingle(prhs[4]) ) { mexErrMsgTxt( "dgrid: single precision" ); }
     GIU = (float *)mxGetData(prhs[4]);
     // GIU is idgrid, it just two single (in 2D case)
     
     /* Initialize the two essential structs */
-    grid = Grid_ctor(nDim, nC, nSolve, Tik, GIU, prhs[3], prhs[6]); /* persistent static var */
+    struct GRID *grid = Grid_ctor(nDim, nC, nC_actual, nSolve, Tik, GIU, prhs[3], prhs[6]); /* persistent static var */
+    //grid = Grid_ctor(nDim, nC, nSolve, Tik, GIU, prhs[3],prhs[6]); /* persistent static var */
     //GIU is idgrid (2 singles). prhs[3] is F_c, the oversampled FFT of the coil-combination-image
     
-    ls_list = mxCalloc(nThreads, sizeof(struct LS*));
+  
+
+    
+    struct LS **ls_list=mxCalloc(nThreads, sizeof(struct LS*));
+    
     for (int ii = 0; ii < nThreads; ii++)
     {
         ls_list[ii] = LS_ctor(grid);
-    }
-    
-    // if we are using mexSetCell in openMP, then we don't need this part
-    nNgbSUM=0;
-    nNgbCUMSUM=mxCalloc(nSeg, sizeof(size_t));
-    for (size_t nSeg_t = 0; nSeg_t < nSeg; nSeg_t++)
-    {  
-       nNgbCUMSUM[nSeg_t]=nNgbSUM;  
-       nNgbSUM+=mxGetN(mxGetCell(prhs[0],nSeg_t));
-    }
-    coef_m=mxCalloc(2*nNgbSUM*nC*nSolve,sizeof(float));
-    /////////////////////////////////
-    
-    
-    constructed = 1;
-  
+    }  
+   
   
   size_t nSeg_t, N,NRHS = nSolve; 
   float *NhN,*NhC;
   mxArray *coef_c = mxCreateCellMatrix((mwSize)nSeg,1);
   mxArray *coef_t;
- 
-  #pragma omp parallel private(nSeg_t,sh,nNgb,N,NhN,NhC) shared(prhs,grid,shSolve,ls_list,coef_c,coef_m,nNgbCUMSUM,NRHS) num_threads(nThreads)
+
+  
+
+  #pragma omp parallel private(nSeg_t,sh,kTrajInds,nNgb,N,NhN,NhC) shared(prhs,grid,shSolve,ls_list,NRHS) num_threads(nThreads)
   {
   #pragma omp for schedule(dynamic)
   for (nSeg_t = 0; nSeg_t < nSeg; nSeg_t++)
   {
       int tid = omp_get_thread_num();
-      
       if(mxGetN(mxGetCell(prhs[0],nSeg_t)) != 0)
       {
           sh = (float*)mxGetData(mxGetCell(prhs[0],nSeg_t));
+
           nNgb=mxGetN(mxGetCell(prhs[0],nSeg_t));
+          LS_init(nNgb, nSolve, grid, ls_list[tid],ifOffRes); /* update ls by the input shifts */
 
-          LS_init(nNgb, nSolve, grid, ls_list[tid]); /* update ls by the input shifts */
           
-           LS_NhN_form(nNgb, sh, grid, ls_list[tid]);
-           LS_NhC_form(nNgb, nSolve, sh, shSolve, grid, ls_list[tid]);
- 
-           NhN = ls_list[tid]->NhN;
-           NhC = ls_list[tid]->NhC;
-           
-           N = grid->nC*nNgb; 
+          if (ifOffRes)
+          {
+              kTrajInds = (float*)mxGetData(mxGetCell(prhs[9],nSeg_t));
+              LS_NhN_form_forB0(nNgb, sh, grid, ls_list[tid],BFull,kTrajInds);
+              LS_NhC_form_forB0(nNgb, nSolve, sh, shSolve, grid, ls_list[tid],BFull,kTrajInds);
+              N = grid->nC_actual*nNgb;
+          }
+          else
+          {
+              LS_NhN_form(nNgb, sh, grid, ls_list[tid]);
+              LS_NhC_form(nNgb, nSolve, sh, shSolve, grid, ls_list[tid]);
+              N = grid->nC*nNgb; 
+          }
+          
+          NhN = ls_list[tid]->NhN;
+          NhC = ls_list[tid]->NhC;
 
-         
+
           /* Call LAPACK function */
           char uplo = 'U';
           mwSignedIndex info;
 
           cposv(&uplo, &N, &NRHS, NhN, &N, NhC, &N, &info);
-          
-          memcpy(coef_m+2*nNgbCUMSUM[nSeg_t]*nC*nSolve, NhC, 2*nC*nNgb*nSolve*sizeof(float));
 
-         // It seems we should be able to use mxSetCell in openMP
-           //coef_t = fort2mat(N, NRHS, N, NhC);
-           //mxSetCell(coef_c,nSeg_t,mxDuplicateArray(coef_t));
-         
-          
-          
+          coef_t = fort2mat(N, NRHS, N, NhC);
+          mxSetCell(coef_c,nSeg_t,(coef_t));
+
           LS_free(ls_list[tid]);
-         
+
       }
   }
   }
   
-  for (size_t nSeg_t = 0; nSeg_t < nSeg; nSeg_t++)
-  {    
-       nNgb=mxGetN(mxGetCell(prhs[0],nSeg_t));
-       if(nNgb != 0)
-       {
-           coef_t = fort2mat(nC*nNgb, nSolve, nC*nNgb, coef_m+2*nNgbCUMSUM[nSeg_t]*nC*nSolve); 
-           mxSetCell(coef_c,nSeg_t,mxDuplicateArray(coef_t));
-        }
-  }
   
-   /* clean up */
-  plhs[0]=coef_c;
   
+  /* clean up */
+   plhs[0]=coef_c;  
+   
+ 
 }
 
