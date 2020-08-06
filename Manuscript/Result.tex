@@ -3,7 +3,9 @@
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{kspace_PTX_ComputationTime}
-	\caption{Studies of different parallelization parameters, where patch width is the square root of the number of $\mathbf{W}$ columns solved for simultaneously and inclusion width is the assumed range of influence of each excitation k-space location. \textbf{(a)} Computation time vs. thread numbers. Patch width and inclusion with were kept at 4 cycle/FOV. \textbf{(b\&c)} Computation time (blue axis) and NRMSE (red axis) vs. patch widths (b) and inclusion widths (c). Thread number were kept at 16 of for both design. Inclusion width was constant at 4 in (b) and patch widths were constant at 4 (solid line) and 8 (dashed line).}
+	\caption{\textcolor{red}{WAG: Can you also run $2^0$ (most importantly) and $2^5$ patch width here? It would be good to show that the NRMSE levels off at some point. Also can you change the NRMSE axis to go from 0 to 6? That will help emphasize that even though the error is decreasing with increasing patch width, 
+	the difference between patch width = 2 and patch width = something large is quite small. }
+	Studies of different parallelization parameters, where patch width is the square root of the number of $\mathbf{W}$ columns solved for simultaneously and inclusion width is the assumed range of influence of each excitation k-space location. \textbf{(a)} Computation time vs. thread numbers. Patch width and inclusion with were kept at 4 cycle/FOV. \textbf{(b\&c)} Computation time (blue axis) and NRMSE (red axis) vs. patch widths (b) and inclusion widths (c). Thread number were kept at 16 of for both design. Inclusion width was constant at 4 in (b) and patch widths were constant at 4 (solid line) and 8 (dashed line).}
 	\label{fig:ComputationTime}
 \end{figure}
 Figure \ref{fig:ComputationTime}a shows the mean computation time versus different thread numbers. The k-space design problem held the patch and inclusion width constant at 4. The mean computation time decreases with increasing thread numbers before 12 threads, and then plateaus due to overhead. The thread number was conservatively chosen to be 16 for the following studies to ensure timely solutions. 
@@ -13,7 +15,8 @@ Figure \ref{fig:ComputationTime}c shows the mean computation time and the NRMSE 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{kspace_PTX_ErrorMap2}
-	\caption{Normalized excitation patterns (top row) and error maps (bottom row) for k-space domain design (left column) and spatial domain design (right column), with NRMSE and design time indicated.}
+	\caption{\textcolor{red}{WAG: I think this is the figure that your example in Github should replicate.}
+	Normalized excitation patterns (top row) and error maps (bottom row) for k-space domain design (left column) and spatial domain design (right column), with NRMSE and design time indicated.}
 	\label{fig:ErrorMap}
 \end{figure}
 The normalized excitation patterns and error maps are shown in Fig \ref{fig:ErrorMap} for both k-space domain design (left) and spatial domain design (right), where the k-space domain design was solved with 16 parallel computing threads, patch width 4, and inclusion width 4. 
@@ -33,7 +36,9 @@ Figure \ref{fig:GibbsRing}a\&c show the results of the  low-resolution designs u
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{kspace_PTX_Acceleration}
-	\caption{ Normalized error maps and RMSE for spatial domain design (first row) and k-space domain design (second row), with excitation trajectories undersampled by different acceleration factors (third row).}
+	\caption{ \textcolor{red}{We should talk about this; I don't think reviewers will like the fact that the scale starts at 0.2. Also we should probably call it `Reduction Factor' since it is 
+	really the factor by which the pulse duration is reduced, and not exactly a k-space undersampling factor, is that right?}
+	Normalized error maps and RMSE for spatial domain design (first row) and k-space domain design (second row), with excitation trajectories undersampled by different acceleration factors (third row).}
 	\label{fig:kspace_PTX_Acceleration}
 \end{figure}
 
@@ -43,7 +48,8 @@ Figure \ref{fig:kspace_PTX_Acceleration} shows a comparison between the performa
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{kspace_PTX_B0}
-	\caption{\textbf{(a)} Normalized off-resonance map with Gaussian distortion centered above the frontal sinus, mimicking a characteristic susceptibility induced $B_0$ inhomogeneity. \textbf{(b)} Normalized excitation maps and RMSE for spatial domain design with off-resonance correction (first row), k-space domain design with and without off-resonance correction (second \& third rows).}
+	\caption{\textcolor{red}{WAG: Update with new correction method; include compute times and errors versus number of segments}
+	\textbf{(a)} Normalized off-resonance map with Gaussian distortion centered above the frontal sinus, mimicking a characteristic susceptibility induced $B_0$ inhomogeneity. \textbf{(b)} Normalized excitation maps and RMSE for spatial domain design with off-resonance correction (first row), k-space domain design with and without off-resonance correction (second \& third rows).}
 	\label{fig:kspace_PTX_B0}
 \end{figure}
 
