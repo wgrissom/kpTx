@@ -1,0 +1,141 @@
+\documentclass[11pt]{article}
+% Command line: pdflatex -shell-escape compulse.tex
+\usepackage{geometry} 
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{times}
+\usepackage{bm}
+\usepackage{fixltx2e}
+\usepackage[outerbars]{changebar}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage{verbatim}
+
+\epstopdfsetup{suffix=} % to remove 'eps-to-pdf' suffix from converted images
+%\usepackage{todonotes} % use option disable to hide all comments
+
+\usepackage[sort&compress]{natbib}
+\bibpunct{[}{]}{,}{n}{,}{,}
+
+\usepackage[noend]{algpseudocode}
+
+\usepackage{dsfont}
+\usepackage{relsize}
+
+\usepackage{todonotes}
+
+\graphicspath{{Figure/}}
+
+%changing the Eq. tag to use [] when numbering. use \eqref{label} to reference equations in text.
+\makeatletter
+  \def\tagform@#1{\maketag@@@{[#1]\@@italiccorr}}
+\makeatother
+
+\linespread{1.5}
+%\setlength{\parindent}{0in}
+
+% the following command can be used to mark changes made due to reviewers' concerns. Use as \revbox{Rx.y} for reviewer x, concern y.
+\newif\ifmarkedup
+\markeduptrue
+
+\ifmarkedup
+	\newcommand{\revbox}[1]{\marginpar{\framebox{\textcolor{blue}{#1}}}}
+\else
+	\newcommand{\revbox}[1]{}
+	\renewcommand{\textcolor}[1]{}
+	\renewcommand{\sout}[1]{}
+\fi
+
+%\newcommand{\bop}{$\vert B_1^+ \vert$}
+\newcommand{\kt}{$k_\textrm{T}$}
+\newcommand{\bmap}{$B_1^+$}
+\newcommand{\mytilde}{\raise.17ex\hbox{$\scriptstyle\mathtt{\sim}$}}  % tilde symbol
+\mathchardef\mhyphen="2D
+
+\begin{document}
+
+\title{Tailored Spiral In-Out Spectral-Spatial Water Suppression Pulses for 
+Magnetic Resonance Spectroscopic Imaging}
+\author{Jun Ma$^{1,3}$, Carrie Wismans$^{2}$, Zhipeng Cao$^{1}$, Dennis W.J. Klomp$^{2}$, Jannie P. Wijnen$^{2}$\\ and William A. Grissom$^{*1,3}$}
+\maketitle
+\begin{flushleft}
+$^1$Vanderbilt University Institute of Imaging Science, Nashville, TN, United States\\
+$^2$Department of Radiology, University Medical Centre Utrecht, Utrecht, the Netherlands \\   
+$^3$Department of Biomedical Engineering, Vanderbilt University, Nashville, TN, United States\\    
+
+\par
+-------------------------- 
+
+\par
+Word Count: Approximately 3550 \\
+*Corresponding author: \\
+Will Grissom\\
+Department of Biomedical Engineering\\
+Vanderbilt University\\
+5824 Stevenson Center\\
+Nashville, TN 37235 USA \\
+E-mail: will.grissom@vanderbilt.edu \\
+Twitter: @wgrissom
+
+\par Submitted to Magnetic Resonance in Medicine for consideration as a Full Paper.
+
+\par
+Acknowledgment: This work was supported by NIH R01 EB016695.
+
+\end{flushleft}
+\thispagestyle{plain}
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%% Abstract %%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{\underline{Abstract}} 
+{\bf Purpose:}
+something
+\\[1em]
+{\bf Methods:}
+something
+\\[1em]
+{\bf Results:}
+something
+\\[1em]
+{\bf Conclusion:}
+something
+\\[1em]
+{\bf \noindent Key words:} Spectroscopy; RF pulses; Ultra-high field MRI; RF pulse design; Selective excitation; Optimization.
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%% Main Text %%%%%%%%%%%%%%%%%%%%%%%
+
+\input{Introduction}
+
+\input{Theory}
+
+\input{Method}
+
+\input{Result}
+
+\input{Conclusion}
+
+
+
+\pagebreak
+
+\bibliographystyle{unsrt}  % cse doesn't work
+\bibliography{kPtx_paper}
+
+\pagebreak
+
+
+
+
+
+
+
+
+\end{document}
