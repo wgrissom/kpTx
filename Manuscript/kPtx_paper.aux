@@ -1,60 +1,68 @@
 \relax 
-\citation{rieseberg2002two}
-\citation{saekho2005small}
-\citation{stenger2000three}
-\citation{katscher2003transmit,zhu2004parallel}
-\citation{Grissom:2006:MRM,setsompop2008magnitude}
+\citation{Katscher:2003:Magn-Reson-Med:12509830,zhu2004parallel}
+\citation{malik:mrm:2015,mooiweer:2016}
+\citation{Zhang:2007:Magn-Reson-Med:16526012,cloos:kpstd:2012}
+\citation{deng:2009}
+\citation{Katscher:2003:Magn-Reson-Med:12509830}
+\citation{Grissom:2006:MRM}
+\citation{setsompop2008magnitude}
+\citation{brunner2010optimal,hoyos:tmi:2014}
+\citation{fessler2005toeplitz}
 \citation{katscher2003transmit}
 \citation{setsompop2008magnitude}
 \citation{katscher2003transmit}
 \citation{katscher2003transmit}
 \citation{katscher2003transmit}
-\citation{katscher2003transmit}
 \newlabel{eq:ScalerForm}{{1}{6}}
 \newlabel{eq:MatrixForm}{{2}{6}}
-\newlabel{eq:Solution}{{3}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \leavevmode {\color  {red}WAG: I think you should make two subfigures here: one that illustrates a single target location, and one that illustrates a patch of target locations. Also you should annotate the different widths, in the figures, with arrows. Also add a legend for the dots} Illustration of one instance within the palatalization of a 2D k-space domain design problem. The totally design problem is divided into patches of width 4 cycle/FOV, and the 16 yellow points are the target points in this instance. With inclusion width of 4 cycle/FOV, the 46 green excitation trajectory points within the 12 cycle/FOV wide green square (4 cycle/FOV extended outside of the patch) are considered in this instance. The excitation within the 20 cycle/FOV wide red patch is constrained to zero except the point where the delta function is.}}{7}}
-\newlabel{fig:Patch}{{1}{7}}
+\citation{katscher2003transmit}
+\newlabel{eq:Solution}{{3}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \leavevmode {\color  {red}WAG: I think you should make two subfigures here: one that illustrates a single target location, and one that illustrates a patch of target locations. Also you should annotate the different widths, in the figures, with arrows. Also add a legend for the dots} Illustration of one instance within the palatalization of a 2D k-space domain design problem. The totally design problem is divided into patches of width 4 cycle/FOV, and the 16 yellow points are the target points in this instance. With inclusion width of 4 cycle/FOV, the 46 green excitation trajectory points within the 12 cycle/FOV wide green square (4 cycle/FOV extended outside of the patch) are considered in this instance. The excitation within the 20 cycle/FOV wide red patch is constrained to zero except the point where the delta function is.}}{8}}
+\newlabel{fig:Patch}{{1}{8}}
 \citation{luo2019grappa}
 \citation{luo2019grappa}
 \citation{luo2019grappa}
-\newlabel{eq:SHS_blocks}{{4}{9}}
+\newlabel{eq:SHS_blocks}{{4}{10}}
 \citation{fessler2005toeplitz}
 \citation{cao2016array}
 \citation{malik2012tailored}
 \citation{lustig2008fast}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces 24-channel loop Tx array. The array has diameter 32 cm and height 28 cm. The 16 cm $\times $ 11 cm loops are arranged in 3 rows of 8.}}{12}}
-\newlabel{fig:Coil}{{2}{12}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces (a) Target excitation pattern for the IVS pulses. (b) 10 ms SPIN trajectory used in the designs. (c) Gradient waveforms of the excitation trajectory.}}{12}}
-\newlabel{fig:Target}{{3}{12}}
 \citation{Grissom:2006:MRM}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces 24-channel loop Tx array. The array has diameter 32 cm and height 28 cm. The 16 cm $\times $ 11 cm loops are arranged in 3 rows of 8.}}{13}}
+\newlabel{fig:Coil}{{2}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces (a) Target excitation pattern for the IVS pulses. (b) 10 ms SPIN trajectory used in the designs. (c) Gradient waveforms of the excitation trajectory.}}{13}}
+\newlabel{fig:Target}{{3}{13}}
 \citation{fessler2005toeplitz}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \leavevmode {\color  {red}WAG: Can you also run $2^0$ (most importantly) and $2^5$ patch width here? It would be good to show that the NRMSE levels off at some point. Also can you change the NRMSE axis to go from 0 to 6? That will help emphasize that even though the error is decreasing with increasing patch width, the difference between patch width = 2 and patch width = something large is quite small. } Studies of different parallelization parameters, where patch width is the square root of the number of $\mathbf  {W}$ columns solved for simultaneously and inclusion width is the assumed range of influence of each excitation k-space location. \textbf  {(a)} Computation time vs. thread numbers. Patch width and inclusion with were kept at 4 cycle/FOV. \textbf  {(b\&c)} Computation time (blue axis) and NRMSE (red axis) vs. patch widths (b) and inclusion widths (c). Thread number were kept at 16 of for both design. Inclusion width was constant at 4 in (b) and patch widths were constant at 4 (solid line) and 8 (dashed line).}}{15}}
 \newlabel{fig:ComputationTime}{{4}{15}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \leavevmode {\color  {red}WAG: I think this is the figure that your example in Github should replicate.} Normalized excitation patterns (top row) and error maps (bottom row) for k-space domain design (left column) and spatial domain design (right column), with NRMSE and design time indicated.}}{16}}
-\newlabel{fig:ErrorMap}{{5}{16}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Normalized error maps and NRMSE for \textbf  {(a)} spatial domain design and \textbf  {(c)} k-space domain design with 6 mm iso-resolution, 32$\times $32$\times $24 design grid. Red arrows indicate the Gibbs ringing in low-resolution spatial domain design. \textbf  {(b)} Normalized error map for spatial domain design with 3 mm iso-resolution, 64$\times $64$\times $48 design grid.}}{17}}
-\newlabel{fig:GibbsRing}{{6}{17}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces  \leavevmode {\color  {red}We should talk about this; I don't think reviewers will like the fact that the scale starts at 0.2. Also we should probably call it `Reduction Factor' since it is really the factor by which the pulse duration is reduced, and not exactly a k-space undersampling factor, is that right?} Normalized error maps and RMSE for spatial domain design (first row) and k-space domain design (second row), with excitation trajectories undersampled by different acceleration factors (third row).}}{18}}
-\newlabel{fig:kspace_PTX_Acceleration}{{7}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces \leavevmode {\color  {red}WAG: I think this is the figure that your example in Github should replicate.} Normalized excitation patterns (top row) and error maps (bottom row) for k-space domain design (left column) and spatial domain design (right column), with NRMSE and design time indicated.}}{17}}
+\newlabel{fig:ErrorMap}{{5}{17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Normalized error maps and NRMSE for \textbf  {(a)} spatial domain design and \textbf  {(c)} k-space domain design with 6 mm iso-resolution, 32$\times $32$\times $24 design grid. Red arrows indicate the Gibbs ringing in low-resolution spatial domain design. \textbf  {(b)} Normalized error map for spatial domain design with 3 mm iso-resolution, 64$\times $64$\times $48 design grid.}}{18}}
+\newlabel{fig:GibbsRing}{{6}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces  \leavevmode {\color  {red}We should talk about this; I don't think reviewers will like the fact that the scale starts at 0.2. Also we should probably call it `Reduction Factor' since it is really the factor by which the pulse duration is reduced, and not exactly a k-space undersampling factor, is that right?} Normalized error maps and RMSE for spatial domain design (first row) and k-space domain design (second row), with excitation trajectories undersampled by different acceleration factors (third row).}}{19}}
+\newlabel{fig:kspace_PTX_Acceleration}{{7}{19}}
 \citation{fessler2005toeplitz}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \leavevmode {\color  {red}WAG: Update with new correction method; include compute times and errors versus number of segments} \textbf  {(a)} Normalized off-resonance map with Gaussian distortion centered above the frontal sinus, mimicking a characteristic susceptibility induced $B_0$ inhomogeneity. \textbf  {(b)} Normalized excitation maps and RMSE for spatial domain design with off-resonance correction (first row), k-space domain design with and without off-resonance correction (second \& third rows).}}{19}}
-\newlabel{fig:kspace_PTX_B0}{{8}{19}}
 \citation{katscher2003transmit}
 \citation{katscher2003transmit}
 \citation{luo2019grappa}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \leavevmode {\color  {red}WAG: Update with new correction method; include compute times and errors versus number of segments} \textbf  {(a)} Normalized off-resonance map with Gaussian distortion centered above the frontal sinus, mimicking a characteristic susceptibility induced $B_0$ inhomogeneity. \textbf  {(b)} Normalized excitation maps and RMSE for spatial domain design with off-resonance correction (first row), k-space domain design with and without off-resonance correction (second \& third rows).}}{20}}
+\newlabel{fig:kspace_PTX_B0}{{8}{20}}
 \bibstyle{unsrt}
 \bibdata{kPtx_paper}
-\bibcite{rieseberg2002two}{{1}{}{{}}{{}}}
-\bibcite{saekho2005small}{{2}{}{{}}{{}}}
-\bibcite{stenger2000three}{{3}{}{{}}{{}}}
-\bibcite{katscher2003transmit}{{4}{}{{}}{{}}}
-\bibcite{zhu2004parallel}{{5}{}{{}}{{}}}
-\bibcite{Grissom:2006:MRM}{{6}{}{{}}{{}}}
-\bibcite{setsompop2008magnitude}{{7}{}{{}}{{}}}
-\bibcite{luo2019grappa}{{8}{}{{}}{{}}}
-\bibcite{fessler2005toeplitz}{{9}{}{{}}{{}}}
-\bibcite{cao2016array}{{10}{}{{}}{{}}}
-\bibcite{malik2012tailored}{{11}{}{{}}{{}}}
-\bibcite{lustig2008fast}{{12}{}{{}}{{}}}
+\bibcite{Katscher:2003:Magn-Reson-Med:12509830}{{1}{}{{}}{{}}}
+\bibcite{zhu2004parallel}{{2}{}{{}}{{}}}
+\bibcite{malik:mrm:2015}{{3}{}{{}}{{}}}
+\bibcite{mooiweer:2016}{{4}{}{{}}{{}}}
+\bibcite{Zhang:2007:Magn-Reson-Med:16526012}{{5}{}{{}}{{}}}
+\bibcite{cloos:kpstd:2012}{{6}{}{{}}{{}}}
+\bibcite{deng:2009}{{7}{}{{}}{{}}}
+\bibcite{Grissom:2006:MRM}{{8}{}{{}}{{}}}
+\bibcite{setsompop2008magnitude}{{9}{}{{}}{{}}}
+\bibcite{brunner2010optimal}{{10}{}{{}}{{}}}
+\bibcite{hoyos:tmi:2014}{{11}{}{{}}{{}}}
+\bibcite{fessler2005toeplitz}{{12}{}{{}}{{}}}
+\bibcite{luo2019grappa}{{13}{}{{}}{{}}}
+\bibcite{cao2016array}{{14}{}{{}}{{}}}
+\bibcite{malik2012tailored}{{15}{}{{}}{{}}}
+\bibcite{lustig2008fast}{{16}{}{{}}{{}}}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers

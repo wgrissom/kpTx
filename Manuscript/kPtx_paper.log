@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.4.7)  17 AUG 2020 02:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.4.7)  17 AUG 2020 02:47
 entering extended mode
 **kPtx_paper.tex
 (kPtx_paper.tex
@@ -711,12 +711,12 @@ File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 \makeMPintoPDFobject=\count156
 \everyMPtoPDFconversion=\toks41
 ) ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+msa on input line 64.
+LaTeX Font Info:    Try loading font information for U+msa on input line 63.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 64.
+LaTeX Font Info:    Try loading font information for U+msb on input line 63.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -724,128 +724,149 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 96.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 94.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 97.
- [2] (Introduction.tex
-Overfull \hbox (8.87582pt too wide) in paragraph at lines 12--16
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 95.
+ [2] (Introduction.tex [3]
+Overfull \hbox (8.87582pt too wide) in paragraph at lines 40--44
 \OT1/ptm/m/n/10.95 this pa-per is the 3D in-ner vol-ume sup-pres-sion (IVS) pul
 ses for MR Cor-ticog-ra-phy (MRCoG).MRCoG
  []
 
-[3]) (Theory.tex [4]
+
+Package natbib Warning: Citation `katscher2003transmit' on page 4 undefined on 
+input line 45.
+
+) [4] (Theory.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 3.
- [5]
+
+
+Package natbib Warning: Citation `katscher2003transmit' on page 5 undefined on 
+input line 9.
+
+
+Package natbib Warning: Citation `katscher2003transmit' on page 5 undefined on 
+input line 9.
+
+[5]
+
+Package natbib Warning: Citation `katscher2003transmit' on page 6 undefined on 
+input line 11.
+
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
+[6]
 
-<Figure/kspace_PTX_Patch.png, id=29, 268.00125pt x 263.48438pt>
+Package natbib Warning: Citation `katscher2003transmit' on page 7 undefined on 
+input line 24.
+
+<Figure/kspace_PTX_Patch.png, id=34, 268.00125pt x 263.48438pt>
 File: Figure/kspace_PTX_Patch.png Graphic file (type png)
 
 <use Figure/kspace_PTX_Patch.png>
 Package pdftex.def Info: Figure/kspace_PTX_Patch.png used on input line 32.
 (pdftex.def)             Requested size: 170.71652pt x 167.83739pt.
- [6] [7 <./Figure/kspace_PTX_Patch.png>]
-[8] [9] [10]) (Method.tex
+ [7] [8 <./Figure/kspace_PTX_Patch.png>]
+[9] [10] [11]) (Method.tex
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [11]
+
 <Figure/kspace_PTX_Coil.png, id=56, 467.49657pt x 534.49687pt>
 File: Figure/kspace_PTX_Coil.png Graphic file (type png)
 
 <use Figure/kspace_PTX_Coil.png>
 Package pdftex.def Info: Figure/kspace_PTX_Coil.png used on input line 6.
 (pdftex.def)             Requested size: 85.35826pt x 97.59175pt.
-
-<Figure/kSpace_PTX_Pattern_Trajectory.png, id=57, 1003.5894pt x 289.08pt>
+ [12]
+<Figure/kSpace_PTX_Pattern_Trajectory.png, id=60, 1003.5894pt x 289.08pt>
 File: Figure/kSpace_PTX_Pattern_Trajectory.png Graphic file (type png)
 
 <use Figure/kSpace_PTX_Pattern_Trajectory.png>
 Package pdftex.def Info: Figure/kSpace_PTX_Pattern_Trajectory.png used on input
  line 15.
 (pdftex.def)             Requested size: 430.00462pt x 123.86087pt.
- [12 <./Figure/kspace_PTX_Coil.png> <./Figure/kSpace_PTX_Pattern_Trajectory.png
+ [13 <./Figure/kspace_PTX_Coil.png> <./Figure/kSpace_PTX_Pattern_Trajectory.png
 >]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
-) [13] (Result.tex
-Package epstopdf Info: Source file: <Figure/ComputationTime_2.eps>
-(epstopdf)                    date: 2020-08-17 02:10:33
-(epstopdf)                    size: 81218 bytes
-(epstopdf)             Output file: <Figure/ComputationTime_2.pdf>
-(epstopdf)             Command: <epstopdf Figure/ComputationTime_2.eps>
-(epstopdf)             \includegraphics on input line 5.
-runsystem(epstopdf Figure/ComputationTime_2.eps)...executed (allowed).
-
-Package epstopdf Info: Result file: <Figure/ComputationTime_2.pdf>
-(epstopdf)                    date: 2020-08-17 02:10:52
-(epstopdf)                    size: 27327 bytes.
-
-<Figure/ComputationTime_2.pdf, id=67, 670.505pt x 230.8625pt>
+) [14] (Result.tex
+<Figure/ComputationTime_2.pdf, id=70, 670.505pt x 230.8625pt>
 File: Figure/ComputationTime_2.pdf Graphic file (type pdf)
 
 <use Figure/ComputationTime_2.pdf>
 Package pdftex.def Info: Figure/ComputationTime_2.pdf used on input line 5.
 (pdftex.def)             Requested size: 430.00462pt x 148.05443pt.
- [14] [15 <./Figure/ComputationTime_2.pdf>]
+ [15 <./Figure/ComputationTime_2.pdf>]
 <Figure/ErrorMap_2.pdf, id=80, 604.2575pt x 321.2pt>
 File: Figure/ErrorMap_2.pdf Graphic file (type pdf)
 
 <use Figure/ErrorMap_2.pdf>
 Package pdftex.def Info: Figure/ErrorMap_2.pdf used on input line 17.
 (pdftex.def)             Requested size: 430.00462pt x 228.5731pt.
- [16 <./Figure/ErrorMap_2.pdf>]
-<Figure/GibbsRinging_3.pdf, id=100, 496.85625pt x 121.45375pt>
+ [16] [17 <./Figure/ErrorMap_2.pdf>]
+<Figure/GibbsRinging_3.pdf, id=103, 496.85625pt x 121.45375pt>
 File: Figure/GibbsRinging_3.pdf Graphic file (type pdf)
 
 <use Figure/GibbsRinging_3.pdf>
 Package pdftex.def Info: Figure/GibbsRinging_3.pdf used on input line 28.
 (pdftex.def)             Requested size: 430.00462pt x 105.11348pt.
- [17 <./Figure/GibbsRinging_3.pdf>]
-<Figure/Acceleration_3.pdf, id=122, 879.285pt x 430.60875pt>
+ [18 <./Figure/GibbsRinging_3.pdf>]
+<Figure/Acceleration_3.pdf, id=125, 879.285pt x 430.60875pt>
 File: Figure/Acceleration_3.pdf Graphic file (type pdf)
 
 <use Figure/Acceleration_3.pdf>
 Package pdftex.def Info: Figure/Acceleration_3.pdf used on input line 38.
 (pdftex.def)             Requested size: 430.00462pt x 210.5796pt.
- [18 <./Figure/Acceleration_3.pdf>]
-<Figure/kspace_PTX_B0.png, id=148, 1611.1392pt x 583.4598pt>
+ [19 <./Figure/Acceleration_3.pdf>]
+<Figure/kspace_PTX_B0.png, id=152, 1611.1392pt x 583.4598pt>
 File: Figure/kspace_PTX_B0.png Graphic file (type png)
 
 <use Figure/kspace_PTX_B0.png>
 Package pdftex.def Info: Figure/kspace_PTX_B0.png used on input line 50.
 (pdftex.def)             Requested size: 430.00462pt x 155.72006pt.
-) (Conclusion.tex [19 <./Figure/kspace_PTX_B0.png>]) [20] (kPtx_paper.bbl [21])
- [22] (kPtx_paper.aux) ) 
+) (Conclusion.tex
+
+Package natbib Warning: Citation `katscher2003transmit' on page 20 undefined on
+ input line 4.
+
+
+Package natbib Warning: Citation `katscher2003transmit' on page 20 undefined on
+ input line 4.
+
+) [20 <./Figure/kspace_PTX_B0.png>] [21] (kPtx_paper.bbl [22]) [23]
+
+Package natbib Warning: There were undefined citations.
+
+(kPtx_paper.aux) ) 
 Here is how much of TeX's memory you used:
  14769 strings out of 493698
- 278555 string characters out of 3144408
- 329730 words of memory out of 3000000
- 17712 multiletter control sequences out of 15000+200000
+ 278875 string characters out of 3144408
+ 327795 words of memory out of 3000000
+ 17724 multiletter control sequences out of 15000+200000
  29129 words of font info for 84 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  62i,9n,56p,1845b,298s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8
-r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C
-:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program Files/M
-iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
-nts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
-r6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:
-/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program
- Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/Mi
-KTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
-pe1/urw/times/utmr8a.pfb>
-Output written on kPtx_paper.pdf (22 pages, 4039300 bytes).
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
+sfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb
+><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Progr
+am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2
+.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/ur
+w/times/utmr8a.pfb>
+Output written on kPtx_paper.pdf (23 pages, 4041084 bytes).
 PDF statistics:
- 208 PDF objects out of 1000 (max. 8388607)
+ 211 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  53 words of extra memory for PDF output out of 10000 (max. 10000000)
 

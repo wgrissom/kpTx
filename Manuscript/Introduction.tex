@@ -1,12 +1,40 @@
 \section* {Introduction}
 
-\par Multidimensional RF pulses have been widely used in many applications such as reduced field-of-view imaging \cite{rieseberg2002two}, transmit field inhomogeneity correction \cite{saekho2005small}, and susceptibility artifacts correction \cite{stenger2000three}. Parallel transmission (pTx) \cite{katscher2003transmit,zhu2004parallel} further strengthens the multidimensional pulses by providing extra spatial encoding power, shortening pulse duration, and reducing  specific absorption rate (SAR). However, current multidimensional pTx pulse design methods are based on a spatial domain formulation \cite{Grissom:2006:MRM,setsompop2008magnitude} that has prohibitive memory and computational requirements when the number of coils and the number of dimensions both become larger in current designs. 
+\par Multidimensional parallel transmission \cite{Katscher:2003:Magn-Reson-Med:12509830,zhu2004parallel} has been widely investigated for applications including
+reduced field-of-view imaging \cite{malik:mrm:2015,mooiweer:2016},
+transmit field ($B_1^+$) inhomogeneity compensation \cite{Zhang:2007:Magn-Reson-Med:16526012,cloos:kpstd:2012},
+and compensation of susceptibility-induced signal loss \cite{deng:2009}.
+One of the first algorithms developed to demonstrate the concept of parallel transmission was formulated in the k-space domain \cite{Katscher:2003:Magn-Reson-Med:12509830}.
+In that method, a dense system matrix was constructed by Fourier transforming each transmit coil's $B_1^+$ map,
+forming a 2D convolution matrix for each coil, and then concatenating the coils' convolution matrices.
+The target pattern was also Fourier transformed and the pulses were solved by regularized pseudoinverse of the system matrix. 
+A spatial domain formulation \cite{Grissom:2006:MRM} was proposed soon after,
+wherein a non-uniform discrete Fourier transform matrix is constructed, 
+duplicated for each transmit coil, and weighted by that coil's $B_1^+$ map.
+The weighted matrices are concatenated and the pulses are solved by regularized pseudoinverse of the system matrix
+or using an iterative method.
+The spatial domain method is mathematically straightforward 
+and enables flexible modeling and compensation of effects such as off-resonance, 
+incorporation of regions of interest,
+and the use of non-uniform fast Fourier transforms to accelerate matrix multiplies.
+Since its introduction, nearly all parallel transmission studies have used the spatial domain method. 
+
+\par Despite the spatial domain method's strengths, 
+it can have prohibitive computational requirements when the number of coils and the number of dimensions become large, 
+for example in three-dimensional and spectral-spatial pulse designs, and when off-resonance compensation is used.  
+The computation is multiplied further when the method is applied iteratively in magnitude least-squares \cite{setsompop2008magnitude} or constrained pulse designs \cite{brunner2010optimal,hoyos:tmi:2014}. 
 Particularly, current spatial domain design methods map any given RF pulse $\mathbf{b}$ to its spatial excitation pattern $\mathbf{d}$ with a large system matrix $\mathbf{A}$, as:
 \begin{equation*}
 	\mathbf{d}=\mathbf{Ab}
 \end{equation*}
-The size of $\mathbf{A}$ is $N_s$ by $N_cN_t$, where $N_s$ is the number of spatial locations, $N_c$ is the number of coils, and $N_t$ is the number of RF samples. Since $N_s$ becomes unbearably large in designs such as 2D plus spectral and 3D problems, and $N_c$ increases with more advance hardware designs, 
-This $\mathbf{A}$ matrix is typically too large to find the inverse in terms of memory. Therefore, such design problems need to be solved by iterative conjugate-gradient (CG) methods which avoid matrix inversion. However, even if no matrix inversions are performed, the large system matrix may still be memory-inefficient when used in many matrix multiplications over a large number of iterations, making the solving process very slow. Furthermore, the NUFFT-based pulse design methods can also be slow due to all the gridding steps. Although these can be eliminated in NUFFT-based image reconstruction using Toeplitz formulation, in RF pulse design the Toeplitz formulation does not exist since the inner product is over space. 
+The size of $\mathbf{A}$ is $N_s$ by $N_cN_t$, where $N_s$ is the number of spatial locations, $N_c$ is the number of coils, and $N_t$ is the number of RF samples. 
+Since $N_s$ becomes unbearably large in designs such as 2D plus spectral and 3D problems, 
+and $N_c$ increases with more advance hardware designs, 
+$\mathbf{A}$ is typically too large to store explicitly or directly invert. 
+Therefore, such design problems need to be solved by iterative conjugate-gradient (CG) methods which avoid matrix inversion. 
+However, even if no matrix inversions are performed, the large system matrix may still be memory-inefficient when used in many matrix multiplications over a large number of iterations, making the solving process very slow. Furthermore, the NUFFT-based pulse design methods can also be slow due to all the gridding steps.
+Although these can be eliminated in NUFFT-based image reconstruction using Toeplitz formulation \cite{fessler2005toeplitz}, 
+in RF pulse design the Toeplitz formulation does not exist since the inner product is over space. 
 These slow design methods are especially undesirable when tailored pulses are needed to be designed for each subject during one's examination in the scanner. Typically, the subject-tailored pulse design has to be done within one minute in the pre-scan stage, so that the incorporation of fast design of subject-tailored pulses into currently used workflow is desirable.  
 
 \par One application of subject-tailored multidimensional pTx pulses that is of particular interest of this paper is the 3D inner volume suppression (IVS) pulses for MR Corticography (MRCoG).MRCoG is a developing imaging technique which aims for submillimeter isotropic resolution whole-cortex and cortex-specific imaging. 
