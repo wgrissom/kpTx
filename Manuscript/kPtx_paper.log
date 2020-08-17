@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.4.7)  13 AUG 2020 22:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.4.7)  17 AUG 2020 02:10
 entering extended mode
 **kPtx_paper.tex
 (kPtx_paper.tex
@@ -773,50 +773,58 @@ Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
 ) [13] (Result.tex
-<Figure/kspace_PTX_ComputationTime.png, id=67, 1147.6476pt x 363.759pt>
-File: Figure/kspace_PTX_ComputationTime.png Graphic file (type png)
+Package epstopdf Info: Source file: <Figure/ComputationTime_2.eps>
+(epstopdf)                    date: 2020-08-17 02:10:33
+(epstopdf)                    size: 81218 bytes
+(epstopdf)             Output file: <Figure/ComputationTime_2.pdf>
+(epstopdf)             Command: <epstopdf Figure/ComputationTime_2.eps>
+(epstopdf)             \includegraphics on input line 5.
+runsystem(epstopdf Figure/ComputationTime_2.eps)...executed (allowed).
 
-<use Figure/kspace_PTX_ComputationTime.png>
-Package pdftex.def Info: Figure/kspace_PTX_ComputationTime.png used on input li
-ne 5.
-(pdftex.def)             Requested size: 430.00462pt x 136.29272pt.
- [14] [15 <./Figure/kspace_PTX_ComputationTime.png>]
-<Figure/kspace_PTX_ErrorMap2.png, id=75, 842.6682pt x 474.573pt>
-File: Figure/kspace_PTX_ErrorMap2.png Graphic file (type png)
+Package epstopdf Info: Result file: <Figure/ComputationTime_2.pdf>
+(epstopdf)                    date: 2020-08-17 02:10:52
+(epstopdf)                    size: 27327 bytes.
 
-<use Figure/kspace_PTX_ErrorMap2.png>
-Package pdftex.def Info: Figure/kspace_PTX_ErrorMap2.png used on input line 17.
+<Figure/ComputationTime_2.pdf, id=67, 670.505pt x 230.8625pt>
+File: Figure/ComputationTime_2.pdf Graphic file (type pdf)
 
-(pdftex.def)             Requested size: 430.00462pt x 242.16661pt.
- [16 <./Figure/kspace_PTX_ErrorMap2.png>]
-<Figure/kspace_PTX_GibbsRinging.png, id=80, 967.9362pt x 304.9794pt>
-File: Figure/kspace_PTX_GibbsRinging.png Graphic file (type png)
+<use Figure/ComputationTime_2.pdf>
+Package pdftex.def Info: Figure/ComputationTime_2.pdf used on input line 5.
+(pdftex.def)             Requested size: 430.00462pt x 148.05443pt.
+ [14] [15 <./Figure/ComputationTime_2.pdf>]
+<Figure/ErrorMap_2.pdf, id=80, 604.2575pt x 321.2pt>
+File: Figure/ErrorMap_2.pdf Graphic file (type pdf)
 
-<use Figure/kspace_PTX_GibbsRinging.png>
-Package pdftex.def Info: Figure/kspace_PTX_GibbsRinging.png used on input line 
-28.
-(pdftex.def)             Requested size: 430.00462pt x 135.4897pt.
- [17 <./Figure/kspace_PTX_GibbsRinging.png>] <Figure/kspace_PTX_Acceleration.pn
-g, id=85, 936.1374pt x 397.9668pt>
-File: Figure/kspace_PTX_Acceleration.png Graphic file (type png)
+<use Figure/ErrorMap_2.pdf>
+Package pdftex.def Info: Figure/ErrorMap_2.pdf used on input line 17.
+(pdftex.def)             Requested size: 430.00462pt x 228.5731pt.
+ [16 <./Figure/ErrorMap_2.pdf>]
+<Figure/GibbsRinging_3.pdf, id=100, 496.85625pt x 121.45375pt>
+File: Figure/GibbsRinging_3.pdf Graphic file (type pdf)
 
-<use Figure/kspace_PTX_Acceleration.png>
-Package pdftex.def Info: Figure/kspace_PTX_Acceleration.png used on input line 
-38.
-(pdftex.def)             Requested size: 430.00462pt x 182.79976pt.
- [18 <./Figure/kspace_PTX_Acceleration.png>] <Figure/kspace_PTX_B0.png, id=90, 
-1611.1392pt x 583.4598pt>
+<use Figure/GibbsRinging_3.pdf>
+Package pdftex.def Info: Figure/GibbsRinging_3.pdf used on input line 28.
+(pdftex.def)             Requested size: 430.00462pt x 105.11348pt.
+ [17 <./Figure/GibbsRinging_3.pdf>]
+<Figure/Acceleration_3.pdf, id=122, 879.285pt x 430.60875pt>
+File: Figure/Acceleration_3.pdf Graphic file (type pdf)
+
+<use Figure/Acceleration_3.pdf>
+Package pdftex.def Info: Figure/Acceleration_3.pdf used on input line 38.
+(pdftex.def)             Requested size: 430.00462pt x 210.5796pt.
+ [18 <./Figure/Acceleration_3.pdf>]
+<Figure/kspace_PTX_B0.png, id=148, 1611.1392pt x 583.4598pt>
 File: Figure/kspace_PTX_B0.png Graphic file (type png)
 
 <use Figure/kspace_PTX_B0.png>
 Package pdftex.def Info: Figure/kspace_PTX_B0.png used on input line 50.
 (pdftex.def)             Requested size: 430.00462pt x 155.72006pt.
-) (Conclusion.tex) [19 <./Figure/kspace_PTX_B0.png>] [20] (kPtx_paper.bbl [21])
+) (Conclusion.tex [19 <./Figure/kspace_PTX_B0.png>]) [20] (kPtx_paper.bbl [21])
  [22] (kPtx_paper.aux) ) 
 Here is how much of TeX's memory you used:
- 14757 strings out of 493698
- 278686 string characters out of 3144408
- 329731 words of memory out of 3000000
+ 14769 strings out of 493698
+ 278555 string characters out of 3144408
+ 329730 words of memory out of 3000000
  17712 multiletter control sequences out of 15000+200000
  29129 words of font info for 84 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
@@ -835,9 +843,9 @@ r6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:
  Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/Mi
 KTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
 pe1/urw/times/utmr8a.pfb>
-Output written on kPtx_paper.pdf (22 pages, 9069320 bytes).
+Output written on kPtx_paper.pdf (22 pages, 4039300 bytes).
 PDF statistics:
- 150 PDF objects out of 1000 (max. 8388607)
+ 208 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  53 words of extra memory for PDF output out of 10000 (max. 10000000)
 

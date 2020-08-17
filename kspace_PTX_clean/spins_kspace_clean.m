@@ -11,7 +11,9 @@ end
 %end
 
 if ~exist('blochsim_optcont_mex')
-    mex blochsim_optcont_mex.c
+    cd utils/
+    mex -largeArrayDims -lmwlapack blochsim_optcont_mex.c
+    cd ../
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,9 +31,13 @@ kTrajSelect = 'spins';
 
 dPatternSelect = 'midSelect';
 
-ifOffRes=true;
+if_kpsce_MLS=false;
 
-%ifOpenMP=false; % IN OpemMP, number of thread has to be change in the .c file and then re-compile
+ifOffRes=false;
+
+ifOpenMP=false; % IN OpemMP, number of thread has to be change in the .c file and then re-compile
+
+ifDoSpatialDesign=false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Load b1 maps, k-space trajectory, target pattern
@@ -43,10 +49,12 @@ switch(b1MapSelect)
 
         %load('~/Dropbox/kspacePTX_data/MGH24loop_head1_128_2.mat')
         load('MGH24loop_head1_128_2.mat')
+        load('Mask3dxyz128_ring.mat')
         
-        undersamp=4;  %Important parameter undersampling factor for b1 maps
+        undersamp=2;  %Important parameter undersampling factor for b1 maps
         b1 = B1p3dxyz128;
         mask = logical(Mask3dxyz128);
+        
         b1 = b1(1:undersamp:end,1:undersamp:end,1:undersamp:end,:);
         mask = mask(1:undersamp:end,1:undersamp:end,1:undersamp:end);
         
@@ -194,7 +202,11 @@ Tik = 3; %Regulerizer used in solving for W matrix.
 % Whether excitation energy deposites across FOV to the other end through kspace wrap back. 
 kWrapBack=false; 
 
+if ifOpenMP
 nThreads = 8; %=0 means no OpenMP
+else
+nThreads = 0; %=0 means no OpenMP    
+end
 
 k_pTx_args={segWidth,nHood,Tik,kWrapBack,nThreads};
 
@@ -241,6 +253,16 @@ b1 = permute(sens,[4 1 2 3]);b1 = b1(:,:).';
 m = zeros(dimb1);m(mask) = A*rf(:);
 err = norm(col(mask.*(abs(m)-abs(d))))/norm(col(d.*mask))
 
+if if_kpsce_MLS
+m2=m;
+    for ii=1:3
+        pDes2=fftshift(fftn(fftshift(abs(d).*exp(1i*angle(m2)))));
+        rf2 = reshape(W*pDes2(:)/numel(d),[size(k,1) Nc]);
+        m2 = zeros(dimb1);m2(mask) = A*rf2(:);
+        err = norm(col(mask.*(abs(m2)-abs(d))))/norm(col(d.*mask))
+    end
+end
+
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -248,7 +270,7 @@ err = norm(col(mask.*(abs(m)-abs(d))))/norm(col(d.*mask))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mask_ring=mask;
-err = norm(col(mask_ring.*(abs(m)-abs(d))))/norm(col(d.*mask_ring))
+%err = norm(col(mask_ring.*(abs(m)-abs(d))))/norm(col(d.*mask_ring))
 
 d_plot=d.*mask_ring;
 m_plot=m.*mask_ring;
@@ -292,9 +314,8 @@ im(map,[0 0.1]);axis off;colorbar;title('');
 
 
 
+%%%%%%%%%%%%% Gmri simulation with 128x128x96 matrix (highest res)
 
-%return
-%%%%%%%%%%%%%
 % b1_128 = permute(B1p3dxyz128,[4 1 2 3]);b1_128 = b1_128(:,:).';
 % if ifOffRes
 %     b1_128 = permute(B1p3dxyz128(:,:,:,1:2:end),[4 1 2 3]);b1_128 = b1_128(:,:).';
@@ -327,7 +348,11 @@ im(map,[0 0.1]);axis off;colorbar;title('');
 % 
 % figure
 % im(map,[0 0.1]);axis off;colorbar;title('');
+
 %%%%%%%%%%%%
+
+
+%%%% Bloch_sim simulation
 
 dim=size(d_smooth);
 posx = -fov(1)/2:fov(1)/dim(1):fov(1)/2-fov(1)/dim(1);
@@ -351,11 +376,11 @@ end
 Mxy=embed(2*a.*b,Mask3dxyz128);
 Mz=embed(1-2*abs(b).^2,Mask3dxyz128);
 
-Mxy_RMSE = sqrt(mean(abs(Mxy(Mask3dxyz128_ring))-abs(d_smooth(Mask3dxyz128_ring))))
+Mxy_RMSE = sqrt(mean((abs(Mxy(Mask3dxyz128_ring))-abs(d_smooth(Mask3dxyz128_ring))).^2))
 
-Mz_RMSE = sqrt(mean(abs(Mz(Mask3dxyz128_ring))-abs(d_ori(Mask3dxyz128_ring)-1)))
+Mz_RMSE = sqrt(mean((abs(Mz(Mask3dxyz128_ring))-abs(d_ori(Mask3dxyz128_ring)-1)).^2))
 
-errmap=abs(abs(Mxy)-abs(d_smooth.*Mask3dxyz128_ring));
+errmap=abs(abs(Mxy)-abs(d_smooth)).*Mask3dxyz128_ring;
 map=zeros(192,128);
 map(1:88,1:128)=squeeze(errmap(21:108,:,48));
 map(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
@@ -364,11 +389,80 @@ map(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
 figure
 im(map,[0 0.1]);axis off;colorbar;title('Mxy Error');
 
-errmap=abs(abs(Mz)-abs((d_ori-1).*Mask3dxyz128_ring));
-map=zeros(192,128);
-map(1:88,1:128)=squeeze(errmap(21:108,:,48));
-map(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
-map(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
 
-figure
-im(map,[0 0.1]);axis off;colorbar;title('Mz Error');
+
+
+
+
+
+
+%% Spatial
+if ifDoSpatialDesign
+       
+    b1 = permute(sens,[4 1 2 3]);b1 = b1(:,:).';
+
+     J = [6 6 6]; % # of neighnors used
+     nufft_args = {dimb1, J, 2*dimb1, dimb1/2, 'table', 2^10, 'minmax:kb'}; % NUFFT arguments
+
+     b1 = b1(mask,:);
+
+     if ifOffRes
+         tb0 = (0:size(k,1)-1)*dt/1000-size(k,1)*dt/1000;
+         A = Gmri_SENSE([k(:,2) k(:,1) k(:,3)],mask,'fov',[fov(2) fov(1) fov(3)],'sens',conj(b1),'ti',tb0,'zmap',-1i*2*pi*b0,'L',Lseg,'nufft_args',nufft_args)';
+     else
+         A = Gmri_SENSE([k(:,2) k(:,1) k(:,3)],mask,'fov',[fov(2) fov(1) fov(3)],'sens',conj(b1),'nufft_args',nufft_args)';
+     end
+    
+        ncgiters = 35;
+        mls=false;
+        disp 'Spatial Design'
+        tic
+        if ~mls
+            rf = qpwls_pcg(zeros(length(k)*Nc,1),A,1,d(mask),0,1,1,ncgiters,mask); % CG
+        else
+            rf = qpwls_pcg(zeros(length(k)*Nc,1),A,1,d(mask),0,1,1,5,mask); % CG
+            rfOld = 10*rf(:,end);
+            %while norm(rfOld-rf(:,end)) > 0.01*norm(rfOld)
+            for kk=1:5
+                % update target phase if magnitude least-squares
+                m = A*rf(:,end);
+                d(mask) = abs(d(mask)).*exp(1i*angle(m));
+                err = norm(col((abs(m)-abs(d(mask)))))/norm(col(d(mask)))
+                rfOld = rf(:,end);
+                rf = qpwls_pcg(rf(:,end),A,1,d(mask),0,Rfull,1,5,mask); % CG
+            end
+        end
+        rf_all=rf;
+        rf = reshape(rf(:,end),[length(k) Nc]); % qpwls_pcg returns all iterates
+        
+        toc
+        % calculate excitation pattern
+        m = zeros(dimb1);m(mask) = A*rf(:);
+        
+        err = norm(col(mask.*(abs(m)-abs(d))))/norm(col(d.*mask))
+    
+        [a,b]=blochsim_optcont_mex(ones(Nt,1),ones(Nt,1),rf*flipAngle/180*pi,sensBloch,garea,xx,omdt,1); %rf*dt*4258*2*pi
+
+        Mxy=embed(2*a.*b,Mask3dxyz128);
+        Mz=embed(1-2*abs(b).^2,Mask3dxyz128);
+
+        Mxy_RMSE = sqrt(mean((abs(Mxy(Mask3dxyz128_ring))-abs(d_smooth(Mask3dxyz128_ring))).^2))
+
+        Mz_RMSE = sqrt(mean((abs(Mz(Mask3dxyz128_ring))-abs(d_ori(Mask3dxyz128_ring)-1)).^2))
+
+        %err = norm(col(Mask3dxyz128_ring.*(abs(Mxy)-abs(d_smooth))))/norm(col(d_smooth.*Mask3dxyz128_ring))
+        %err = norm(col(Mask3dxyz128.*(abs(Mxy)-abs(d_smooth))))/norm(col(d_smooth.*Mask3dxyz128))
+
+        errmap=abs(abs(Mxy)-abs(d_smooth)).*Mask3dxyz128_ring;
+        map_spatial=zeros(192,128);
+        map_spatial(1:88,1:128)=squeeze(errmap(21:108,:,48));
+        map_spatial(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
+        map_spatial(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
+
+        figure
+        subplot(1,2,1)
+        im(map_spatial,[0 0.1]);axis off;colorbar;title('Spatial Design');
+        subplot(1,2,2)
+        im(map,[0 0.1]);axis off;colorbar;title('K-space Design');
+    
+end

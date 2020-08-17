@@ -103,7 +103,7 @@ if ifOffRes
             calib=reshape(calib,dimb1(1),dimb1(2),dimb1(3),nCoils*Lseg);
             nCoilsLseg=nCoils*Lseg;
 
-
+    disp 'Building FT maps'
     tic
             nComb = nCoilsLseg*(nCoilsLseg+1)/2;
             calib = single(calib);
@@ -117,6 +117,7 @@ if ifOffRes
 
 
 else
+    disp 'Building FT maps'
     tic
             nComb = nCoils*(nCoils+1)/2; % number of coil combinations
             calib = single(b1); % input B1 maps has to be single
@@ -139,7 +140,7 @@ else
 end
 
 %%  
-tic
+
 
 shift_c_mex=cell(1,length(segCenters(:)));
 kTrajInds_ii=cell(1,length(segCenters(:)));
@@ -170,7 +171,7 @@ for ii = 1:length(segCenters(:))
       % point of the target segment. It is needed for the interpolation.
       % shift_c_mex has to be cell of single matrices due to data handling of mex function.
 end
-toc
+
 
 
 
