@@ -27,9 +27,9 @@ it can have prohibitive computational requirements when the number of coils and 
 for example in three-dimensional \cite{malik2012tailored,davids2016fast} or spectral-spatial pulse designs, 
 when there is a large number of coils \cite{orzada:2019},
 and when off-resonance compensation is used.  
-The spatial domain system matrix typically has dimensions $N_s \times (N_{coils} \cdot N_t)$, 
+The spatial domain system matrix typically has dimensions $N_s \times (N_c \cdot N_t)$, 
 where $N_s$ is the number of spatial and spectral locations defined in the target excitation pattern,
-$N_{coils}$ is the number of transmit channels, and $N_t$ is the number of time points in the pulse.
+$N_c$ is the number of transmit channels, and $N_t$ is the number of time points in the pulse.
 Typically values for $N_s$ range from 1,000 for 2D designs to 250,000 for 3D designs,
 the number of coils varies from 8 to 32 on ultra-high field scanners,
 and the number of time points is typically between 1,000 and 10,000. 
