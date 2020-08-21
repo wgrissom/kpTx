@@ -8,7 +8,7 @@ excitation pattern to a vector of RF pulses that together produce the pattern, a
 \bm{b} = \bm{W} \mathcal{F}(\bm{d}),
 \end{equation}
 where $\bm{b}$ is a vector of concatenated multi-channel RF pulses with length $N_t \cdot N_c$, 
-where $N_t$ and $N_c$ are the numbers of time points and coils, respectively,
+where $N_t$ and $N_c$ are the numbers of time points and channels, respectively,
 and $\mathcal{F}(\bm{d})$ is a length-$N_s$ vector containing the 
 Fourier transform of the desired k-space excitation pattern $\bm{d}$.
 $\bm{W}$ has dimensions $N_t \cdot N_c \times N_s$.
@@ -26,7 +26,7 @@ $\vec{k}_j$ ($1\leq j \leq N_s$),
 then only the $j$-th column $\bm{w}_j$ of $\bm{W}$ is required to relate 
 the desired k-space pattern to the desired RF pulse. 
 In this case, the vector $\bm{w}_j$ is identical to the desired RF. 
-Therefore, the problem of finding the $j$-th column $\bm{w}_j$ of $\bm{W}$ can be restated as the following: 
+Therefore, the problem of finding the $j$-th column $\bm{w}_j$ of $\bm{W}$ can be restated as: 
 what should the RF pulse samples be to generate a unit delta function at the location $\vec{k}_j$ in k-space, 
 and zeros elsewhere? 
 Mathematically, the relationship that should be satisfied by the weights in column $\bm{w}_j$  can be expressed as:   
@@ -34,9 +34,9 @@ Mathematically, the relationship that should be satisfied by the weights in colu
 \delta(\vec{k}-\vec{k}_j)=\sum_{i=1}^{N_t}\sum_{c=1}^{N_c} w_c(\vec{k}_i) s_c(\vec{k}-\vec{k}_i)
 \end{equation}
 where $i$ indexes time points in the pulses' excitation k-space trajectory, 
-and $c$ indexes coils. 
+and $c$ indexes channels. 
 $w_c(\vec{k}_i)$ is the $((c-1)N_t+i)$-th element of the $\bm{w}_j$ vector,
-and $s_c(\vec{k}-\vec{k}_i)$ is the Fourier transform of coil-$c$'s $B_1^+$ map, 
+and $s_c(\vec{k}-\vec{k}_i)$ is the Fourier transform of channel-$c$'s $B_1^+$ map, 
 shifted to be centered at excitation k-space location $\vec{k}_i$. 
 Equation \ref{eq:ScalerForm} can be restated in matrix-vector form as:                                       
 \begin{equation}\label{eq:MatrixForm}
@@ -64,19 +64,37 @@ This means we can modify Equation \ref{eq:ScalerForm} to:
 \delta(\vec{k}-\vec{k}_j) = \sum_{\vec{k}_i \in \mathbb{N}}\sum_{c=1}^{N_c} w_c(\vec{k}_i) s_c(\vec{k}-\vec{k}_i),
 \end{equation} 
 where $\mathbb{N}$ is the set of trajectory points in the vicinity of $\vec{k}_j$. 
-This reduced set of trajectory points reduces the column dimension of $\bm{S}$.
-Since target locations that are distant to $\vec{k}_j$ can also be ignored,
-the row dimension of $\bm{S}$ is also reduced to the size of a smaller neighborhood immediately surrounding $\vec{k}_j$. 
-These reduced problem dimensions further imply that the design matrix $\bm{W}$ is sparse. 
-Figure \ref{fig:Patch}a illustrates a target point $\vec{k}_j$, 
-the nearby points on a spiral trajectory that need to be included in the solution for $\bm{w}_j$,
-and the neighboring target location points where a zero excitation must be enforced. 
-In the following, we define target and trajectory neighborhood sizes, and describe an efficient 
-method to construct the $\bm{S}^{H}\bm{S}$ matrices.
+In this work we define `inclusion width' as the distance, 
+in cycles per excitation field-of-view (cycles/FOV), 
+from each target location $\vec{k}_j$ within which which all trajectory points are accrued into $\mathbb{N}$.
+This reduced set of trajectory points reduces the column dimension of $\bm{S}$
+and both dimensions of $\bm{S}^H\bm{S}$,
+and implies that the design matrix $\bm{W}$ is sparse.
+Figure \ref{fig:Patch}a illustrates a target point $\vec{k}_j$ for a two-dimensional spiral pulse design, 
+and the nearby points on the spiral trajectory that need to be included in the solution for $\bm{w}_j$
+for an inclusion width of 4 cycles/FOV.
 
+%\par A key advantage of the proposed pulse design formalism is that it can be finely parallelized
+%across the columns of the $\bm{W}$ matrix. 
+\par The $\bm{W}$ matrix columns $\bm{w}_j$ can be solved in parallel one-at-a-time or patch-wise, 
+wherein all target points in a patch share the same $\bm{S}^{H}\bm{S}$ matrix,
+and their $\bm{s}_j^H$ vectors are concatenated in the column dimension
+to form a matrix in Equation \ref{eq:Solution}. 
+An illustration of a $4 \times 4$ patch and its included trajectory points is shown in Figure \ref{fig:Patch}b,
+for a two-dimensional spiral pulse design. 
+The inclusion width is also 4 cycles/FOV from any target point in the patch, 
+%we truncate the $B_1^+$ map Fourier transforms to zero outside a 4 by 4 cycle/FOV square centered at DC. 
+so all the excitation trajectory points within a $12 \times 12$ cycles/FOV square are included in the calculation. 
 
-\subsection*{Parallelization}
-\par A key advantage of the proposed pulse design formalism is that it can be broken down into many small problems and finely parallelized, because the process of solving each column of $\bm{W}$ is independent of other columns. The columns can be solved fully independently, or patchwise for target locations in neighborhoods, wherein all points in the neighborhood share the same $\bm{S}^{H}\bm{S}$ matrix. 
+%Since target locations that are distant to $\vec{k}_j$ can also be ignored,
+%the row dimension of $\bm{S}$ is also reduced to the size of a smaller neighborhood immediately surrounding $\vec{k}_j$. 
+%These reduced problem dimensions further imply that the design matrix $\bm{W}$ is sparse. 
+%Figure \ref{fig:Patch}a illustrates a target point $\vec{k}_j$, 
+%the nearby points on a spiral trajectory that need to be included in the solution for $\bm{w}_j$,
+%and the neighboring target location points where a zero excitation must be enforced. 
+%In the following, we define target and trajectory neighborhood sizes, 
+%and describe an efficient method to construct the $\bm{S}^{H}\bm{S}$ matrices.
+
 \begin{figure}
 	\centering
 	\includegraphics[width=6cm]{kspace_PTX_Patch}
@@ -84,31 +102,73 @@ method to construct the $\bm{S}^{H}\bm{S}$ matrices.
 	Illustration of one instance within the palatalization of a 2D k-space domain design problem. The totally design problem is divided into patches of width 4 cycle/FOV, and the 16 yellow points are the target points in this instance. With inclusion width of 4 cycle/FOV, the 46 green excitation trajectory points within the 12 cycle/FOV wide green square (4 cycle/FOV extended outside of the patch) are considered in this instance. The excitation within the 20 cycle/FOV wide red patch is constrained to zero except the point where the delta function is.}
 	\label{fig:Patch}
 \end{figure}
-An example of this concept is shown in Figure \ref{fig:Patch}. For simplicity of visualization, it is demonstrated in a 2D problem, but the concept is easily extended to 3D. The figure depicts the solution of the $\bm{W}$ matrix 16 columns at a time, whose corresponding delta functions live within a patch of width 4 cycle/FOV (yellow points in Figure \ref{fig:Patch}). In this instance where the inclusion width is also 4 cycle/FOV, we truncate the $B_1^+$ map Fourier transforms to zero outside a 4 by 4 cycle/FOV square centered at DC. As a result, we must consider all the excitation trajectory points within a 12 by 12 cycle/FOV square, which is 4 cycle/FOV extended outside of the patch width 4 square, since they may contribute energy to the target locations corresponding to the 16 $\bm{W}$ matrix columns. For a single instance of the 16-point target patch shown in Figure \ref{fig:Patch}, the 46 green points on the excitation trajectory may contribute significant energy and are considered in the weight design. Furthermore, we must constrain the total excitation to zero at all k-space locations within a 20 by 20 cycle/FOV red patch in Figure \ref{fig:Patch}. This is because any energy deposited at each considered excitation trajectory points will affect not only the target points in the yellow square, but also the whole 2$\times$4 wide patch around that trajectory point. And the 20 by 20 cycle/FOV red patch is the total of the points that can be affected by all the excitation trajectory points considered in this instance. Therefore, in the solution for this instance, $\bm{w}$ is a 46$N_c\times$16 matrix, $\bm{S}$ is a 400$N_c\times$46$N_c$ matrix, $\bm{S}^{H}\bm{S}$ is a 46$N_c\times$46$N_c$ matrix, and $\bm{s}_i^{H}$ is a 46$N_c\times$16 matrix. 
-%Since $\bm{s}_i^{H}$ is no longer related to the $i$th row of $\bm{S}$ and $i$th column of $\bm{W}$ only, it will be denoted as $\bm{S_{targ}}$ in later discussions. 
-In the next instance, another 16 columns centered around another 4 points by 4 points patch will be solved. It should be noted that in different instances, the number of neighboring excitation trajectory points (the 46 green points in the previous instance) can vary. We will denote this number of points by $N_n$. $N_n$ can be zero when a patch is at the corners where no excitation trajectory point is adjacent. 
-%For patches near edges of the excitation k-space FOV, the solution neighborhood and area may wrap back in a circulant shift fashion, depending on the resolution of the final spatial grid on which the user will evaluate the pulse. In Figure \ref{fig:Patch}), denoted by the red area to the right of Figure \ref{fig:Patch}).
 
-\par The patch width determines the total number of instances to be solved. The inclusion width determines the accuracy of $B_1^+$ information utilized in the design. Together, the patch width and the inclusion width determine how many excitation trajectory points are included in each instance, which further determines the size of $\bm{S}^{H}\bm{S}$ whose construction is most computationally burdensome within an instance. Therefore, increasing patch width reduces the number of $\bm{S}^{H}\bm{S}$ matrices to be constructed but increases the burden of constructing each of them. An optimal patch width should be decided case by case for different excitation trajectories. 
+\subsection*{Efficient $\bm{S}^H\bm{S}$ matrix construction}
+%%which is 4 cycle/FOV extended outside of the patch width 4 square, since they may contribute energy to the target locations corresponding to the 16 $\bm{W}$ matrix columns. 
+%For the patch illustrated in Figure \ref{fig:Patch}, 
+%the 46 green points on the excitation trajectory may contribute significant energy and are considered in the weight design. 
+%Furthermore, we must constrain the total excitation to zero at all k-space locations within a 20 by 20 cycle/FOV red patch in Figure \ref{fig:Patch}. 
+%This is because any energy deposited at each considered excitation trajectory points will affect not only the target points in the yellow square, but also the whole 2$\times$4 wide patch around that trajectory point. And the 20 by 20 cycle/FOV red patch is the total of the points that can be affected by all the excitation trajectory points considered in this instance. Therefore, in the solution for this instance, $\bm{w}$ is a 46$N_c\times$16 matrix, $\bm{S}$ is a 400$N_c\times$46$N_c$ matrix, $\bm{S}^{H}\bm{S}$ is a 46$N_c\times$46$N_c$ matrix, and $\bm{s}_i^{H}$ is a 46$N_c\times$16 matrix. 
+%%Since $\bm{s}_i^{H}$ is no longer related to the $i$th row of $\bm{S}$ and $i$th column of $\bm{W}$ only, it will be denoted as $\bm{S_{targ}}$ in later discussions. 
+%In the next instance, another 16 columns centered around another 4 points by 4 points patch will be solved. It should be noted that in different instances, the number of neighboring excitation trajectory points (the 46 green points in the previous instance) can vary. We will denote this number of points by $N_n$. $N_n$ can be zero when a patch is at the corners where no excitation trajectory point is adjacent. 
+%%For patches near edges of the excitation k-space FOV, the solution neighborhood and area may wrap back in a circulant shift fashion, depending on the resolution of the final spatial grid on which the user will evaluate the pulse. In Figure \ref{fig:Patch}), denoted by the red area to the right of Figure \ref{fig:Patch}).
 
-\subsection*{Efficient construction of $\bm{S}^{H}\bm{S}$ matrix}
-\par Constructing $\bm{S}^{H}\bm{S}$ by finding $\bm{S}$ is computationally expensive. As described previously, the $((c-1)N_c+t)$-th column of the  $\bm{S}$ matrix, $\bm{S}_c(\vec{k}-\vec{k}_t)$, is the k-space sensitivity map of the $c$-th coil $\bm{S}_c(\vec{k})$ shifted to excitation k-space trajectory location $\vec{k}_t$. These shifts for each column of $\bm{S}$ are achieved by applying a linear phase modulation to the spatial domain $B_1^+$ map, followed by a fast Fourier transform (FFT). This process becomes computationally overwhelming when there are many RF samples, which is often the case. Furthermore, the matrix multiplication between $\bm{S}^{H}$ and $\bm{S}$ is also computationally intensive due to the large row dimension of $\bm{S}$ (400$Nt$ in the above example in Figure \ref{fig:Patch}).  
+%\par The patch width determines the total number of instances to be solved. The inclusion width determines the accuracy of $B_1^+$ information utilized in the design. Together, the patch width and the inclusion width determine how many excitation trajectory points are included in each instance, which further determines the size of $\bm{S}^{H}\bm{S}$ whose construction is most computationally burdensome within an instance. Therefore, increasing patch width reduces the number of $\bm{S}^{H}\bm{S}$ matrices to be constructed but increases the burden of constructing each of them. An optimal patch width should be decided case by case for different excitation trajectories. 
 
-
-\par Inspired by a rapid GRAPPA calibration method for arbitrary 2D/3D non-Cartesian trajectories proposed in Ref \cite{luo2019grappa}, we have developed a fast and memory-efficient algorithm to solve this problem. A key innovation of Ref \cite{luo2019grappa} is that the algorithm constructs the Hermitian $\bm{S}^{H}\bm{S}$ matrix directly by finding each of the matrix's lower triangle elements through interpolation, instead of building the $\bm{S}$ matrix explicitly followed by matrix multiplication. Conceptually, each element in the Hermitian matrix $\bm{S}^{H}\bm{S}$ is the vector sum of two shifted k-space sensitivity maps, which is also one single point of their convolution. With the multiplication property of Fourier transform, this convolution in k-space can be calculated from the Fourier transform of the dot product of the two spatial domain $B_1^+$ maps. For a more detailed derivation, please refer to Ref \cite{luo2019grappa}.
-In practice, $\bm{S}^{H}\bm{S}$ is constructed in the following way. We first represent the $\bm{S}^{H}\bm{S}$ matrix with block matrices. Each block matrix $\bm{S}_i^{H}\bm{S}_j$ is of size $N_n$ by $N_n$, and $\bm{S}_i$ and $\bm{S}_j$ are the columns of $\bm{S}$ related to the k-space sensitivity maps of the $i$-th and $j$-th coils respectively.
-
+%\subsection*{Efficient construction of $\bm{S}^{H}\bm{S}$ matrix}
+\par Constructing the $\bm{S}^{H}\bm{S}$ matrix by first constructing $\bm{S}$ is computationally expensive 
+because it requires each channel's $B_1^+$ map to be shifted to each trajectory location $\vec{k}_i$
+by phase modulation followed by Fourier transform, or by Fourier transform followed by interpolation. 
+Furthermore, 
+the matrix multiplication between $\bm{S}^{H}$ and $\bm{S}$ is also computationally intensive due to the potentially 
+large row dimension of $\bm{S}$, if the zero excitation condition is enforced on a large grid of points around each $\vec{k}_j$.
+The computational costs can be reduced by truncating the $B_1^+$ maps in k-space, 
+but this introduces large errors. 
+Instead, inspired by the rapid GRAPPA calibration method for arbitrary 2D/3D non-Cartesian trajectories of Ref \cite{luo2019grappa}, 
+we propose to construct the Hermitian $\bm{S}^{H}\bm{S}$ matrix directly via interpolation of the Fourier transforms
+of inner products of pairs of $B_1^+$ maps. 
+The $\bm{S}^H\bm{S}$ matrix can be written in block form as:
 \begin{equation}\label{eq:SHS_blocks}
 \bm{S}^{H}\bm{S} = 
 \begin{pmatrix}
 \bm{S}_1^{H}\bm{S}_1 & \cdots & \bm{S}_1^{H}\bm{S}_{N_c} \\
 \vdots  &  \ddots & \vdots  \\
 \bm{S}_{N_c}^{H}\bm{S}_1 & \cdots & \bm{S}_{N_c}^{H}\bm{S}_{N_c} 
-\end{pmatrix}
+\end{pmatrix}, 
 \end{equation}
+where each sub-matrix $\bm{S}_i^H\bm{S}_j$ contains inner products of the Fourier transforms of channel $i$ and channel $j$'s 
+$B_1^+$ maps, after they are shifted to be centered different points on the excitation trajectory corresponding to the row 
+and column indices of the sub-matrix.
+These inner products can be calculated by interpolating the Fourier transform of the inner product of 
+channel $i$ and channel $j$'s $B_1^+$ maps. 
+In other words, each element in the Hermitian matrix $\bm{S}_i^{H}\bm{S}_j$ 
+is the vector sum of channel $i$ and channel $j$'s shifted k-space $B_1^+$ maps, 
+which is also a single point of their k-space convolution. 
+Via the multiplication property of the Fourier transform, 
+this convolution in k-space can be calculated from the Fourier transform of the dot product of the two spatial domain $B_1^+$ maps. 
+For further details, please refer to Ref. \cite{luo2019grappa}.
+%In practice, $\bm{S}^{H}\bm{S}$ is constructed in the following way. 
+%We first represent the $\bm{S}^{H}\bm{S}$ matrix with block matrices. Each block matrix $\bm{S}_i^{H}\bm{S}_j$ is of size $N_n$ by $N_n$, and $\bm{S}_i$ and $\bm{S}_j$ are the columns of $\bm{S}$ related to the k-space sensitivity maps of the $i$-th and $j$-th coils respectively.
 
-Since $\bm{S}^{H}\bm{S}$ is Hermitian, we only need to find the values within the lower triangle of the matrix, which are the lower triangle blocks $\bm{S}_i^{H}\bm{S}_j$ with $i>j$. For a given lower triangle block $\bm{S}_i^{H}\bm{S}_j$  ($i>j$), all of its elements are interpolated from the densely sampled Fourier transform of the dot product of the spatial domain $B_1^+$ maps of the $i$-th and $j$-th coils. The $(m,n)$-th element is the value interpolated at $(\vec{k}_m-\vec{k}_n)$ away from DC. Therefore, to solve all the columns of $\bm{W}$, the total number of FFT operations needed in this efficient method is only $N_c(N_c+1)/2$, instead of ${N_t}{N_c}$, and the storage size is also much smaller. In addition to the efficiency related to FFT, this algorithm saves a large matrix multiplication between $\bm{S}^{H}$ and $\bm{S}$ for the solving of every single column of $\bm{W}$. 
-Although an alternative strategy of determining each column of $\bm{S}$ explicitly by interpolating the $N_s$ sample points from unshifted $B_1^+$ Fourier transforms can also reduce the number of FFT operations, it still has the problem of large multiplications between $\bm{S}^{H}$ and $\bm{S}$ matrices. Furthermore, to calculate each element of $\bm{S}^{H}\bm{S}$, there are $2N_s$ number of interpolations involved with this sub-optimal strategy. While with the efficient algorithm there is only one interpolation from the densely sampled Fourier Transform of the dot product of two spatial domain $B_1^+$ maps needed. The extra interpolations involved in the sub-optimal strategy would introduce a larger error to $\bm{S}^{H}\bm{S}$.  
+\par Since $\bm{S}^{H}\bm{S}$ and its sub-matrices are Hermitian, 
+we only need to find the values within the lower triangle of the matrix, 
+which are the sub-matrices $\bm{S}_i^{H}\bm{S}_j$ with $i>j$ that are themselves lower triangular. 
+The elements of a given sub-matrix $\bm{S}_i^{H}\bm{S}_j$ 
+are interpolated from a densely sampled Fourier transform of the dot product of the spatial domain $B_1^+$ maps of the $i$-th and $j$-th channels. 
+The $(m,n)$-th element is the value interpolated at a position $\vec{k}_m-\vec{k}_n$ away from DC,
+where $\vec{k}_m$ and $\vec{k}_n$ are the excitation k-space trajectory locations corresponding to row $m$ and column $n$.
+Compared to phase-modulating and Fourier transforming each channel's $B_1^+$ map for each point 
+on the trajectory which would require $N_t \cdot N_c$ Fourier transforms,
+to solve all the columns of $\bm{W}$ the total number of Fourier transforms needed in this efficient method is $N_c(N_c+1)/2$. 
+The storage size is also much smaller, 
+and the potentially large matrix multiplication between $\bm{S}^H$ and $\bm{S}$ is avoided.
+An alternative strategy would be to construct $\bm{S}$ by Fourier transforming each channel's $B_1^+$ map 
+and then interpolating it to be centered at each trajectory location, 
+but this again requires multiplication of the $\bm{S}^{H}$ and $\bm{S}$ matrices,
+which further involves the multiplication of interpolated values. 
+We have found empirically that this strategy introduces higher error
+than interpolating inner product values. 
+%Furthermore, to calculate each element of $\bm{S}^{H}\bm{S}$, there are $2N_s$ number of interpolations involved with this sub-optimal strategy. While with the efficient algorithm there is only one interpolation from the densely sampled Fourier Transform of the dot product of two spatial domain $B_1^+$ maps needed. The extra interpolations involved in the sub-optimal strategy would introduce a larger error to $\bm{S}^{H}\bm{S}$.  
 
 \subsection*{ Off-Resonance correction}
 %\par As shown in Equation \ref{eq:SpatialDomainEquation} when we introduced spatial domain design in Chapter \ref{chap:SpatialDesign}, the equation connecting a pTx pulse to its excitation pattern has an off-resonance dependent term 
