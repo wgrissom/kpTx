@@ -7,11 +7,11 @@ excitation pattern to a vector of RF pulses that together produce the pattern, a
 \begin{equation}
 \bm{b} = \bm{W} \mathcal{F}(\bm{d}),
 \end{equation}
-where $\bm{b}$ is a vector of concatenated multi-channel RF pulses with length $N_t \cdot N_c$, 
+where $\bm{b}$ is a vector of concatenated multi-channel RF pulses with length $N_t  N_c$, 
 where $N_t$ and $N_c$ are the numbers of time points and channels, respectively,
 and $\mathcal{F}(\bm{d})$ is a length-$N_s$ vector containing the 
 Fourier transform of the desired k-space excitation pattern $\bm{d}$.
-$\bm{W}$ has dimensions $N_t \cdot N_c \times N_s$.
+$\bm{W}$ has dimensions $N_t  N_c \times N_s$.
 Once the entries of $\bm{W}$ are computed, 
 the RF design problem can be instantaneously solved by a sparse matrix multiplication, 
 without a full matrix inversion or an iterative algorithm. 
@@ -42,7 +42,7 @@ Equation \ref{eq:ScalerForm} can be restated in matrix-vector form as:
 \begin{equation}\label{eq:MatrixForm}
 \bm{Sw}_j=\bm{\delta}_j,
 \end{equation}
-where $\bm{S}$ is a $N_s \times N_c \cdot N_t$ 
+where $\bm{S}$ is a $N_s \times N_c  N_t$ 
 matrix containing values of $s_c(\vec{k}-\vec{k}_i)$ for all $c$ and $i$,
 and $\bm{\delta}_j$ is a vector containing a one in the entry corresponding to excitation k-space location
 $\vec{k}_j$, and zeros in all other entries. 
@@ -158,7 +158,7 @@ are interpolated from a densely sampled Fourier transform of the dot product of 
 The $(m,n)$-th element is the value interpolated at a position $\vec{k}_m-\vec{k}_n$ away from DC,
 where $\vec{k}_m$ and $\vec{k}_n$ are the excitation k-space trajectory locations corresponding to row $m$ and column $n$.
 Compared to phase-modulating and Fourier transforming each channel's $B_1^+$ map for each point 
-on the trajectory which would require $N_t \cdot N_c$ Fourier transforms,
+on the trajectory which would require $N_t  N_c$ Fourier transforms,
 to solve all the columns of $\bm{W}$ the total number of Fourier transforms needed in this efficient method is $N_c(N_c+1)/2$. 
 The storage size is also much smaller, 
 and the potentially large matrix multiplication between $\bm{S}^H$ and $\bm{S}$ is avoided.
@@ -167,28 +167,52 @@ and then interpolating it to be centered at each trajectory location,
 but this again requires multiplication of the $\bm{S}^{H}$ and $\bm{S}$ matrices,
 which further involves the multiplication of interpolated values. 
 We have found empirically that this strategy introduces higher error
-than interpolating inner product values. 
+than interpolating the inner product values. 
 %Furthermore, to calculate each element of $\bm{S}^{H}\bm{S}$, there are $2N_s$ number of interpolations involved with this sub-optimal strategy. While with the efficient algorithm there is only one interpolation from the densely sampled Fourier Transform of the dot product of two spatial domain $B_1^+$ maps needed. The extra interpolations involved in the sub-optimal strategy would introduce a larger error to $\bm{S}^{H}\bm{S}$.  
 
-\subsection*{ Off-Resonance correction}
-%\par As shown in Equation \ref{eq:SpatialDomainEquation} when we introduced spatial domain design in Chapter \ref{chap:SpatialDesign}, the equation connecting a pTx pulse to its excitation pattern has an off-resonance dependent term 
-$e^{\imath \gamma \Delta B_0(\bm{x})(t-T)}$. 
-In order to model the off-resonance into our k-space domain design, we adapted a fast implementation of the off-resonance compensation with time segmentation approximation and weighted least-squares interpolators \cite{fessler2005toeplitz}. 
-By segmenting the RF pulse into multiple segments, this method disentangles the space-and-time dependent phase accrual induced by main field inhomogeneity into either space- or time- dependent terms, and therefore a same system matrix can be applied within each segment. Mathematically, it is
-\begin{equation*}
-e^{\imath \Delta\omega_j (t_i-T) }\approx\sum_{l=1}^{L} g_{l}(t_i) e^{\imath \theta_{l}(\Delta\omega_j)}
-\end{equation*}
-where $i=1\dots Nt$ indexes the RF samples, $j=1\dots Ns$ indexes the spatial locations, and $l$ indexes the time segments. The left term is the problematic space-and-time dependent term, with $\Delta\omega_j$ representing the off-resonance at the location-$j$ obtained from a field map and $T$ being the pulse duration. $g_{il}=b_{l}(t_i)$ are the time-dependent-only weights called temporal interpolators applied upon RF samples. $h_{lj}=e^{\imath \theta_{l}(\Delta\omega_j)}$ are the space-dependent-only phase accrual called spatial interpolators, applied upon the excitation pattern of each weighted RF segment. Therefore, the spatial domain formulation becomes
-\begin{equation*}
-\bm{d}=\sum_{l=1}^{L}diag\{\bm{h}_l\}\bm{A}(diag\{\bm{g}_l\}\bm{b})
-\end{equation*}
-The spatial interpolators can be absorbed into the sensitivity maps. The $\bm{S}$ matrix in Equation \ref{eq:MatrixForm} will then become 
-\begin{equation*}
-\bm{S_{offres}}=\sum_{l=1}^{L}\bm{S}_l diag\{\bm{g}_l\}
-\end{equation*}
-where the columns of the $\bm{S}_l$ matrix, instead of being the aforementioned k-space sensitivity maps, are now the Fourier transform of the dot products of the spatial $B_1^+$ maps and the spatial interpolatros of the $l$-th segment, shifted to corresponding excitation k-space locations. 
-The efficient construction of $\bm{S_{offres}}^{H}\bm{S_{offres}}$ follows the same concept mentioned before. 
-But with off-resonance, for the elements within an element matrix $\bm{S}_i^{H}\bm{S}_j$ in Equation \ref{eq:SHS_blocks}, instead of being interpolated from one densely sampled Fourier transform map, which is of the dot product of the spatial domain $B_1^+$ maps of the $i$-th and $j$-th coils, now they are interpolated from $L(L+1)/2$ different Fourier transform maps, each of which has underlying spatial $B_1^+$ maps with two sets of spatial interpolators absorbed into them. For the $(m,n)$-th element within the element matrix $\bm{S}_i^{H}\bm{S}_j$, the $L(L+1)/2$ interpolated values were then summed with weights $g_{l_i}(t_m)g_{l_j}(t_n)$, where $l_i$ and $l_j$ are the two segment numbers of the spatial interpolators observed into the corresponding $B_1^+$ maps. 
-Compared to the efficient construction method without off-resonance, taking off-resonance into account increases the total number of FFT operations form $N_c(N_c+1)/2$ to $N_cL(N_cL+1)/2$, and increased the number of interpolations needed for each element from 1 to $L(L+1)/2$.  
+\subsection*{Off-Resonance Compensation}
+% In order to model the off-resonance into our k-space domain design, we adapted a fast implementation of the off-resonance compensation with time segmentation approximation and weighted least-squares interpolators \cite{fessler2005toeplitz}. 
+Off-resonance compensation is common in spatial-domain parallel pulse designs \cite{Grissom:2006:MRM}, 
+but has not been previously implemented in a k-space-domain design.
+Spatial domain designs based on non-uniform fast Fourier transforms make use of an approximate time-segmented
+model for the off-resonance term \cite{fessler2005toeplitz},
+which decouples the space- and time-dependence of off-resonant phase accrual into the product of 
+space- and time-dependent terms, which are applied on either side of the non-uniform fast Fourier transform operator. 
+Here we show that a time-segmented off-resonance model can be incorporated in the proposed k-space-domain algorithm. 
+Mathematically, the time-segmented model is given by:
+\begin{equation}
+e^{\imath \Delta\omega_j (t_i-T) }\approx\sum_{l=1}^{L} g_l(t_i) e^{\imath \Delta\omega_j \breve{t}_l},
+\end{equation}
+where $\Delta\omega_j$ is the off-resonance frequency at location $\vec{x}_j$, 
+$i$ indexes time points in the pulse, 
+$T$ is the pulse duration,
+and $l$ indexes the $L$ time segments, where $L$ is typically between 4 and 8. 
+$g_{il}=b_{l}(t_i)$ are the temporal interpolators that multiply into the RF samples,
+and $h_{lj}=e^{\imath \Delta\omega_j\breve{t}_l}$ are the off-resonance phase shifts 
+applied to the excitation patterns produced by the RF pulse time segments centered at time points $\{\breve{t}_l: l = 1, \dots, L\}$.
+We can incorporate the time-segmented off-resonance model into Equation \ref{eq:ScalerForm} as:
+\begin{equation}
+	\delta(\vec{k}-\vec{k}_j)=\sum_{l = 1}^L \sum_{i=1}^{N_t}\sum_{c=1}^{N_c} w_c(\vec{k}_i) g_l(t_i) \tilde{s}_{cl} (\vec{k}-\vec{k}_i), 
+\end{equation}
+where $\tilde{s}_{cl}(\vec{k})$ is the Fourier transform of the product of channel $c$'s $B_1^+$ map and time segment $l$'s 
+off-resonance phase exponential. 
+We can then write the equivalent of Equation \ref{eq:MatrixForm} with the off-resonance model:
+\begin{equation}
+	\sum_{l=1}^L \bm{S}_l \textrm{diag}(g_{il}) \bm{w}_j = \bm{\delta}_j,
+\end{equation} 
+where the matrix $\bm{S}_l$ is now formed from the $N_c  L$ Fourier transforms of the $B_1^+$ map and off-resonance
+phase exponential products.  
+Efficient construction of the $\bm{S}^{H}\bm{S}$ matrix follows much the same procedure as without
+off-resonance except that with off-resonance,
+the elements of each sub-matrix $\bm{S}_i^{H}\bm{S}_j$ in Equation \ref{eq:SHS_blocks}
+are interpolated from $L(L+1)/2$ Fourier transformed maps,
+and the interpolated values are weighted by the temporal interpolators for each pair of multiplied time segments before they 
+are summed.
+Compared to constructing $\bm{S}^H\bm{S}$ without off-resonance, 
+taking off-resonance into account increases the total number of FFT operations form $N_c(N_c+1)/2$ to $N_cL(N_cL+1)/2$, 
+and increases the number of interpolations needed for each sub-matrix element from 1 to $L(L+1)/2$.  
+However, we note that only adjacent time segments with overlapping temporal interpolators at a given time point
+need to be considered when calculating the elements of $\bm{S}^H\bm{S}$ corresponding to that time point. 
+
 
 
