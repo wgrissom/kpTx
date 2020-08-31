@@ -31,7 +31,7 @@ what should the RF pulse samples be to generate a unit delta function at the loc
 and zeros elsewhere? 
 Mathematically, the relationship that should be satisfied by the weights in column $\bm{w}_j$  can be expressed as:   
 \begin{equation}\label{eq:ScalerForm}
-\delta(\vec{k}-\vec{k}_j)=\sum_{i=1}^{N_t}\sum_{c=1}^{N_c} w_c(\vec{k}_i) s_c(\vec{k}-\vec{k}_i)
+\delta(\vec{k}-\vec{k}_j)=\sum_{i=1}^{N_t}\sum_{c=1}^{N_c} w_c(\vec{k}_i) s_c(\vec{k}-\vec{k}_i),
 \end{equation}
 where $i$ indexes time points in the pulses' excitation k-space trajectory, 
 and $c$ indexes channels. 
@@ -59,19 +59,19 @@ only a small number ($\ll N_t$) of trajectory points near the target location $\
 to the excitation pattern at $\vec{k}_j$ or its neighbors, 
 and therefore need to be considered in the subproblem;
 all other trajectory points can be ignored.
-This means we can modify Equation \ref{eq:ScalerForm} to:
+This means Equation \ref{eq:ScalerForm} can be modified to:
 \begin{equation}
 \delta(\vec{k}-\vec{k}_j) = \sum_{\vec{k}_i \in \mathbb{N}}\sum_{c=1}^{N_c} w_c(\vec{k}_i) s_c(\vec{k}-\vec{k}_i),
 \end{equation} 
 where $\mathbb{N}$ is the set of trajectory points in the vicinity of $\vec{k}_j$. 
-In this work we define `inclusion width' as the distance, 
+In this work `inclusion width' is defined as the distance, 
 in cycles per excitation field-of-view (cycles/FOV), 
 from each target location $\vec{k}_j$ within which which all trajectory points are accrued into $\mathbb{N}$.
 This reduced set of trajectory points reduces the column dimension of $\bm{S}$
 and both dimensions of $\bm{S}^H\bm{S}$,
 and implies that the design matrix $\bm{W}$ is sparse.
-Figure \ref{fig:Patch}a illustrates a target point $\vec{k}_j$ for a two-dimensional spiral pulse design, 
-and the nearby points on the spiral trajectory that need to be included in the solution for $\bm{w}_j$
+Figure \ref{fig:Patch}a illustrates a target point $\vec{k}_j$ for a two-dimensional pulse design, 
+and the nearby points on the trajectory that need to be included in the solution for $\bm{w}_j$
 for an inclusion width of 4 cycles/FOV.
 
 %\par A key advantage of the proposed pulse design formalism is that it can be finely parallelized
@@ -97,9 +97,16 @@ so all the excitation trajectory points within a $12 \times 12$ cycles/FOV squar
 
 \begin{figure}
 	\centering
-	\includegraphics[width=6cm]{kspace_PTX_Patch}
-	\caption{\textcolor{red}{WAG: I think you should make two subfigures here: one that illustrates a single target location, and one that illustrates a patch of target locations. Also you should annotate the different widths, in the figures, with arrows. Also add a legend for the dots} 
-	Illustration of one instance within the palatalization of a 2D k-space domain design problem. The totally design problem is divided into patches of width 4 cycle/FOV, and the 16 yellow points are the target points in this instance. With inclusion width of 4 cycle/FOV, the 46 green excitation trajectory points within the 12 cycle/FOV wide green square (4 cycle/FOV extended outside of the patch) are considered in this instance. The excitation within the 20 cycle/FOV wide red patch is constrained to zero except the point where the delta function is.}
+	\includegraphics[width=\textwidth]{kspace_PTX_Patch}
+	\caption{(a) A target point $\vec{k}_j$ and the nearby trajectory points that are included when calculating 
+	RF pulse weight contributions from this point.
+	Inclusion width is defined as the distance from each target location $\vec{k}_j$ within which 
+	which all trajectory points are considered when solving for the $j$-th column of the design ($\bm{W}$) matrix.
+	(b) Calculation of the $\bm{W}$ matrix can be performed column-by-column for each target location $\vec{k}_j$,
+	or patches of target points can be solved for jointly. 
+	Here the 16 columns of $\bm{W}$ for a 4 $\times$ 4 patch of target points are solved together,
+	and an inclusion width of 4 cycles/FOV dictates that all trajectory points within a 12 $\times$ 12 region
+	centered on the patch are considered in the calculation.}
 	\label{fig:Patch}
 \end{figure}
 
@@ -190,7 +197,7 @@ and $l$ indexes the $L$ time segments, where $L$ is typically between 4 and 8.
 $g_{il}=b_{l}(t_i)$ are the temporal interpolators that multiply into the RF samples,
 and $h_{lj}=e^{\imath \Delta\omega_j\breve{t}_l}$ are the off-resonance phase shifts 
 applied to the excitation patterns produced by the RF pulse time segments centered at time points $\{\breve{t}_l: l = 1, \dots, L\}$.
-We can incorporate the time-segmented off-resonance model into Equation \ref{eq:ScalerForm} as:
+The time-segmented off-resonance model can be incorporated into Equation \ref{eq:ScalerForm} as:
 \begin{equation}
 	\delta(\vec{k}-\vec{k}_j)=\sum_{l = 1}^L \sum_{i=1}^{N_t}\sum_{c=1}^{N_c} w_c(\vec{k}_i) g_l(t_i) \tilde{s}_{cl} (\vec{k}-\vec{k}_i), 
 \end{equation}
