@@ -3,7 +3,7 @@
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{ErrorMap_2}
+	\includegraphics[width=\textwidth]{ErrorMap}
 	\caption{\textcolor{red}{WAG: I think this is the figure that your example in Github should replicate.}
 	Normalized excitation patterns (top row) and error maps (bottom row) in central axial, sagittal and coronal slices 
 	for k-space domain (left) and spatial domain designs (right).}
@@ -21,9 +21,10 @@ The parallelized k-space domain design required 2.9 seconds computation versus 1
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{ComputationTime_2}
-	\caption{(a) k-Space design time versus number of threads, for patch and inclusion widths of 4. 
-	(b) Studies of different parallelization parameters, where patch width is the square root of the number of $\mathbf{W}$ columns solved for simultaneously and inclusion width is the assumed range of influence of each excitation k-space location. \textbf{(a)} Computation time vs. thread numbers. Patch width and inclusion with were kept at 4 cycle/FOV. \textbf{(b\&c)} Computation time (blue axis) and RMSE (red axis) vs. patch widths (b) and inclusion widths (c). Thread number were kept at 16 of for both design. Inclusion width was constant at 4 in (b) and patch widths were constant at 4 (solid line) and 8 (dashed line).}
+	\includegraphics[width=\textwidth]{ComputationTime}
+	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4. 
+	(b) Computation time (blue axis) and RMSE (red axis) versus patch width, for an inclusion width of 4 and 16 threads. 
+	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 and 8 and 16 threads.}
 	\label{fig:ComputationTime}
 \end{figure}
 Figure \ref{fig:ComputationTime}a shows the mean computation time versus different thread numbers. The k-space design problem held the patch and inclusion width constant at 4. The mean computation time decreases with increasing thread numbers before 12 threads, and then plateaus due to overhead. The thread number was conservatively chosen to be 16 for the following studies to ensure timely solutions. 
@@ -36,8 +37,8 @@ Figure \ref{fig:ComputationTime}c shows the mean computation time and the RMSE w
 	\caption{L-curves for spatial domain and k-space domain pulse designs, 
 	repeated across five orders of magnitude of the methods' Tikhonov regularization parameters.
 	The k-space domain designs were repeated using patch and inclusion widths of four versus solving for the entire domain at once (`Path / Inclusion Width = 4' versus `Full Patch'),
-	and using $B_1^+$ map product interpolation versus phase modulation to each trajectory location (`Interpolated $\bm{S}^H\bm{S}$ matrices' versus
-	`Exact $\bm{S}^H\bm{S}$ matrices').}
+	and using $B_1^+$ map product interpolation versus phase modulation to each trajectory location (`Interpolated $\bm{S}^H\bm{S}$ Matrices' versus
+	`Exact $\bm{S}^H\bm{S}$ Matrices').}
 	\label{fig:LCurves}
 \end{figure}
 
@@ -45,7 +46,7 @@ Figure \ref{fig:ComputationTime}c shows the mean computation time and the RMSE w
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{GibbsRinging_3}
+	\includegraphics[width=\textwidth]{GibbsRinging}
 	\caption{Normalized error maps and RMSE for \textbf{(a)} spatial domain design and \textbf{(c)} k-space domain design with 6 mm iso-resolution, 32$\times$32$\times$24 design grid. Red arrows indicate the Gibbs ringing in low-resolution spatial domain design. \textbf{(b)} Normalized error map for spatial domain design with 3 mm iso-resolution, 64$\times$64$\times$48 design grid.}
 	\label{fig:GibbsRing}
 \end{figure}
@@ -55,10 +56,10 @@ Figure \ref{fig:GibbsRing}a\&c show the results of the  low-resolution designs u
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{Acceleration_3}
-	\caption{ \textcolor{red}{We should talk about this; I don't think reviewers will like the fact that the scale starts at 0.2. Also we should probably call it `Reduction Factor' since it is 
-	really the factor by which the pulse duration is reduced, and not exactly a k-space undersampling factor, is that right?}
-	Normalized error maps and RMSE for spatial domain design (first row) and k-space domain design (second row), with excitation trajectories undersampled by different reduction factors (third row).}
+	\includegraphics[width=\textwidth]{ReductionFactor}
+	\caption{Normalized error maps and RMSE for spatial domain design (first row) and k-space domain design (second row), 
+	using excitation k-space trajectories with different reduction factors (third row).
+	The reduction factors are referenced to the 10 ms trajectory in Figure \ref{fig:Target} (second column).}
 	\label{fig:kspace_PTX_Acceleration}
 \end{figure}
 
@@ -67,7 +68,7 @@ Figure \ref{fig:kspace_PTX_Acceleration} shows a comparison between the performa
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{kspace_PTX_B0}
+	\includegraphics[width=\textwidth]{OffResonance}
 	\caption{\textcolor{red}{WAG: Update with new correction method; include compute times and errors versus number of segments}
 	\textbf{(a)} Normalized off-resonance map with Gaussian distortion centered above the frontal sinus, mimicking a characteristic susceptibility induced $B_0$ inhomogeneity. \textbf{(b)} Normalized excitation maps and RMSE for spatial domain design with off-resonance correction (first row), k-space domain design with and without off-resonance correction (second \& third rows).}
 	\label{fig:kspace_PTX_B0}
