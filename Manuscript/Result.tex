@@ -1,11 +1,29 @@
+%!TEX root = kPtx_paper.tex
 \section*{Results}
 
 \begin{figure}
 	\centering
+	\includegraphics[width=\textwidth]{ErrorMap_2}
+	\caption{\textcolor{red}{WAG: I think this is the figure that your example in Github should replicate.}
+	Normalized excitation patterns (top row) and error maps (bottom row) in central axial, sagittal and coronal slices 
+	for k-space domain (left) and spatial domain designs (right).}
+	\label{fig:ErrorMap}
+\end{figure}
+Figure \ref{fig:ErrorMap} shows simulated excitation patterns and error maps for spatial and k-space domain designs. 
+The k-space design was performed with 16 parallel threads and patch and inclusion widths of 4. 
+Both designs were performed with a 64$\times$64$\times$48 grid size (3 mm isotropic resolution), 
+and the excitation patterns were evaluated against the target pattern on a 128$\times$128$\times$96 grid size (1.5 mm iso-resolution). 
+The calculated root-mean-squared errors (RMSEs) were 2.42\% (spatial domain) and 2.68\% (k-space domain), 
+respectively. 
+For both design methods, most of the errors appeared at the edges of the transition band, and errors elsewhere were lower than 5\% of the target flip angle. 
+This indicates uniform inner volume excitation while maintaining the outer volume intact. 
+The parallelized k-space domain design required 2.9 seconds computation versus 100.9 seconds for the spatial domain method, a 97\% decrease.
+
+\begin{figure}
+	\centering
 	\includegraphics[width=\textwidth]{ComputationTime_2}
-	\caption{\textcolor{red}{WAG: Can you also run $2^0$ (most importantly) and $2^5$ patch width here? It would be good to show that the RMSE levels off at some point. Also can you change the RMSE axis to go from 0 to 6? That will help emphasize that even though the error is decreasing with increasing patch width, 
-	the difference between patch width = 2 and patch width = something large is quite small. }
-	Studies of different parallelization parameters, where patch width is the square root of the number of $\mathbf{W}$ columns solved for simultaneously and inclusion width is the assumed range of influence of each excitation k-space location. \textbf{(a)} Computation time vs. thread numbers. Patch width and inclusion with were kept at 4 cycle/FOV. \textbf{(b\&c)} Computation time (blue axis) and RMSE (red axis) vs. patch widths (b) and inclusion widths (c). Thread number were kept at 16 of for both design. Inclusion width was constant at 4 in (b) and patch widths were constant at 4 (solid line) and 8 (dashed line).}
+	\caption{(a) k-Space design time versus number of threads, for patch and inclusion widths of 4. 
+	(b) Studies of different parallelization parameters, where patch width is the square root of the number of $\mathbf{W}$ columns solved for simultaneously and inclusion width is the assumed range of influence of each excitation k-space location. \textbf{(a)} Computation time vs. thread numbers. Patch width and inclusion with were kept at 4 cycle/FOV. \textbf{(b\&c)} Computation time (blue axis) and RMSE (red axis) vs. patch widths (b) and inclusion widths (c). Thread number were kept at 16 of for both design. Inclusion width was constant at 4 in (b) and patch widths were constant at 4 (solid line) and 8 (dashed line).}
 	\label{fig:ComputationTime}
 \end{figure}
 Figure \ref{fig:ComputationTime}a shows the mean computation time versus different thread numbers. The k-space design problem held the patch and inclusion width constant at 4. The mean computation time decreases with increasing thread numbers before 12 threads, and then plateaus due to overhead. The thread number was conservatively chosen to be 16 for the following studies to ensure timely solutions. 
@@ -14,14 +32,16 @@ Figure \ref{fig:ComputationTime}c shows the mean computation time and the RMSE w
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{ErrorMap_2}
-	\caption{\textcolor{red}{WAG: I think this is the figure that your example in Github should replicate.}
-	Normalized excitation patterns (top row) and error maps (bottom row) for k-space domain design (left column) and spatial domain design (right column), with RMSE and design time indicated.}
-	\label{fig:ErrorMap}
+	\includegraphics[width=\textwidth]{L_curve}
+	\caption{L-curves for spatial domain and k-space domain pulse designs, 
+	repeated across five orders of magnitude of the methods' Tikhonov regularization parameters.
+	The k-space domain designs were repeated using patch and inclusion widths of four versus solving for the entire domain at once (`Path / Inclusion Width = 4' versus `Full Patch'),
+	and using $B_1^+$ map product interpolation versus phase modulation to each trajectory location (`Interpolated $\bm{S}^H\bm{S}$ matrices' versus
+	`Exact $\bm{S}^H\bm{S}$ matrices').}
+	\label{fig:LCurves}
 \end{figure}
-The simulated excitation patterns and error maps are shown in Fig \ref{fig:ErrorMap} for both k-space domain design (left) and spatial domain design (right), where the k-space domain design was solved with 16 parallel computing threads, patch width 4, and inclusion width 4. 
-Both designs were done with the 64$\times$64$\times$48 grid size (3mm iso-resolution), and the excitation patterns were evaluated against the target pattern with the 128$\times$128$\times$96 grid size (1.5mm iso-resolution).  grid size. 
-The calculated RMSE from the k-space domain design and the spatial domain design were 2.42\% and 2.68\%, respectively, which were practically equal. For both design methods, most of the errors appeared at the edges of the transition band, with other errors lower than 5\% of the target flip angle. This indicates uniform inner volume suppression while maintaining the outer volume intact, which can in turn decrease g-factor in highly accelerated imaging. In practice, error near the transition band can be mitigated by ensuring the region of interest (ROI) of the cortex falls completely in the stop-band and assuming zero signal within the pass-band during undersampled reconstruction. More significantly, the parallelized k-space domain design method drastically reduced the mean computation time from 100.9 seconds to 2.9 seconds compared to the spatial domain design, which was a 97\% decrease.
+
+
 
 \begin{figure}
 	\centering

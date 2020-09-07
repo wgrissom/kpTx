@@ -1,19 +1,21 @@
+%!TEX root = kPtx_paper.tex
 \section*{Methods}
 \subsection*{Design and Simulation Setup}
 Simulations were performed to validate and characterize the proposed k-space domain parallel transmit pulse design method,
 with comparisons to the spatial-domain method of Ref. \cite{Grissom:2006:MRM}.
-RF pulses were designed for a simulated 24-channel loop transmit array (Figure \ref{fig:Coil}) that is under construction for a 7 Tesla scanner optimized
+RF pulses were designed for a simulated 24-channel loop transmit array (Figure \ref{fig:Coil}) that is being built for a 7 Tesla scanner optimized
 for imaging the human cortex.  
 24-channel complex-valued $B_1^+$ maps used in the pulse designs were simulated in a male human head model using 
 Ansys High Frequency Structure Simulator (Canonsburg, PA, USA) with 1.5 mm isotropic resolution. 
-All pulse designs used a SPINS excitation k-space trajectory \cite{malik2012tailored} (Figures \ref{fig:Target}b\&c) with 5 mm max resolution. 
-The SPINS trajectories were first designed analytically and the final gradient and excitation k-space trajectories were designed from them 
-using the minimum-time gradient waveform design method \cite{lustig2008fast}, 
-for a 15 {\textmu}s dwell time and subject to the scanner's gradient amplitude and slew rate constraints of 200 mT/m and 700 T/m/s, respectively. 
-The SPINS trajectory comprised three segments, with radii ranging between 1-0.625, 0.625-0.375, and 0.375-0 /cm, respectively.
-The number of polar and azimuthal rotations were 15.5/2.125, 20.66/2.833, 15.5/2.125, respectively, for each segment.
-The durations the segments after minimum-time gradient design were 4.174, 4.326, and 1.5 ms, respectively.
-With the exception of the simulations across undersampling factors, all pulse designs used the 10 ms trajectory shown in Figures \ref{fig:Target}b\&c.
+Figure \ref{fig:Target}a shows the target pattern for all pulse designs which comprised an ellipse centered on the ventricles with AP/HF/LR semi-axes of 4.8/3.2/3.2 cm.
+The pattern was smoothed by a Fermi filter that was applied in the frequency domain to match the target pattern's effective resolution to the excitation k-space trajectory's 5 mm resolution.
+This choice of target pattern was motivated by imaging applications for the 7 Tesla scanner 
+in which midbrain signals will be saturated for high-resolution, highly-accelerated imaging of the cortex. 
+Pulses were designed to excite the entire ellipse and achieve zero excitation in voxels in the cerebrum but outside the ellipse. 
+The smoothed target pattern and the $B_1^+$ maps were downsampled from their original 128$\times$128$\times$96 grids (1.5 mm isotropic resolution) to 
+64$\times$64$\times$48 grids (3 mm isotropic resolution),
+and RF designs were performed with the 64$\times$64$\times$48 grid size. 
+
 
 \begin{figure}
 	\centering
@@ -23,7 +25,15 @@ With the exception of the simulations across undersampling factors, all pulse de
 	\label{fig:Coil}
 \end{figure}
 
-
+\par A SPINS excitation k-space trajectory \cite{malik2012tailored} (Figure \ref{fig:Target}b) with 5 mm max resolution was used for the designs. 
+The SPINS trajectory comprised three segments, with radii ranging between 1-0.625, 0.625-0.375, and 0.375-0 /cm, respectively.
+The number of polar and azimuthal rotations were 15.5/2.125, 20.66/2.833, 15.5/2.125, respectively, for each segment.
+The SPINS trajectories were first designed analytically and the final gradient waveforms and excitation k-space trajectories were designed from them 
+using the minimum-time gradient waveform design method \cite{lustig2008fast}, 
+for a 15 {\textmu}s dwell time and subject to the scanner's gradient amplitude and slew rate constraints of 200 mT/m and 700 T/m/s, respectively (Figure \ref{fig:Target}c). 
+The durations of the three segments after minimum-time gradient design were 4.174, 4.326, and 1.5 ms, respectively.
+With the exception of the simulations across undersampling factors, 
+all pulse designs used this 10 ms trajectory.
 
 \begin{figure}
 	\centering
@@ -34,23 +44,16 @@ With the exception of the simulations across undersampling factors, all pulse de
 	\label{fig:Target}
 \end{figure}
 
-\par Figure \ref{fig:Target}a shows the target pattern for all pulse designs which comprised an ellipse centered on the ventricles with AP/HF/LR semi-axes of 4.8/3.2/3.2 cm.
-The pattern was smoothed by a Fermi filter that was applied in the frequency domain to match the target pattern's effective resolution to the excitation k-space trajectory's 5 mm resolution.
-This choice of target pattern was motivated by imaging applications for the 7 Tesla scanner 
-in which midbrain signals will be saturated for high-resolution, highly-accelerated imaging of the cortex. 
-Pulses were designed to excite the entire ellipse and achieve zero excitation in voxels in the cerebrum but outside the ellipse. 
-The smoothed target pattern and the $B_1^+$ maps were downsampled from their original 128$\times$128$\times$96 grids (1.5 mm isotropic resolution) to 
-64$\times$64$\times$48 grids (3 mm isotropic resolution),
-and RF designs were performed with the 64$\times$64$\times$48 grid size. 
-All pulse designs and simulations were performed in MATLAB (Mathworks, Natick, MA, USA).
+\par All pulse designs and Bloch equation simulations were performed in MATLAB (Mathworks, Natick, MA, USA).
 For spatial domain designs, 
 RF pulses were solved using an iterative least-squares conjugate-gradient descent method \cite{Grissom:2006:MRM} with 35 iterations,
 which was accelerated by non-uniform fast Fourier transforms \cite{Fessler:2003fk}. 
 The proposed k-space domain algorithm was implemented based on code for the non-Cartesian GRAPPA method of Ref. \cite{luo2019grappa},
 as a function that takes as input the $B_1^+$ maps, 
-a normalized excitation k-space trajectory, and optional off-resonance and design parameters. 
+a normalized excitation k-space trajectory, and optional structures of algorithm and off-resonance parameters. 
 Within that function the Fourier transforms of the $B_1^+$ products are calculated,
-and a C-based MEX function is invoked to solve for the non-zero elements of each column of $\bm{W}$. 
+and a C-based MEX function is invoked to solve for the non-zero elements of each column of $\bm{W}$,
+with linear interpolation of the Fourier transforms of the $B_1^+$ map products. 
 Those elements are then inserted into a sparse $\bm{W}$ matrix, which is the single output of the main function. 
 Parallelization was implemented across patches within the C-based MEX function using OpenMP. 
 The final pulses are calculated by multiplying the sparse $\bm{W}$ matrix into the Fourier transform of the target pattern. 
@@ -71,6 +74,20 @@ patch widths (1 to 16 cycles/FOV), and inclusion widths (2 to 8 cycles/FOV).
 The number of threads were varied while holding the patch width and inclusion width both at 4 cycles/FOV.
 The patch width was varied while holding the number of threads at 16, and the inclusion width at 4,
 and the inclusion width was varied while holding the number of threads at 16, and the patch width at 4 and 8. 
+
+\subsection*{L-Curves}
+To compare the tradeoff between excitation error and integrated RF power for spatial and k-space domain designs,
+pulse designs were repeated while varying Tikhonov regularization parameters ($\lambda$ in Equation \ref{eq:Solution}) 
+over five orders of magnitude. 
+The k-space domain designs were repeated four times to investigate the three main sources of error:
+finite patch width, finite inclusion width, and $B_1^+$ map product interpolation. 
+Specifically, a design was performed using patch and inclusion widths of four
+with interpolated $B_1^+$ map products (`Interpolated $\bm{S}^H\bm{S}$ matrices'),
+patch and inclusion widths covering the entire design grid with interpolated $B_1^+$ map products,
+patch and inclusion widths of four without $B_1^+$ map product interpolation (`Exact $\bm{S}^H\bm{S}$ matrices'; 
+$B_1^+$ maps were phase-modulated to each trajectory location before Fourier transform),
+and patch and inclusion widths covering the entire design grid without $B_1^+$ map product interpolation. 
+Note that the last case is equivalent to the original k-space domain method of Ref. \cite{Katscher:2003:Magn-Reson-Med:12509830}.
 
 \subsection*{Gibbs Ringing}
 Gibbs ringing commonly arises in spatial domain parallel pulse designs when the resolution of the 
