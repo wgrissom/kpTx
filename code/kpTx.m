@@ -103,10 +103,8 @@ if ifOffRes
     
     % apply off-resonance correction
     % embed spatial interpolators to sensitivity maps
-    CtFull = zeros(Lseg,dimb1(1),dimb1(2),dimb1(3));
-    for jj = 1:Lseg
-        CtFull(jj, mask) = Ct(:,jj);
-    end
+    CtFull = zeros([Lseg dimb1]);
+    CtFull(:, mask) = Ct.';
     CtFull = permute(CtFull, [2 3 4 1]);
     BFull = B;
     
@@ -114,21 +112,18 @@ if ifOffRes
     BFull_c = cell(1);
     BFull_c{1} = BFull;
     
-    calib = zeros(dimb1(1),dimb1(2),dimb1(3),nCoils,Lseg);
+    calib = zeros([dimb1 nCoils Lseg]);
     for ii = 1:Lseg
-        for jj = 1:nCoils
-            calib(:,:,:,jj,ii) = b1(:,:,:,jj).*CtFull(:,:,:,ii);
-        end
+        calib(:,:,:,:,ii) = bsxfun(@times, b1, CtFull(:, :, :, ii));
     end
-    
-    calib = reshape(calib,dimb1(1),dimb1(2),dimb1(3),nCoils*Lseg);
+    calib = calib(:, :, :, :);
     nCoilsLseg = nCoils*Lseg;
     
     disp 'Building FT maps'
     tic
     nComb = nCoilsLseg * (nCoilsLseg + 1) / 2;
     calib = single(calib);
-    FToversamp=1;   % Oversampling factor = 1 to save memory
+    FToversamp = 1;   % Oversampling factor = 1 to save memory
     [F_c, ~] = FFTTrick(calib, nComb, FToversamp);
     
     toc
