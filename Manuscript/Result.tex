@@ -36,7 +36,7 @@ Figure \ref{fig:ComputationTime}c shows the mean computation time and the RMSE w
 	\includegraphics[width=\textwidth]{L_curve}
 	\caption{L-curves for spatial domain and k-space domain pulse designs, 
 	repeated across five orders of magnitude of the methods' Tikhonov regularization parameters.
-	The k-space domain designs were repeated using patch and inclusion widths of four versus solving for the entire domain at once (`Path / Inclusion Width = 4' versus `Full Patch'),
+	The k-space domain designs were repeated using patch and inclusion widths of four versus solving for the entire domain at once (`Patch / Inclusion Width = 4' versus `Full Patch'),
 	and using $B_1^+$ map product interpolation versus phase modulation to each trajectory location (`Interpolated $\bm{S}^H\bm{S}$ Matrices' versus
 	`Exact $\bm{S}^H\bm{S}$ Matrices').}
 	\label{fig:LCurves}
@@ -69,8 +69,11 @@ Figure \ref{fig:kspace_PTX_Acceleration} shows a comparison between the performa
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{OffResonance}
-	\caption{\textcolor{red}{WAG: Update with new correction method; include compute times and errors versus number of segments}
-	\textbf{(a)} Normalized off-resonance map with Gaussian distortion centered above the frontal sinus, mimicking a characteristic susceptibility induced $B_0$ inhomogeneity. \textbf{(b)} Normalized excitation maps and RMSE for spatial domain design with off-resonance correction (first row), k-space domain design with and without off-resonance correction (second \& third rows).}
+	\caption{
+	(a) Normalized off-resonance map containing a Gaussian distortion centered above the frontal sinus, 
+	to mimic air-tissue susceptibility difference-induced $B_0$ inhomogeneity.
+	(b) Normalized excitation maps and RMSEs for spatial domain design with off-resonance correction (first row), 
+	and k-space domain design without and with off-resonance correction (second and third rows).}
 	\label{fig:kspace_PTX_B0}
 \end{figure}
 
