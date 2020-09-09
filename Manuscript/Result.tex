@@ -9,27 +9,73 @@
 	for k-space domain (left) and spatial domain designs (right).}
 	\label{fig:ErrorMap}
 \end{figure}
-Figure \ref{fig:ErrorMap} shows simulated excitation patterns and error maps for spatial and k-space domain designs. 
-The k-space design was performed with 16 parallel threads and patch and inclusion widths of 4. 
-Both designs were performed with a 64$\times$64$\times$48 grid size (3 mm isotropic resolution), 
+Figure \ref{fig:ErrorMap} shows simulated excitation patterns and error maps for the reference spatial and k-space domain designs. 
+Both designs were performed with 16 parallel threads and the 64$\times$64$\times$48 grid size (3 mm isotropic resolution), 
 and the excitation patterns were evaluated against the target pattern on a 128$\times$128$\times$96 grid size (1.5 mm iso-resolution). 
+The k-space domain design used patch and inclusion widths of 4.
 The calculated root-mean-squared errors (RMSEs) were 2.42\% (spatial domain) and 2.68\% (k-space domain), 
 respectively. 
-For both design methods, most of the errors appeared at the edges of the transition band, and errors elsewhere were lower than 5\% of the target flip angle. 
+For both design methods, most of the errors appeared at the edges of the transition band, 
+and errors elsewhere were lower than 5\% of the target flip angle. 
 This indicates uniform inner volume excitation while maintaining the outer volume intact. 
-The parallelized k-space domain design required 2.9 seconds computation versus 100.9 seconds for the spatial domain method, a 97\% decrease.
+The parallelized k-space domain design required 2.9 seconds computation versus 31.8 seconds for the spatial domain method, a 91\% decrease.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{ComputationTime}
-	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4. 
-	(b) Computation time (blue axis) and RMSE (red axis) versus patch width, for an inclusion width of 4 and 16 threads. 
-	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 and 8 and 16 threads.}
+	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4 cycles/FOV. 
+	(b) Computation time (blue axis) and RMSE (red axis) versus patch width, for an inclusion width of 4 cycles/FOV and 16 threads. 
+	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 and 8 cycles/FOV, and 16 threads.}
 	\label{fig:ComputationTime}
 \end{figure}
-Figure \ref{fig:ComputationTime}a shows the mean computation time versus different thread numbers. The k-space design problem held the patch and inclusion width constant at 4. The mean computation time decreases with increasing thread numbers before 12 threads, and then plateaus due to overhead. The thread number was conservatively chosen to be 16 for the following studies to ensure timely solutions. 
-Figure \ref{fig:ComputationTime}b shows the mean computation time and the RMSE with different patch widths. The computation time increases and the RMSE decreases as the patch width increases. This was because when patch width increases, there are more excitation trajectory points included in one instance problem, even with the same inclusion width. As a result, each instance problem becomes bigger and more time consuming, which cancels the advantageous fact that there are fewer instance problems in total, especially in cases with parallel computing. Furthermore, increasing the patch width is equivalently increasing the inclusion widths for the center target points within each patch, which makes the solutions more accurate. Here, we chose patch widths 4 and 8 (labeled $2^2$ and $2^3$) to balance time and accuracy for further evaluation.
-Figure \ref{fig:ComputationTime}c shows the mean computation time and the RMSE with different inclusion widths. The solid lines and dashed lines were obtained with patch width 4 and 8, respectively. Computation time increases and error decreases with increasing inclusion width. Particularly, increasing inclusion width is equivalent to utilizing more accurate $B_1^+$ information by truncating the $B_1^+$ map Fourier transforms to zero further out from DC. For both patch widths 4 and 8, 4 is the optimal inclusion width, which confirms the result in \ref{fig:ComputationTime}a , previously. Using an inclusion width of 4, the computation time and error are acceptable for both patch width numbers. Following these results,  we chose patch width 4 for the further designs.
+\subsection*{k-Space Algorithm Parameters}
+Figure \ref{fig:ComputationTime}a plots mean computation time versus number of parallel threads,
+holding the patch and inclusion widths fixed at 4 cycles/FOV. 
+The computation time decreased rapidly with increasing thread number up to 12 threads, 
+and then plateaued, likely due to the overhead involved in initiating threads after that point.
+Based on this result, the number of threads was held fixed at 16 for subsequent designs when off-resonance was not compensated.
+
+\par Figure \ref{fig:ComputationTime}b plots mean computation time and RMSE with different patch widths. 
+The computation time decreased up to a patch width of 4 cycles/FOV (corresponding to $4^3 = 64$ simultaneously solved columns of $\bm{W}$) 
+and then increased sharply for larger patch widths. 
+RMSE decreased slowly as the patch width increased since the number of excitation trajectory points included in the calculation of weights for each 
+target point increases on average (and especially for target locations in the middle of each patch) as the patch width increases, 
+even when the inclusion width stays fixed.
+Based on this result, a patch width of 4 cycles/FOV was used for subsequent designs.
+
+\par Figure \ref{fig:ComputationTime}c plots mean computation time and RMSE with different inclusion widths. 
+The solid lines and dashed lines were obtained with patch widths of 4 and 8 cycles/FOV, respectively. 
+Computation time increased and error decreased with increasing inclusion width,
+since more excitation trajectory points were included in each target location's calculation for increasing inclusion width,
+corresponding to an increased $\bm{S}^H\bm{S}$ matrix size. 
+The RMSE was only slightly lower for a patch width of 8 versus 4 cycles/FOV, 
+but the computation time was much higher for 8 cycles/FOV, across all inclusion widths. 
+The knees in the curves occurred approximately at an inclusion width of 4 cycles/FOV,
+so this value was used in subsequent designs. 
+
+\par Table \ref{fig:wsize} lists the size of the final matrix $\bm{W}$ in gigabytes,
+versus inclusion width.
+As inclusion width increases, more excitation trajectory points are used in the solution of each target location,
+until the entire trajectory is used for each point (Inclusion width = $\infty$ in the table),
+corresponding to a full solution. 
+With the inclusion width of 4 cycles/FOV used here, 
+the matrix size was 98\% smaller than that of a full solution.  
+
+\begin{figure}
+\centering
+\begin{tabular}{c | c}
+Inclusion Width & $\bm{W}$ Matrix Size (GB) \\
+\hline
+$\infty$ & 24.4 \\
+8 & 2.73 \\
+6 & 1.37 \\
+4 & 0.53 \\
+2 & 0.14
+\end{tabular}
+\caption{$\bm{W}$ matrix sizes in gigabytes (GB) versus inclusion width in cycles/FOV. 
+An inclusion width of $\infty$ corresponds to a full matrix solution.}
+\label{fig:wsize}
+\end{figure}
 
 \begin{figure}
 	\centering
@@ -42,6 +88,7 @@ Figure \ref{fig:ComputationTime}c shows the mean computation time and the RMSE w
 	\label{fig:LCurves}
 \end{figure}
 
+\subsection*{L-Curves}
 
 
 \begin{figure}
@@ -51,6 +98,7 @@ Figure \ref{fig:ComputationTime}c shows the mean computation time and the RMSE w
 	\label{fig:GibbsRing}
 \end{figure}
 
+\subsection*{Gibbs Ringing}
 Figure \ref{fig:GibbsRing}a\&c show the results of the  low-resolution designs using k-space domain method and the spatial domain method. The result of the high-resolution design of the spatial domain is also shown in Figure \ref{fig:GibbsRing}b. All three designed were done with a excitation trajectory that matches the 6 mm iso-resolution. The red arrows indicate the Gibbs ringing in the low-resolution spatial domain design, that can only be suppressed with high-resolution spatial domain design. However, the k-space domain design, although also low-resolution, is insensitive to this problem. Furthermore, the ripple pattern in the low resolution k-space design matches the high-resolution spatial design. Looking from a spatial domain point of view, the Gibbs ringing was caused by the lack of ability to observe the ringing with low-resolution. Looking from a k-space domain point of view, the Gibbs ringing was due to "wrap back" of the k-space FOV. When the spatial resolution is low the k-space FOV is small, and therefore the RF samples at one end of the trajectory can incorrectly "reach" and affect the k-space points at the other end of the k-space FOV in a circulation shift fashion. However, for the k-space domain design, even with low resolution, there is no k-space "wrap back" because the incorporated trajectory points are explicitly specified. Particularly, for the instance problems whose patches are at the edges of the k-space FOV, the excitation trajectory points at the other ends of the k-space FOV will not be incorporated into the design.    
 
 
