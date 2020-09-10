@@ -32,8 +32,8 @@ Furthermore, unlike an iterative spatial domain design the proposed algorithm do
 This means that it could have a considerable computational speed advantage for magnitude least-squares designs \cite{setsompop2008magnitude,malik:mrm:2015}. 
 The method could also be used to initialize spatial-domain designs to reduce the number of iterations required to reach a target cost; 
 Finally, while simple Tikhonov RF power regularization was used in the designs presented here,
-more sophisticated regularization could be incorporated to, e.g., control peak RF power via adaptive regularization,
-or to enforce array compression by projecting the weights into the null space of a compression matrix .
+more sophisticated regularization could be incorporated to, e.g., control peak RF power via adaptive regularization \cite{Yip:2005:Magn-Reson-Med:16155881},
+or to enforce array compression by projecting the weights into the null space of a compression matrix \cite{cao2016array}.
 In such designs, it would be beneficial to pre-compute and store the lower triangular elements of the $\bm{S}^H\bm{S}$ matrices
 so they need not be re-computed as the regularization changes over iterations.  
 
