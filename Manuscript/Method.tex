@@ -82,7 +82,8 @@ and the inclusion width was varied (2, 4, 6, and 8 cycles/FOV) while holding the
 The sizes of the $\bm{W}$ matrices were also recorded, holding patch width constant at 4 cycles/FOV and varying the inclusion width. 
 
 \subsection*{L-Curves}
-To compare the tradeoff between excitation error and integrated RF power for spatial and k-space domain designs,
+To compare the tradeoff between excitation error (measured by root-mean-square error)
+and integrated RF root-mean-square (RMS) amplitude for spatial and k-space domain designs,
 pulse designs were repeated while varying Tikhonov regularization parameters ($\lambda$ in Equation \ref{eq:Solution}) 
 over five orders of magnitude. 
 The k-space domain designs were repeated four times to investigate the three main sources of error:
@@ -94,6 +95,8 @@ patch and inclusion widths of four without $B_1^+$ map product interpolation (`E
 $B_1^+$ maps were phase-modulated to each trajectory location before Fourier transform),
 and patch and inclusion widths covering the entire design grid without $B_1^+$ map product interpolation. 
 Note that the last case is equivalent to the original k-space domain method of Ref. \cite{Katscher:2003:Magn-Reson-Med:12509830}.
+For each design, flip angle RMSE (calculated using the spatial domain non-uniform fast Fourier transform) and root-mean-square RF amplitude was
+calculated.
 
 \subsection*{Gibbs Ringing}
 Gibbs ringing commonly arises in spatial domain parallel pulse designs when the resolution of the 

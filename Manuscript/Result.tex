@@ -89,6 +89,23 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 \end{figure}
 
 \subsection*{L-Curves}
+Figure \ref{fig:LCurves} plots flip angle RMSE versus RF RMS amplitude for the spatial domain method
+and different configurations of the k-space domain method.
+The spatial domain method achieves the best overall tradeoff between error and RMS amplitude (dashed black curve),
+which is matched by the k-space domain method when all target locations are solved simultaneously with
+all excitation trajectory points included (orange curve) and exact $\bm{S}^H\bm{S}$ matrix construction. 
+When the inclusion and patch widths are limited to 4 cycles/FOV but the $\bm{S}^H\bm{S}$ 
+matrices are still constructed exactly, there is an increase in error and RMS amplitude (solid blue curve). 
+However, a larger penalty is incurred by interpolating the entries of the $\bm{S}^H\bm{S}$ matrices (dashed orange curve)
+than by limiting the inclusion and patch widths.
+Combining interpolation of the $\bm{S}^H\bm{S}$ matrix entries and patch and inclusion widths of 4 cycles/FOV yield 
+the dashed blue curve, which has a higher error and RF amplitude than when interpolation or small patch and inclusion widths are
+used alone.
+Overall, these results and the results in Figure \ref{fig:ComputationTime} and Table \ref{fig:wsize}
+show that the k-space domain method allows a tradeoff between computation time and memory usage versus
+excitation error and RMS RF amplitude.
+The dots on the spatial domain and k-space domain curves indicate the knees of of the curves corresponding to
+the $\lambda$ values used for the designs in Figures \ref{fig:ErrorMap}, \ref{fig:ComputationTime}, \ref{fig:kspace_PTX_Acceleration}, and \ref{fig:kspace_PTX_B0}.
 
 
 \begin{figure}
