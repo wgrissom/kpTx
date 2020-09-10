@@ -13,8 +13,11 @@
 \usepackage{color}
 \usepackage{tabularx}
 \usepackage{ulem}
-\usepackage{verbatim}
+%\usepackage{verbatim}
 \usepackage{textcomp}
+\usepackage{hyperref}
+\hypersetup{colorlinks=false,urlcolor=blue,linkcolor=blue}
+\usepackage{caption}
 
 \epstopdfsetup{suffix=} % to remove 'eps-to-pdf' suffix from converted images
 %\usepackage{todonotes} % use option disable to hide all comments
@@ -22,14 +25,14 @@
 \usepackage[sort&compress]{natbib}
 \bibpunct{[}{]}{,}{n}{,}{,}
 
-\usepackage[noend]{algpseudocode}
+%\usepackage[noend]{algpseudocode}
 
 \usepackage{dsfont}
 \usepackage{relsize}
 
-\usepackage{todonotes}
+%\usepackage{todonotes}
 
-\graphicspath{{Figure/}}
+%\graphicspath{{Figure/}}
 
 %changing the Eq. tag to use [] when numbering. use \eqref{label} to reference equations in text.
 \makeatletter
@@ -143,8 +146,151 @@ with a modest tradeoff of excitation error and RMS RF amplitude.
 
 \pagebreak
 
-\bibliographystyle{cse}  % cse doesn't work
-\bibliography{kPtx_paper}
+\bibliographystyle{cse}
+%\bibliography{kPtx_paper}
+
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{Katscher:2003:Magn-Reson-Med:12509830}
+Katscher U, B{\"o}rnert P, Leussler C, van~den Brink JS.
+\newblock Transmit {SENSE}.
+\newblock Magn Reson Med 2003;\hspace{0pt}49:144--150.
+
+\bibitem{zhu2004parallel}
+Zhu Y.
+\newblock Parallel excitation with an array of transmit coils.
+\newblock Magn Reson Med 2004;\hspace{0pt}51:775--784.
+
+\bibitem{malik:mrm:2015}
+Malik SJ, Hajnal JV.
+\newblock Phase relaxed localized excitation pulses for inner volume fast spin
+  echo imaging.
+\newblock Magn Reson Med 2016;\hspace{0pt}76:848--861.
+
+\bibitem{mooiweer:2016}
+Mooiweer R, Sbrizzi A, Raaijmakers AJE, Van~den Berg CAT, Luijten PR, Hoogduin
+  H.
+\newblock Combining a reduced field of excitation with {SENSE}-based parallel
+  imaging for maximum imaging efficiency.
+\newblock Magn Reson Med 2016;\hspace{0pt}78:88--96.
+
+\bibitem{Zhang:2007:Magn-Reson-Med:16526012}
+Zhang Z, Yip CY, Grissom W, Noll DC, Boada FE, Stenger VA.
+\newblock Reduction of transmitter {B1} inhomogeneity with transmit {SENSE}
+  slice-select pulses.
+\newblock Magn Reson Med 2007;\hspace{0pt}57:842--847.
+
+\bibitem{cloos:kpstd:2012}
+Cloos MA, Boulant N, Luong M, Ferrand G, Giacomini E, Le~Bihan D, Amadon A.
+\newblock {$k_T$}-{Points}: {Short} three-dimensional tailored {RF} pulses for
+  flip-angle homogenization over an extended volume.
+\newblock Magn Reson Med 2011;\hspace{0pt}67:72--80.
+
+\bibitem{deng:2009}
+Deng W, Yang C, Alagappan V, Wald LL, Boada FE, Stenger VA.
+\newblock Simultaneous z-shim method for reducing susceptibility artifacts with
+  multiple transmitters.
+\newblock Magn Reson Med 2009;\hspace{0pt}61:255--259.
+
+\bibitem{Grissom:2006:MRM}
+Grissom WA, Yip CY, Zhang Z, Stenger VA, Fessler JA, Noll DC.
+\newblock Spatial domain method for the design of {RF} pulses in multicoil
+  parallel excitation.
+\newblock Magn Reson Med 2006;\hspace{0pt}56:620--9.
+
+\bibitem{malik2012tailored}
+Malik SJ, Keihaninejad S, Hammers A, Hajnal JV.
+\newblock Tailored excitation in {3D} with spiral nonselective {(SPINS) RF}
+  pulses.
+\newblock Magn Reson Med 2012;\hspace{0pt}67:1303--1315.
+
+\bibitem{davids2016fast}
+Davids M, Schad LR, Wald LL, Guerin B.
+\newblock Fast three-dimensional inner volume excitations using parallel
+  transmission and optimized k-space trajectories.
+\newblock Magn Reson Med 2016;\hspace{0pt}76:1170--1182.
+
+\bibitem{orzada:2019}
+Orzada S, Solbach K, Gratz M, Brunheim S, Fiedler TM, Johst S, Bitz AK,
+  Shooshtary S, Abuelhaija A, Voelker MN, Rietsch SHG, Kraff O, Maderwald S,
+  Fl\"oser M, Oehmigen M, Quick HH, Ladd ME.
+\newblock A 32-channel parallel transmit system add-on for 7t mri.
+\newblock PLOS ONE 2019;\hspace{0pt}14:1--20.
+
+\bibitem{deng:2011}
+Deng W, Yang C, Stenger VA.
+\newblock Accelerated multidimensional radiofrequency pulse design for parallel
+  transmission using concurrent computation on multiple graphics processing
+  units.
+\newblock Magn Reson Med 2011;\hspace{0pt}65:363--369.
+
+\bibitem{setsompop2008magnitude}
+Setsompop K, Wald L, Alagappan V, Gagoski B, Adalsteinsson E.
+\newblock Magnitude least squares optimization for parallel radio frequency
+  excitation design demonstrated at 7 {Tesla} with eight channels.
+\newblock Magn Reson Med 2008;\hspace{0pt}59:908--915.
+
+\bibitem{brunner2010optimal}
+Brunner DO, Pruessmann KP.
+\newblock Optimal design of multiple-channel {RF} pulses under strict power and
+  {SAR} constraints.
+\newblock Magn Reson Med 2010;\hspace{0pt}63:1280--1291.
+
+\bibitem{hoyos:tmi:2014}
+Hoyos-Idrobo A, Weiss P, Massire A, Amadon A, Boulant N.
+\newblock On variant strategies to solve the magnitude least squares
+  optimization problem in parallel transmission pulse design under strict {SAR}
+  and power constraints.
+\newblock IEEE Trans Med Imag 2014;\hspace{0pt}33:739--748.
+
+\bibitem{fessler2005toeplitz}
+Fessler JA, Lee S, Olafsson VT, Shi HR, Noll DC.
+\newblock Toeplitz-based iterative image reconstruction for {MRI} with
+  correction for magnetic field inhomogeneity.
+\newblock IEEE Trans Sig Proc 2005;\hspace{0pt}53:3393--3402.
+
+\bibitem{grissom:ismrm18}
+Grissom WA.
+\newblock {k-Space} domain parallel transmit pulse design.
+\newblock In Proceedings 26th Scientific Meeting, International Society for
+  Magnetic Resonance in Medicine, Paris. 2018;\hspace{0pt} p. 3396.
+
+\bibitem{luo2019grappa}
+Luo T, Noll DC, Fessler JA, Nielsen JF.
+\newblock A {GRAPPA} algorithm for arbitrary {2D/3D} non-{Cartesian} sampling
+  trajectories with rapid calibration.
+\newblock Magn Reson Med 2019;\hspace{0pt}82:1101--1112.
+
+\bibitem{lustig2008fast}
+Lustig M, Kim SJ, Pauly JM.
+\newblock A fast method for designing time-optimal gradient waveforms for
+  arbitrary k-space trajectories.
+\newblock {IEEE} Trans Med Imag 2008;\hspace{0pt}27:866--873.
+
+\bibitem{Fessler:2003fk}
+Fessler JA, Sutton BP.
+\newblock Nonuniform fast {Fourier} transforms using min-max interpolation.
+\newblock IEEE Trans Sig Proc 2003;\hspace{0pt}51:560--574.
+
+\bibitem{stenger2000three}
+Stenger VA, Boada FE, Noll DC.
+\newblock Three-dimensional tailored {RF} pulses for the reduction of
+  susceptibility artifacts in {$T_2^*$}-weighted functional {MRI}.
+\newblock Magn Reson Med 2000;\hspace{0pt}44:525--531.
+
+\bibitem{yang2010four}
+Yang C, Deng W, Alagappan V, Wald LL, Stenger VA.
+\newblock Four-dimensional spectral-spatial {RF} pulses for simultaneous
+  correction of {B1+} inhomogeneity and susceptibility artifacts in
+  {T2*}-weighted {MRI}.
+\newblock Magn Reson Med 2010;\hspace{0pt}64:1--8.
+
+
+
+\end{thebibliography}
+
 
 \pagebreak
 %(Please see main document for caption with intended math typesetting)
