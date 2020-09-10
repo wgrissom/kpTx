@@ -86,17 +86,18 @@ To compare the tradeoff between excitation error (measured by root-mean-square e
 and integrated RF root-mean-square (RMS) amplitude for spatial and k-space domain designs,
 pulse designs were repeated while varying Tikhonov regularization parameters ($\lambda$ in Equation \ref{eq:Solution}) 
 over five orders of magnitude. 
-The k-space domain designs were repeated four times to investigate the three main sources of error:
-finite patch width, finite inclusion width, and $B_1^+$ map product interpolation. 
-Specifically, a design was performed using patch and inclusion widths of four
-with interpolated $B_1^+$ map products (`Interpolated $\bm{S}^H\bm{S}$ matrices'),
-patch and inclusion widths covering the entire design grid with interpolated $B_1^+$ map products,
-patch and inclusion widths of four without $B_1^+$ map product interpolation (`Exact $\bm{S}^H\bm{S}$ matrices'; 
+The k-space domain designs were repeated four times to investigate the two main sources of error:
+finite patch and inclusion widths, 
+and $B_1^+$ map product interpolation when building the $\bm{S}^H\bm{S}$ matrices. 
+Specifically, for each $\lambda$ a design was performed using patch and inclusion widths of four (`Patch/Inclusion Widths = 4')
+with interpolated $B_1^+$ map products (`Interpolated Matrices'),
+patch and inclusion widths covering the entire design grid (`Patch/Inclusion Widths = $\infty$') with interpolated $B_1^+$ map products,
+patch and inclusion widths of four without $B_1^+$ map product interpolation (`Exact Matrices'; 
 $B_1^+$ maps were phase-modulated to each trajectory location before Fourier transform),
 and patch and inclusion widths covering the entire design grid without $B_1^+$ map product interpolation. 
 Note that the last case is equivalent to the original k-space domain method of Ref. \cite{Katscher:2003:Magn-Reson-Med:12509830}.
-For each design, flip angle RMSE (calculated using the spatial domain non-uniform fast Fourier transform) and root-mean-square RF amplitude was
-calculated.
+For each design, flip angle RMSE (calculated using the spatial domain non-uniform fast Fourier transform) and root-mean-square RF amplitude were
+recorded.
 
 \subsection*{Gibbs Ringing}
 Gibbs ringing commonly arises in spatial domain parallel pulse designs when the resolution of the 
@@ -107,8 +108,11 @@ To demonstrate this,
 the target pattern and $B_1^+$ maps were further down-sampled to 32$\times$32$\times$24 (6 mm isotropic-resolution),
 and the outermost leaves of the SPINS trajectory which had duration 2.1 ms were excluded so that the maximum excitation 
 resolution matched the 6 mm target pattern and $B_1^+$ map resolution. 
-Pulses were designed by the spatial domain method using both 32$\times$32$\times$24 and 64$\times$64$\times$48 grid sizes,
+Using this shorter 7.9 ms trajectory, 
+pulses were designed by the spatial domain method using both 32$\times$32$\times$24 and 64$\times$64$\times$48 grid sizes,
 and by the k-space-domain method for 32$\times$32$\times$24 grid size.
+The Tikhonov regularization parameters for the 32$\times$32$\times$24 designs were set so that the RMS RF amplitudes produced 
+by the k-space domain and spatial domain designs matched.
 The designed pulses were then evaluated against the target pattern using the 128$\times$128$\times$96 grid size,
 to visualize the ringing.
 

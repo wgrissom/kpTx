@@ -93,7 +93,7 @@ Figure \ref{fig:LCurves} plots flip angle RMSE versus RF RMS amplitude for the s
 and different configurations of the k-space domain method.
 The spatial domain method achieves the best overall tradeoff between error and RMS amplitude (dashed black curve),
 which is matched by the k-space domain method when all target locations are solved simultaneously with
-all excitation trajectory points included (orange curve) and exact $\bm{S}^H\bm{S}$ matrix construction. 
+all excitation trajectory points included and exact $\bm{S}^H\bm{S}$ matrix construction (orange curve). 
 When the inclusion and patch widths are limited to 4 cycles/FOV but the $\bm{S}^H\bm{S}$ 
 matrices are still constructed exactly, there is an increase in error and RMS amplitude (solid blue curve). 
 However, a larger penalty is incurred by interpolating the entries of the $\bm{S}^H\bm{S}$ matrices (dashed orange curve)
@@ -106,7 +106,11 @@ show that the k-space domain method allows a tradeoff between computation time a
 excitation error and RMS RF amplitude.
 The dots on the spatial domain and k-space domain curves indicate the knees of of the curves corresponding to
 the $\lambda$ values used for the designs in Figures \ref{fig:ErrorMap}, \ref{fig:ComputationTime}, \ref{fig:kspace_PTX_Acceleration}, and \ref{fig:kspace_PTX_B0}.
-
+Note that the RMSE's in Figure \ref{fig:LCurves} are slightly lower for the spatial domain designs
+and slightly higher for the k-space domain designs compared to other figures,
+because the flip angle errors in Figure \ref{fig:LCurves} were calculated using 
+spatial domain non-uniform fast Fourier transforms instead of Bloch equation simulations, 
+to provide a more direct measure of the design error. 
 
 \begin{figure}
 	\centering
@@ -116,19 +120,44 @@ the $\lambda$ values used for the designs in Figures \ref{fig:ErrorMap}, \ref{fi
 \end{figure}
 
 \subsection*{Gibbs Ringing}
-Figure \ref{fig:GibbsRing}a\&c show the results of the  low-resolution designs using k-space domain method and the spatial domain method. The result of the high-resolution design of the spatial domain is also shown in Figure \ref{fig:GibbsRing}b. All three designed were done with a excitation trajectory that matches the 6 mm iso-resolution. The red arrows indicate the Gibbs ringing in the low-resolution spatial domain design, that can only be suppressed with high-resolution spatial domain design. However, the k-space domain design, although also low-resolution, is insensitive to this problem. Furthermore, the ripple pattern in the low resolution k-space design matches the high-resolution spatial design. Looking from a spatial domain point of view, the Gibbs ringing was caused by the lack of ability to observe the ringing with low-resolution. Looking from a k-space domain point of view, the Gibbs ringing was due to "wrap back" of the k-space FOV. When the spatial resolution is low the k-space FOV is small, and therefore the RF samples at one end of the trajectory can incorrectly "reach" and affect the k-space points at the other end of the k-space FOV in a circulation shift fashion. However, for the k-space domain design, even with low resolution, there is no k-space "wrap back" because the incorporated trajectory points are explicitly specified. Particularly, for the instance problems whose patches are at the edges of the k-space FOV, the excitation trajectory points at the other ends of the k-space FOV will not be incorporated into the design.    
+Figure \ref{fig:GibbsRing}a shows slices of the excitation error pattern produced by pulses designed by the spatial domain method
+on a 32$\times$32$\times$24 grid, which were Bloch-simulated on the original 128$\times$128$\times$96 grid. 
+There is significant Gibbs ringing in the pattern (indicated by the red arrows),
+and the pulses incur a higher RMSE (4.64\%) than pulses designed using either the spatial domain method with a finer 64$\times$64$\times$48 grid
+(2.66\%; Figure \ref{fig:GibbsRing}b) or the k-space domain method with a 32$\times$32$\times$24 grid (3.00\%; Figure \ref{fig:GibbsRing}c). 
+Gibbs ringing is not apparent in either the 64$\times$64$\times$48 spatial domain error pattern or the 32$\times$32$\times$24 k-space domain error pattern. 
+The RMS RF amplitudes of the low resolution designs were both 0.05. 
+Note that the error of the 64$\times$64$\times$48 spatial domain design is slightly higher than designs presented in other figures
+due to the lower-resolution excitation trajectory. 
+From a spatial domain point of view, 
+the Gibbs ringing in the low-resolution spatial domain design was caused by the design's inability to observe and limit the ringing in the low-resolution design grid. 
+From a k-space domain point of view, the Gibbs ringing in 
+Figure \ref{fig:GibbsRing}a was due to implicit circulant end conditions at the edges of excitation k-space in the low-resolution
+spatial domain design,
+which led RF samples at one edge of k-space to wrap-around and affect target locations at the opposite edge of k-space. 
+This effect is mitigated using a high-resolution spatial domain design grid, as illustrated in Figure \ref{fig:GibbsRing}b. 
+However, even for a low-resolution k-space domain design there is no wrap-around effect in excitation k-space 
+because the trajectory points that are incorporated in the weights solution for each patch of target locations are explicitly specified to be those in the immediate vicinity of 
+the target points, without circulant end conditions. 
+%Particularly, for the instance problems whose patches are at the edges of the k-space FOV, the excitation trajectory points at the other ends of the k-space FOV will not be incorporated into the design.    
 
+%Due to implicit circulant end conditions in k-space for the spatial domain design, t
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{ReductionFactor}
-	\caption{Normalized error maps and RMSE for spatial domain design (first row) and k-space domain design (second row), 
+	\caption{Normalized error maps and RMSEs for spatial domain design (first row) and k-space domain design (second row), 
 	using excitation k-space trajectories with different reduction factors (third row).
 	The reduction factors are referenced to the 10 ms trajectory in Figure \ref{fig:Target} (second column).}
 	\label{fig:kspace_PTX_Acceleration}
 \end{figure}
 
-Figure \ref{fig:kspace_PTX_Acceleration} shows a comparison between the performance of spatial domain design (first row) and k-space domain design (second row) regarding undersampled excitation trajectories (third row) with different reduction factors. Both design methods had larger errors when the excitation k-space was less densely traversed. The k-space domain design provided similar error maps and practically equal RMSE. The k-space domain design had slightly larger RMSE because of the interpolation and truncation of the k-space sensitivity when building the $\mathbf{S}^{H}\mathbf{S}$ matrix, and can be improved by increasing the inclusion width. 
+\subsection*{Excitation k-Space Undersampling}
+Figure \ref{fig:kspace_PTX_Acceleration} compares excitation error patterns produced by spatial domain-designed pulses (top row)
+and k-space domain-designed pulses (middle row),
+for different trajectory reduction factors which resulted in the SPINS trajectories plotted in the third row. 
+For each design the k-space domain-designed pulses had higher error, 
+but error increased smoothly with increasing reduction factor, as it did for the spatial domain designs. 
 
 
 \begin{figure}
@@ -142,4 +171,14 @@ Figure \ref{fig:kspace_PTX_Acceleration} shows a comparison between the performa
 	\label{fig:kspace_PTX_B0}
 \end{figure}
 
-Regarding 3D off-resonance patterns with the shape shown in Figure \ref{fig:kspace_PTX_B0}a and different scaling, Figure \ref{fig:kspace_PTX_B0}b shows the excitation maps of three types of designs: spatial domain design with off-resonance correction (first row), k-space domain design with and without off-resonance correction (second \& third row). As shown in the second row of Figure \ref{fig:kspace_PTX_B0}b, off-resonance caused false excitation outside the designated suppression region, and must be corrected. With 200 Hz maximum off-resonance, which is the typical range of off-resonance observed in clinical studies, k-space domain design with correction was able to fully correct the off-resonance artifacts. It was also able to provide excitation pattern comparable to spatial domain design with 400 Hz maximum off-resonance. The k-space domain design has a weaker performance with higher off-resonance due to the fact that the time segmentation approximation in Ref \cite{fessler2005toeplitz} was meant to approximate forward models from RF to excitation patterns and does not serve as an accurate approximation to the backward model as we need in the k-space domain design.
+\subsection*{Off-Resonance}
+Figure \ref{fig:kspace_PTX_B0}a shows the off-resonance maps containing a Gaussian distortion which was centered above the frontal sinus,
+and scaled to peak amplitudes of 0, 200, and 400 Hz for the pulse designs and Bloch simulations. 
+Figure \ref{fig:kspace_PTX_B0}b shows excitation error patterns and RMSEs for spatial domain designs with off-resonance compensation,
+and k-space domain designs without and with off-resonance compensation. 
+Without off-resonance compensation, 
+the k-space domain-designed pulses produced large ($>$ 10\% of $M_0$) excitation errors both inside and outside the target ellipse. 
+When the off-resonance map was incorporated in the spatial domain and k-space domain designs, 
+the distortion was nearly fully corrected when it had a peak amplitude of 200 Hz. 
+When the map was scaled to a peak of 400 Hz, some large errors remained, with the k-space domain-designed pulses achieving slightly lower RMSE. 
+%It was also able to provide excitation pattern comparable to spatial domain design with 400 Hz maximum off-resonance. The k-space domain design has a weaker performance with higher off-resonance due to the fact that the time segmentation approximation in Ref \cite{fessler2005toeplitz} was meant to approximate forward models from RF to excitation patterns and does not serve as an accurate approximation to the backward model as we need in the k-space domain design.
