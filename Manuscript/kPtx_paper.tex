@@ -97,16 +97,30 @@ Acknowledgment: This work was supported by NIH grants R01 EB016695 and U01 EB 02
 
 \section*{\underline{Abstract}} 
 {\bf Purpose:}
-To improve the computational efficiency of parallel transmission pulse design. 
+To accelerate the design of multidimensional parallel transmission pulses. 
 \\[1em]
 {\bf Methods:}
-something
+A k-space domain parallel transmission pulse design algorithm was proposed that
+produces a sparse matrix relating a target excitation pattern to the pulses that produce it,
+and can be finely parallelized. 
+The algorithm was applied in simulations to the design of 3D SPINS pulses for inner volume excitation in the brain at 7 Tesla.
+It was characterized in terms of the dependence of computation time, excitation error, and required memory
+on algorithm parameters,
+and it was compared to the spatial domain pulse design method in terms computation time, excitation error,
+Gibbs ringing, and ability to compensate off-resonance.
 \\[1em]
 {\bf Results:}
-something
+The proposed algorithm achieved approximately 90\% faster pulse design compared to 
+an iterative spatial domain method, with the same number of parallel threads,
+with the tradeoff of increased excitation error and RMS RF amplitude. 
+It reduced the memory required to store the design matrix by 98\% compared to a full matrix solution.
+Even with a coarse design grid, the algorithm produced patterns that were free of Gibbs ringing.
+It was similarly sensitive to k-space undersampling as the spatial domain method,
+and was similarly capable of compensating for off-resonance.
 \\[1em]
 {\bf Conclusion:}
-something
+The proposed k-space domain algorithm accelerates and finely parallelizes parallel transmission pulse design,
+with a modest tradeoff of excitation error and RMS RF amplitude.
 \\[1em]
 {\bf \noindent Key words:} Parallel Transmission; RF pulses; Ultra-high field MRI; RF pulse design; Selective excitation.
 
