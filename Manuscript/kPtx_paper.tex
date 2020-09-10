@@ -63,6 +63,7 @@
 \author{Jun Ma$^{1,2}$, Bernhard Gruber$^{3,4}$, Xinqiang Yan$^{1,5}$, and William A. Grissom$^{1,2,5*}$}
 \maketitle
 \begin{flushleft}
+\vspace{-0.5cm}
 $^1$Vanderbilt University Institute of Imaging Science, Nashville, TN, United States\\
 $^2$Department of Biomedical Engineering, Vanderbilt University, Nashville, TN, United States\\
 $^3$A. A. Martinos Center for Biomedical Imaging, Massachusetts General Hospital, Harvard Medical School, Charlestown, MA, United States\\
@@ -73,7 +74,7 @@ $^5$Department of Radiology and Radiological Sciences, Vanderbilt University, Na
 -------------------------- 
 
 \par
-Word Count: Approximately 3550 \\
+Word Count: Approximately 5500 \\
 *Corresponding author: \\
 Will Grissom\\
 Department of Biomedical Engineering\\
@@ -142,16 +143,123 @@ with a modest tradeoff of excitation error and RMS RF amplitude.
 
 \pagebreak
 
-\bibliographystyle{unsrt}  % cse doesn't work
+\bibliographystyle{cse}  % cse doesn't work
 \bibliography{kPtx_paper}
 
 \pagebreak
+%(Please see main document for caption with intended math typesetting)
+
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{kspace_PTX_Patch}
+	\caption{(a) A target point $\vec{k}_j$ and the nearby trajectory points that are included when calculating 
+	RF pulse weight contributions from this point.
+	Inclusion width is defined as the distance from each target location $\vec{k}_j$ within which 
+	which all trajectory points are considered when solving for the $j$-th column of the design ($\bm{W}$) matrix.
+	(b) Calculation of the $\bm{W}$ matrix can be performed column-by-column for each target location $\vec{k}_j$,
+	or patches of target points can be solved for jointly. 
+	Here the 16 columns of $\bm{W}$ for a 4 $\times$ 4 patch of target points are solved together,
+	and an inclusion width of 4 cycles/FOV dictates that all trajectory points within a 12 $\times$ 12 region
+	centered on the patch are considered in the calculation.}
+	\label{fig:Patch}
+\end{figure}
+
+\begin{figure}
+	\centering
+	%\includegraphics[width=6cm]{kspace_PTX_Coil}
+	\caption{The 24-channel loop Tx array that was simulated in a human head model to obtain $B_1^+$ maps. 
+	The array has diameter 32 cm and height 28 cm. The 16 cm $\times$ 11 cm rectangular loops are arranged in 3 rows of 8.}
+	\label{fig:Coil}
+\end{figure}
+
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{kSpace_PTX_Pattern_Trajectory}
+	\caption{(a) Middle axial, sagittal, and coronal slices of the target excitation pattern used for all pulse designs. 
+	(b) The SPINS trajectory used in the designs. 
+	(c) 10 ms minimum-time gradient waveforms that produce the SPINS trajectory.}
+	\label{fig:Target}
+\end{figure}
+
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{ErrorMap}
+	\caption{ %\textcolor{red}{WAG: I think this is the figure that your example in Github should replicate.}
+	Normalized excitation patterns (top row) and error maps (bottom row) in central axial, sagittal and coronal slices 
+	for k-space domain (left) and spatial domain designs (right).}
+	\label{fig:ErrorMap}
+\end{figure}
+
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{ComputationTime}
+	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4 cycles/FOV. 
+	(b) Computation time (blue axis) and RMSE (red axis) versus patch width, for an inclusion width of 4 cycles/FOV and 16 threads. 
+	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 and 8 cycles/FOV, and 16 threads.}
+	\label{fig:ComputationTime}
+\end{figure}
+
+\begin{figure}
+\centering
+%\begin{tabular}{c | c}
+%Inclusion Width & $\bm{W}$ Matrix Size (GB) \\
+%\hline
+%$\infty$ & 24.4 \\
+%8 & 2.73 \\
+%6 & 1.37 \\
+%4 & 0.53 \\
+%2 & 0.14
+%\end{tabular}
+\caption{$\bm{W}$ matrix sizes in gigabytes (GB) versus inclusion width in cycles/FOV. 
+An inclusion width of $\infty$ corresponds to a full matrix solution.}
+\label{fig:wsize}
+\end{figure}
+
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{L_curve}
+	\caption{L-curves for spatial domain and k-space domain pulse designs, 
+	repeated across five orders of magnitude of the methods' Tikhonov regularization parameters.
+	The k-space domain designs were repeated using patch and inclusion widths of four versus solving for the entire domain at once (`Patch / Inclusion Widths = 4' versus `Patch / Inclusion Widths = $\infty$'),
+	and using $B_1^+$ map product interpolation versus phase modulation to each trajectory location (`Interpolated Matrices' versus
+	`Exact Matrices').}
+	\label{fig:LCurves}
+\end{figure}
 
 
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{GibbsRinging}
+	\caption{Normalized error maps and RMSEs for 
+	(a) pulses designed using a trajectory that reaches 6 mm isotropic resolution
+	and the spatial domain algorithm with a 32$\times$32$\times$24 grid, 
+	(b) pulses designed using the same trajectory and the spatial domain algorithm with a 64$\times$64$\times$48 grid,  
+	and (c) pulses designed using the same trajectory and the k-space domain algorithm with a 32$\times$32$\times$24 design grid. 
+	Red arrows indicate Gibbs ringing in the 32$\times$32$\times$24 spatial domain design.}
+	\label{fig:GibbsRing}
+\end{figure}
 
 
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{ReductionFactor}
+	\caption{Normalized error maps and RMSEs for spatial domain design (first row) and k-space domain design (second row), 
+	using excitation k-space trajectories with different reduction factors (third row).
+	The reduction factors are referenced to the 10 ms trajectory in Figure \ref{fig:Target} (second column).}
+	\label{fig:kspace_PTX_Acceleration}
+\end{figure}
 
 
+\begin{figure}
+	\centering
+	%\includegraphics[width=\textwidth]{OffResonance}
+	\caption{
+	(a) Normalized off-resonance map containing a Gaussian distortion centered above the frontal sinus, 
+	to mimic air-tissue susceptibility difference-induced $B_0$ inhomogeneity.
+	(b) Normalized excitation maps and RMSEs for spatial domain design with off-resonance correction (first row), 
+	and k-space domain design without and with off-resonance correction (second and third rows).}
+	\label{fig:kspace_PTX_B0}
+\end{figure}
 
 
 \end{document}

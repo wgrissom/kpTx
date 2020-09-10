@@ -96,20 +96,7 @@ so all the excitation trajectory points within a $12 \times 12$ cycles/FOV squar
 %In the following, we define target and trajectory neighborhood sizes, 
 %and describe an efficient method to construct the $\bm{S}^{H}\bm{S}$ matrices.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{kspace_PTX_Patch}
-	\caption{(a) A target point $\vec{k}_j$ and the nearby trajectory points that are included when calculating 
-	RF pulse weight contributions from this point.
-	Inclusion width is defined as the distance from each target location $\vec{k}_j$ within which 
-	which all trajectory points are considered when solving for the $j$-th column of the design ($\bm{W}$) matrix.
-	(b) Calculation of the $\bm{W}$ matrix can be performed column-by-column for each target location $\vec{k}_j$,
-	or patches of target points can be solved for jointly. 
-	Here the 16 columns of $\bm{W}$ for a 4 $\times$ 4 patch of target points are solved together,
-	and an inclusion width of 4 cycles/FOV dictates that all trajectory points within a 12 $\times$ 12 region
-	centered on the patch are considered in the calculation.}
-	\label{fig:Patch}
-\end{figure}
+
 
 \subsection*{Efficient $\bm{S}^H\bm{S}$ matrix construction}
 %%which is 4 cycle/FOV extended outside of the patch width 4 square, since they may contribute energy to the target locations corresponding to the 16 $\bm{W}$ matrix columns. 

@@ -17,13 +17,7 @@ The smoothed target pattern and the $B_1^+$ maps were downsampled from their ori
 and RF designs were performed with the 64$\times$64$\times$48 grid size. 
 
 
-\begin{figure}
-	\centering
-	\includegraphics[width=6cm]{kspace_PTX_Coil}
-	\caption{The 24-channel loop Tx array that was simulated in a human head model to obtain $B_1^+$ maps. 
-	The array has diameter 32 cm and height 28 cm. The 16 cm $\times$ 11 cm rectangular loops are arranged in 3 rows of 8.}
-	\label{fig:Coil}
-\end{figure}
+
 
 \par A SPINS excitation k-space trajectory \cite{malik2012tailored} (Figure \ref{fig:Target}b) with 5 mm max resolution was used for the designs. 
 The SPINS trajectory comprised three segments with radii ranging between 1-0.625, 0.625-0.375, and 0.375-0 cycles/cm, respectively.
@@ -37,14 +31,7 @@ all pulse designs used this 10 ms trajectory.
 With this trajectory and the 64$\times$64$\times$48 design grid size, 
 the dimensions of the $\bm{W}$ matrix were 16,632 RF pulse samples, by 196,608 target k-space locations. 
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{kSpace_PTX_Pattern_Trajectory}
-	\caption{(a) Middle axial, sagittal, and coronal slices of the target excitation pattern used for all pulse designs. 
-	(b) The SPINS trajectory used in the designs. 
-	(c) 10 ms minimum-time gradient waveforms that produce the SPINS trajectory.}
-	\label{fig:Target}
-\end{figure}
+
 
 \par All pulse designs and Bloch equation simulations were performed in MATLAB (Mathworks, Natick, MA, USA).
 For spatial domain designs, 
