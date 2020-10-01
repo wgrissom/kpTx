@@ -1,0 +1,42 @@
+%!TEX root = kPtx_paper.tex
+\section*{Discussion}
+\subsection*{Summary}
+A small-tip-angle k-space domain parallel transmit pulse design algorithm was proposed
+that divides up the calculation of a matrix relating a target excitation pattern to the pulses that produce it 
+into a set of independent problems for patches of target excitation k-space locations,
+each of which is influenced by a local neighborhood of points on the excitation k-space trajectory.
+The division of the problem into patches of target locations creates an opportunity for fine parallelization,
+while the limited neighborhood sizes lead to small problem sizes for each patch. 
+Compared to the original k-space-based algorithm of Ref. \cite{Katscher:2003:Magn-Reson-Med:12509830},
+the L-curve and matrix size results showed that 
+the new algorithm produces much smaller matrix sizes that can be calculated more quickly,
+with the tradeoff of increased excitation error or RF power. 
+Results showed that the algorithm also enables compensation of off-resonance 
+which has not previously been described in a k-space domain design. 
+Compared to widely-used spatial domain method of Ref. \cite{Grissom:2006:MRM},
+the new algorithm is non-iterative and can be finely parallelized to achieve shorter design times, 
+and results showed that it can use coarser target grid sizes while avoiding Gibbs ringing, 
+again with the tradeoff of increased excitation error or RF power.
+The performance of off-resonance-compensated spatial domain and k-space domain pulse designs was similar,
+and the methods were similarly sensitive to excitation k-space undersampling. 
+
+\subsection*{Applications and Extensions}
+This work was initially motivated by the observation that spatial domain parallel pulse designs can be very slow
+for 3D problems with large grid sizes, 
+requiring both many iterations and considerable computation per iteration. 
+It is anticipated that the proposed k-space domain algorithm will be most useful for these types of large $>$2D problems,
+which include 3D spatial designs \cite{malik2012tailored} and 2D and 3D spatial-spectral designs \cite{stenger2000three,yang2010four,davids2016fast}
+where full matrix construction and inversion is infeasible due to the problem size,
+and an iterative design can require several minutes to solve. 
+Furthermore, unlike an iterative spatial domain design the proposed algorithm does not need to be repeated if the target pattern changes.
+This means that it could have a considerable computational speed advantage for magnitude least-squares designs \cite{setsompop2008magnitude,malik:mrm:2015}. 
+The method could also be used to initialize spatial-domain designs to reduce the number of iterations required to reach a target cost; 
+Finally, while simple Tikhonov RF power regularization was used in the designs presented here,
+more sophisticated regularization could be incorporated to, e.g., control peak RF power via adaptive regularization \cite{Yip:2005:Magn-Reson-Med:16155881},
+or to enforce array compression by projecting the weights into the null space of a compression matrix \cite{cao2016array}.
+In such designs, it would be beneficial to pre-compute and store the lower triangular elements of the $\bm{S}^H\bm{S}$ matrices
+so they need not be re-computed as the regularization changes over iterations.  
+
+\section*{Conclusion}
+The proposed k-space domain algorithm accelerates and finely parallelizes parallel transmission pulse design,
+with a modest tradeoff of excitation error and RMS RF amplitude.
