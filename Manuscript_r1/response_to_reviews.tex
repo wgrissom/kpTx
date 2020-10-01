@@ -1,0 +1,211 @@
+
+
+\documentclass[11pt]{article}
+\usepackage{booktabs,ulem,cite,caption,amsmath,graphicx,wrapfig,sidecap,datetime,fancyhdr,bm}
+\usepackage{array,color,multirow,colortbl}
+
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=false,urlcolor=blue,linkcolor=black,citecolor=black}
+
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{url}
+
+\providecommand{\shadeRow}{\rowcolor[rgb]{0.75, 0.75, 0.75}}
+
+
+\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\rmdefault}{phv} % Arial
+\renewcommand{\sfdefault}{phv} % Arial
+
+\frenchspacing % no extra space after periods (check wikipedia, this is an old battle that latex is on the wrong side of!)
+
+\raggedbottom		% Don't add any random white space (annoying!)
+\clubpenalty=10000 	% Absolutely no orphans.
+\widowpenalty=10000	% Absolutely no widows.
+
+\newcommand{\dg}{$^\circ$}
+\newcommand{\by}{$\times$ }
+\newcommand{\bonep}{$B_1^+$}
+\newcommand{\bzero}{$B_0$}
+
+%
+\newcommand{\mywrapfig}[6][-5mm]                % Wrapped figure.
+        {
+        \begin{wrapfigure}{#2}{#4}
+                \begin{center}
+                \vspace{-10mm}
+		\includegraphics[width=#4]{figures/#6}
+                \end{center}
+                \vspace{-4mm}
+                \caption{\textit{#5}}
+                \label{fig:#3}
+                \vspace{#1}
+        \end{wrapfigure}
+	}
+
+\newcommand{\myfig}[2][placeholder]	% \myfig[position]{file}{caption}
+	{
+	\begin{figure}[htb]
+	\begin{center}
+	\vspace{-4mm}
+	\includegraphics[width=0.95\columnwidth]{figures/#1}
+	\caption{\textit{#2}}
+	\label{fig:#1}
+	\end{center}
+	\vspace{-8mm}
+	\end{figure}
+	}
+
+% -- Simple side caption (SC) Figure command
+\newcommand{\myscfig}[4][0.7]     % [1] ratio of caption to figure
+				  % {2} width of figure
+				  % {3} filename
+				  % {4} caption
+        {
+        \begin{SCfigure}[#1][h]
+        \centering
+        \includegraphics[width=#2]{figures/#3}
+        \caption{\textit{#4}}
+        \label{fig:#3}
+        \centering
+        \end{SCfigure}
+        }
+
+\newcommand{\pagebreaksubmit}	 
+	{\newpage \clearpage}		% Uncomment in final submission.
+	%{ }
+
+
+%
+% what is  a jot? 2ex!
+%
+\jot 2ex
+
+%
+% page/column layout
+%
+\markright{plain}
+\headsep 0in
+\topmargin 0.5in
+\headheight 0in
+\hoffset -0.5in
+\voffset -1in
+%\headheight 0in
+\oddsidemargin 0in%-.31in
+\evensidemargin 0in%-.31in
+\textwidth 7.5in
+\textheight 10in
+\marginparsep 0in
+%\columnsep 15pt
+%\columnsep 20pt
+\intextsep 18pt
+\setcounter{tocdepth}{4} 
+\setcounter{secnumdepth}{3} 
+
+
+%
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\z@}%
+                                    {0.75ex \@plus1ex \@minus0.0ex}%
+                                    {-1em}%
+                                    {\reset@font\normalsize\bfseries}}
+
+\renewcommand{\subparagraph}{\@startsection{paragraph}{5}{\z@}%
+                                    {0.75ex \@plus1ex \@minus0.0ex}%
+                                    {-1em}%
+                                    {\reset@font\normalsize\itshape}}
+
+% ---- Reduce the space after sections. ------
+
+\newcommand{\mysection}[1]{\vspace{-3mm}\section{#1}\vspace{-6mm}}
+\newcommand{\mysectionstar}[1]{\vspace{0mm}\section*{#1}\vspace{0mm}}
+\newcommand{\mysubsectionstar}[1]{\vspace{0mm}\subsection*{#1}\vspace{0mm}}
+\newcommand{\mysubsection}[1]{\vspace{-3mm}\subsection{#1}\vspace{-3mm}}
+
+\newcommand{\mysubsubsection}[1]{\vspace{-2mm}\subsubsection{#1}\vspace {-3mm}}
+\newcommand{\mysubsubsectionstar}[1]{\vspace{0mm}\subsubsection*{#1}\vspace{-3mm}}
+\newcommand{\myparagraph}[1]{\vspace{-2mm}\paragraph{#1: }}
+\newcommand{\mysubparagraph}[1]{\underline{#1:} }
+\newcommand{\mystudyparagraph}[1]{\vspace{-2mm}\underline{#1:} }
+
+
+\setlength{\parindent}{0.5in}
+
+\makeatother
+
+%
+% make the bibliography skip smaller
+%
+\def\thebibliography#1{ \list
+  {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}
+    \leftmargin\labelwidth
+    \setlength{\itemsep}{2pt}
+    \setlength{\parsep}{1pt}
+    \advance\leftmargin\labelsep
+    \usecounter{enumi}}
+    \def\newblock{\hskip .11em plus .33em minus -.07em}
+    \sloppy
+    \sfcode`\.=1000\relax}
+
+%
+%  Alphabetic section numbers
+%
+\renewcommand{\thesection}{\Alph{section}}
+
+%
+% caption: smaller font, bold face "Figure X"
+%
+\renewcommand{\captionsize}{\small}
+\renewcommand{\captionlabelfont}{\bf}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{12pt}
+
+\linespread{1.05}
+
+\begin{document}
+
+%\raggedright
+
+%\pagestyle{myheadings}
+\markboth{1-}{}	% Second field hacked out in annotate-page.sty
+
+\onecolumn
+
+%\setlength{\parsep}{5pt}
+\setlength{\parskip}{0pt}
+
+\clearpage
+\newpage
+				% To turn off page numbering, uncomment!
+\pagestyle{empty}		% No page numbers!  
+
+\footskip 15pt
+
+\mysubsectionstar{Response to Reviewer Critiques}
+We appreciate the reviewers' enthusiasm for the work and their constructive criticism and helpful suggestions to improve the manuscript.
+Below we have numbered each specific critique and provide our responses.
+
+%\\[0.2em]
+%\indent{\it \textcolor{red}{TODO: Note that we add validation of integrated power.}}
+%\\[1.2em]
+\mysubsectionstar{Referee 1}
+{\bf R1.1:} P2L26. Please replace ``three'' with ``four''.
+\\[0.2em] 
+\indent{\it \textcolor{blue}{Done.}}
+\\[1.2em]
+{\bf R1.2:} P14L37. Please remove ``B1+ SVT''
+\\[0.2em]
+\indent{\it \textcolor{blue}{Done.}}
+
+\mysubsectionstar{Referee 2}
+{\bf R2.1:} Upon rereading the manuscript, however, I did realize one potential pitfall of the proposed matrix implementation shown in Fig. 1. Using a simple concatenation of power splitters, attenuators and phase shifters will significantly (possibly dramatically) reduce the efficiency of the virtual coil. This means that although fewer parallel transmit pathways could be used, the driving amplifiers need to be significantly more powerful (more then N times, where N is the coil compression factor) to compensate for the power dissipated in the attenuation stage of the matrix. On top of that, there will be losses in the various matrix components and connections. Although a bigger amplifier would probably still be more cost efficient than duplicating the entire RF-chain, most current 7T systems are equipped with only relatively small simplifiers (Typically 8kW in total). For some applications, especially in body imaging, the full 8kW is already considered a limiting factor.
+\par In my opinion it is not critical, but I think it may be worthwhile to highlight this particular aspect in the discussion. I would like to leave it to the authors discretion if they would like to incorporate this final observation.
+\\[0.2em]
+\indent{\it \textcolor{blue}{We agree that due to losses in the coil compression network, more RF
+power will be required to create a given RF field strength compared to a full set of RF power amplifiers
+driving the same coil array. At this early stage it is rather unclear just what those losses will be,
+but we have added a statement to the Discussion that there will be some power loss so the total RF power requirements will
+be increased.}}
+
+\end{document}
