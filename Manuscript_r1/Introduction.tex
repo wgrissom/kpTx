@@ -1,3 +1,4 @@
+%!TEX root = kPtx_paper.tex
 \section* {Introduction}
 
 \par Multidimensional parallel transmission \cite{Katscher:2003:Magn-Reson-Med:12509830,zhu2004parallel} has been widely investigated for applications including
@@ -26,7 +27,7 @@ Since its introduction, nearly all parallel transmission studies have used the s
 
 \par Despite the spatial domain method's strengths, 
 it can have prohibitive computational requirements when the number of coils and the number of dimensions become large, 
-for example in three-dimensional \cite{malik2012tailored,davids2016fast} or spectral-spatial pulse designs, 
+for example in three-dimensional \cite{malik2012tailored,davids2016fast} or spectral-spatial pulse designs \cite{stenger2000three,setsompop2009,Malik:2010aa,yang2010four}, 
 when there is a large number of coils \cite{orzada:2019},
 and when off-resonance compensation is used.  
 The spatial domain system matrix typically has dimensions $N_s \times (N_c \cdot N_t)$, 
@@ -76,7 +77,7 @@ non-uniform fast Fourier transforms and the conjugate gradient algorithm.
 The application for the designs was a three-dimensional inner-volume excitation using a simulated 24-channel transmit array
 and a SPINS trajectory \cite{malik2012tailored}.
 The results show how computation time and accuracy depend on the parameters of the patch-wise parallelization,
-and how well the algorithm accommodates undersampling of excitation k-space undersampling and compensates pulses for off-resonance.
+and how well the algorithm accommodates \textcolor{blue}{excitation k-space undersampling}\revbox{R1.X} and compensates pulses for off-resonance.
 An early account of this work was provided in Ref. \cite{grissom:ismrm18}.
 
 %\par One application of subject-tailored multidimensional pTx pulses that is of particular interest of this paper is the 3D inner volume suppression (IVS) pulses for MR Corticography (MRCoG).MRCoG is a developing imaging technique which aims for submillimeter isotropic resolution whole-cortex and cortex-specific imaging. 

@@ -29,7 +29,8 @@ The durations of the three segments after minimum-time gradient design were 4.17
 With the exception of the simulations across undersampling factors, 
 all pulse designs used this 10 ms trajectory.
 With this trajectory and the 64$\times$64$\times$48 design grid size, 
-the dimensions of the $\bm{W}$ matrix were 16,632 RF pulse samples, by 196,608 target k-space locations. 
+the dimensions of the $\bm{W}$ matrix were 16,632 RF pulse samples, 
+by 196,608 target k-space locations. 
 
 
 
@@ -42,12 +43,13 @@ all spatial domain designs were parallelized using 16 threads that simultaneousl
 non-uniform fast Fourier transforms across transmit coils. 
 The proposed k-space domain algorithm was implemented based on code for the non-Cartesian GRAPPA method of Ref. \cite{luo2019grappa},
 as a function that takes as input the $B_1^+$ maps, 
-a normalized excitation k-space trajectory, and optional structures of algorithm and off-resonance parameters. 
+a normalized excitation k-space trajectory, \textcolor{blue}{and optional MATLAB structures of algorithm parameters such as the Tikhonov regularization parameter
+and inclusion and patch widths, and off-resonance parameters such as the off-resonance field map, the time vector and the number of time segments.}\revbox{R1.X} 
 Within that function the Fourier transforms of the $B_1^+$ products are calculated,
-and a C-based MEX function is invoked to solve for the non-zero elements of each column of $\bm{W}$,
+and a C-based \textcolor{blue}{MATLAB Executable (MEX)}\revbox{R1.X} function is invoked to solve for the non-zero elements of each column of $\bm{W}$,
 with linear interpolation of the Fourier transforms of the $B_1^+$ map products to obtain the entries of the $\bm{S}^H\bm{S}$ matrices. 
 Those elements are then inserted into a sparse $\bm{W}$ matrix, which is the single output of the main function. 
-Parallelization was implemented across patches within the C-based MEX function using OpenMP. 
+Parallelization was implemented across patches within the C-based MEX function using the \textcolor{blue}{Open Multi-Processing (OpenMP)}\revbox{R1.X} library. 
 The final pulses are calculated by multiplying the sparse $\bm{W}$ matrix into the Fourier transform of the target pattern. 
 This code, the $B_1^+$ maps, and a demo script are available at https://github.com/wgrissom/kpTx. 
 All pulse designs were performed on a server (Colfax International, Santa Clara, CA, USA) 

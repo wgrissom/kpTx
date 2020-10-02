@@ -25,8 +25,8 @@ This work was initially motivated by the observation that spatial domain paralle
 for 3D problems with large grid sizes, 
 requiring both many iterations and considerable computation per iteration. 
 It is anticipated that the proposed k-space domain algorithm will be most useful for these types of large $>$2D problems,
-which include 3D spatial designs \cite{malik2012tailored} and 2D and 3D spatial-spectral designs \cite{stenger2000three,yang2010four,davids2016fast}
-where full matrix construction and inversion is infeasible due to the problem size,
+which include 3D spatial designs \cite{malik2012tailored,davids2016fast} and \textcolor{blue}{2D and 3D spatial-spectral designs \cite{stenger2000three,setsompop2009,Malik:2010aa,yang2010four}
+where full matrix construction and inversion is infeasible due to the problem size, }\revbox{R1.X}
 and an iterative design can require several minutes to solve. 
 Furthermore, unlike an iterative spatial domain design the proposed algorithm does not need to be repeated if the target pattern changes.
 This means that it could have a considerable computational speed advantage for magnitude least-squares designs \cite{setsompop2008magnitude,malik:mrm:2015}. 
@@ -37,8 +37,8 @@ or to enforce array compression by projecting the weights into the null space of
 In such designs, it would be beneficial to pre-compute and store the lower triangular elements of the $\bm{S}^H\bm{S}$ matrices
 so they need not be re-computed as the regularization changes over iterations.  
 \textcolor{blue}{Peak power could also be controlled in k-space domain designs using pTx VERSE \cite{Lee:2011:MRM} or the iterative re-VERSEit technique \cite{lee2009tod}.} \revbox{R2.X}
-\textcolor{blue}{It may also be possible to use the k-space domain method to rapidly design large-tip-angle pulses via the direct linear class of large-tip-angle pulses method \cite{Xu:2008aa} or the additive angle methods \cite{grissom:mrm:2008}; 
-the latter method alternates between small-tip-angle designs that could be solved by the k-space method and Bloch simulations to update the target pattern.} \revbox{R2.X}
+\textcolor{blue}{It may also be possible to use the k-space domain method to rapidly design large-tip-angle pulses via the direct linear class of large-tip-angle pulses method \cite{Xu:2008aa} or the additive angle method \cite{grissom:mrm:2008}; 
+the latter alternates between small-tip-angle designs that could be solved by the k-space method and Bloch simulations to update the target pattern.} \revbox{R2.X}
 
 
 \section*{Conclusion}
