@@ -36,6 +36,10 @@ more sophisticated regularization could be incorporated to, e.g., control peak R
 or to enforce array compression by projecting the weights into the null space of a compression matrix \cite{cao2016array}.
 In such designs, it would be beneficial to pre-compute and store the lower triangular elements of the $\bm{S}^H\bm{S}$ matrices
 so they need not be re-computed as the regularization changes over iterations.  
+\textcolor{blue}{Peak power could also be controlled in k-space domain designs using pTx VERSE \cite{Lee:2011:MRM} or the iterative re-VERSEit technique \cite{lee2009tod}.} \revbox{R2.X}
+\textcolor{blue}{It may also be possible to use the k-space domain method to rapidly design large-tip-angle pulses via the direct linear class of large-tip-angle pulses method \cite{Xu:2008aa} or the additive angle methods \cite{grissom:mrm:2008}; 
+the latter method alternates between small-tip-angle designs that could be solved by the k-space method and Bloch simulations to update the target pattern.} \revbox{R2.X}
+
 
 \section*{Conclusion}
 The proposed k-space domain algorithm accelerates and finely parallelizes parallel transmission pulse design,

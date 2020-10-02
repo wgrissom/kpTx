@@ -175,28 +175,29 @@ which decouples the space- and time-dependence of off-resonant phase accrual int
 space- and time-dependent terms, which are applied on either side of the non-uniform fast Fourier transform operator. 
 Here we show that a time-segmented off-resonance model can be incorporated in the proposed k-space-domain algorithm. 
 Mathematically, the time-segmented model is given by:
+\textcolor{blue}{
 \begin{equation}
-e^{\imath \Delta\omega_j (t_i-T) }\approx\sum_{l=1}^{L} g_l(t_i) e^{\imath \Delta\omega_j \breve{t}_l},
+e^{\imath \Delta\omega(\vec{x}_j) (t_i-T) }\approx\sum_{l=1}^{L} b_l(t_i) h_{l}(\vec{x}_j) ,
 \end{equation}
-where $\Delta\omega_j$ is the off-resonance frequency at location $\vec{x}_j$, 
+where $\Delta\omega(\vec{x}_j)$ is the off-resonance frequency at $\vec{x}_j$, 
 $i$ indexes time points in the pulse, 
 $T$ is the pulse duration,
 and $l$ indexes the $L$ time segments, where $L$ is typically between 4 and 8. 
-$g_{il}=b_{l}(t_i)$ are the temporal interpolators that multiply into the RF samples,
-and $h_{lj}=e^{\imath \Delta\omega_j\breve{t}_l}$ are the off-resonance phase shifts 
+The $b_{l}(t_i)$ functions are temporal interpolators that multiply into the RF samples and are determined by
+numerical optimization as described in Ref. \cite{fessler2005toeplitz},
+and $h_{l}(\vec{x}_j) = e^{\imath \Delta\omega(\vec{x}_j)\breve{t}_l}$ are the off-resonance phase shifts 
 applied to the excitation patterns produced by the RF pulse time segments centered at time points $\{\breve{t}_l: l = 1, \dots, L\}$.
 The time-segmented off-resonance model can be incorporated into Equation \ref{eq:ScalerForm} as:
 \begin{equation}
-	\delta(\vec{k}-\vec{k}_j)=\sum_{l = 1}^L \sum_{i=1}^{N_t}\sum_{c=1}^{N_c} w_c(\vec{k}_i) g_l(t_i) \tilde{s}_{cl} (\vec{k}-\vec{k}_i), 
+	\delta(\vec{k}-\vec{k}_j)=\sum_{l = 1}^L \sum_{i=1}^{N_t}\sum_{c=1}^{N_c} w_c(\vec{k}_i) b_l(t_i) \tilde{s}_{cl} (\vec{k}-\vec{k}_i), 
 \end{equation}
 where $\tilde{s}_{cl}(\vec{k})$ is the Fourier transform of the product of channel $c$'s $B_1^+$ map and time segment $l$'s 
-off-resonance phase exponential. 
+off-resonance phase shift $h_l(\vec{x}_j)$. 
 We can then write the equivalent of Equation \ref{eq:MatrixForm} with the off-resonance model:
 \begin{equation}
-	\sum_{l=1}^L \bm{S}_l \textrm{diag}(g_{il}) \bm{w}_j = \bm{\delta}_j,
+	\sum_{l=1}^L \bm{S}_l \textrm{diag}(b_{l}(t_i)) \bm{w}_j = \bm{\delta}_j,
 \end{equation} 
-where the matrix $\bm{S}_l$ is now formed from the $N_c  L$ Fourier transforms of the $B_1^+$ map and off-resonance
-phase exponential products.  
+where the matrix $\bm{S}_l$ is now formed from the $N_c  L$ Fourier transforms of the $B_1^+$ map and $h_l(\vec{x}_j)$ products.} \revbox{R1.X}  
 Efficient construction of the $\bm{S}^{H}\bm{S}$ matrix follows much the same procedure as without
 off-resonance except that with off-resonance,
 the elements of each sub-matrix $\bm{S}_i^{H}\bm{S}_j$ in Equation \ref{eq:SHS_blocks}
