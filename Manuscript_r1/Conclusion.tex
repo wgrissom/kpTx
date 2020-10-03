@@ -19,6 +19,9 @@ and results showed that it can use coarser target grid sizes while avoiding Gibb
 again with the tradeoff of increased excitation error or RF power.
 The performance of off-resonance-compensated spatial domain and k-space domain pulse designs was similar,
 and the methods were similarly sensitive to excitation k-space undersampling. 
+\textcolor{blue}{While all the pulse designs in this work used 3D SPINS trajectories,
+the method can be applied in any number of dimensions and with any excitation k-space trajectory.
+The MATLAB implementation described can be used for any two- or three-dimensional pulse design without modification.}\revbox{R1.X}
 
 \subsection*{Applications and Extensions}
 This work was initially motivated by the observation that spatial domain parallel pulse designs can be very slow
@@ -28,10 +31,11 @@ It is anticipated that the proposed k-space domain algorithm will be most useful
 which include 3D spatial designs \cite{malik2012tailored,davids2016fast} and \textcolor{blue}{2D and 3D spatial-spectral designs \cite{stenger2000three,setsompop2009,Malik:2010aa,yang2010four}
 where full matrix construction and inversion is infeasible due to the problem size, }\revbox{R1.X}
 and an iterative design can require several minutes to solve. 
-Furthermore, unlike an iterative spatial domain design the proposed algorithm does not need to be repeated if the target pattern changes.
-\textcolor{blue}{This means that while the k-space design method requires the user to specify a complex-valued (not just magnitude) target pattern,
-it could have a considerable computational speed advantage for Gerchberg-Saxton magnitude least-squares designs \cite{setsompop2008magnitude,malik:mrm:2015}
-which alternate between designing pulses and updating a complex-valued target pattern. }\revbox{R1.X}
+\textcolor{blue}{Furthermore, unlike an iterative spatial domain design the proposed algorithm does not need to be repeated if the target pattern changes.
+This means it could have a considerable computational speed advantage for Gerchberg-Saxton magnitude least-squares pulse designs \cite{setsompop2008magnitude,malik:mrm:2015}
+which alternate between designing pulses and updating a complex-valued target pattern.
+Such a design method would allow the user to specify only the magnitude of the target pattern, 
+rather than magnitude and phase as was required in this work.}\revbox{R1.X}
 The method could also be used to initialize spatial-domain designs to reduce the number of iterations required to reach a target cost. 
 Finally, while simple Tikhonov RF power regularization was used in the designs presented here,
 more sophisticated regularization could be incorporated to, 
@@ -42,7 +46,8 @@ In such designs, it would be beneficial to pre-compute and store the lower trian
 so they need not be re-computed as the regularization changes over iterations.  
 \textcolor{blue}{Peak power could also be controlled in k-space domain designs using pTx VERSE \cite{Lee:2011:MRM} or the iterative re-VERSEit technique \cite{lee2009tod}.} \revbox{R2.X}
 \textcolor{blue}{It may also be possible to use the k-space domain method to rapidly design large-tip-angle pulses via the direct linear class of large-tip-angle pulses method \cite{Xu:2008aa} or the additive angle method \cite{grissom:mrm:2008}; 
-the latter alternates between small-tip-angle designs that could be solved by the k-space method and Bloch simulations to update the target pattern.} \revbox{R2.X}
+the latter alternates between small-tip-angle designs that could be solved by the k-space method, 
+and Bloch simulations to update the target pattern.} \revbox{R2.X}
 
 
 \section*{Conclusion}
