@@ -105,7 +105,7 @@ To accelerate the design of \textcolor{blue}{(under- or oversampled)}\revbox{R1.
 \\[1em]
 {\bf Methods:}
 A k-space domain parallel transmission pulse design algorithm was proposed that
-produces a sparse matrix relating a target excitation pattern to the pulses that produce it,
+produces a sparse matrix relating a \textcolor{blue}{complex-valued}\revbox{R1.X} target excitation pattern to the pulses that produce it, 
 and can be finely parallelized. 
 The algorithm was applied in simulations to the design of 3D SPINS pulses for inner volume excitation in the brain at 7 Tesla.
 It was characterized in terms of the dependence of computation time, excitation error, and required memory
@@ -310,6 +310,16 @@ Cao Z, Yan X, Grissom WA.
 \newblock Array-compressed parallel transmit pulse design.
 \newblock Magn Reson Med 2016;\hspace{0pt}76:1158--1169.
 
+\bibitem{padormo:2016}
+F.~Padormo, A.~Beqiri, J.~V. Hajnal, and S.~J. Malik.
+\newblock Parallel transmission for ultrahigh-field imaging.
+\newblock {NMR} Biomed 2016; 29(9):1145--1161.
+
+\bibitem{deniz:2019}
+C.~M. Deniz.
+\newblock Parallel transmission for ultrahigh field {MRI}.
+\newblock Top Magn Reson Imaging 2019; 28(3):159--171.
+
 \bibitem{Lee:2011:MRM}
 D.~Lee, W.~A. Grissom, M.~Lustig, A.~B. Kerr, P.~P. Stang, and J.~M. Pauly.
 \newblock {VERSE}-guided numerical {RF} pulse design: A fast method for peak
@@ -340,11 +350,32 @@ W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
 
 \end{thebibliography}
 
+\pagebreak
+
+\section*{Table Captions}
+
+\begin{table}[!h]
+\centering
+%\begin{tabular}{c | c}
+%Inclusion Width & $\bm{W}$ Matrix Size (GB) \\
+%\hline
+%$\infty$ & 24.4 \\
+%8 & 2.73 \\
+%6 & 1.37 \\
+%4 & 0.53 \\
+%2 & 0.14
+%\end{tabular}
+\caption{$\bm{W}$ matrix sizes in gigabytes (GB) versus inclusion width in cycles/FOV. 
+An inclusion width of $\infty$ corresponds to a full matrix solution.}
+\label{fig:wsize}
+\end{table}
 
 \pagebreak
 %(Please see main document for caption with intended math typesetting)
 
-\begin{figure}
+\section*{Figure Captions}
+
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{kspace_PTX_Patch}
 	\caption{(a) A target point $\vec{k}_j$ and the nearby trajectory points that are included when calculating 
@@ -359,7 +390,7 @@ W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
 	\label{fig:Patch}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=6cm]{kspace_PTX_Coil}
 	\caption{The 24-channel loop Tx array that was simulated in a human head model to obtain $B_1^+$ maps. 
@@ -367,7 +398,7 @@ W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
 	\label{fig:Coil}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{kSpace_PTX_Pattern_Trajectory}
 	\caption{(a) Middle axial, sagittal, and coronal slices of the target excitation pattern used for all pulse designs. 
@@ -376,7 +407,7 @@ W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
 	\label{fig:Target}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{ErrorMap}
 	\caption{ %\textcolor{red}{WAG: I think this is the figure that your example in Github should replicate.}
@@ -385,7 +416,7 @@ W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
 	\label{fig:ErrorMap}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{ComputationTime}
 	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4 cycles/FOV. 
@@ -394,23 +425,7 @@ W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
 	\label{fig:ComputationTime}
 \end{figure}
 
-\begin{figure}
-\centering
-%\begin{tabular}{c | c}
-%Inclusion Width & $\bm{W}$ Matrix Size (GB) \\
-%\hline
-%$\infty$ & 24.4 \\
-%8 & 2.73 \\
-%6 & 1.37 \\
-%4 & 0.53 \\
-%2 & 0.14
-%\end{tabular}
-\caption{$\bm{W}$ matrix sizes in gigabytes (GB) versus inclusion width in cycles/FOV. 
-An inclusion width of $\infty$ corresponds to a full matrix solution.}
-\label{fig:wsize}
-\end{figure}
-
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{L_curve}
 	\caption{L-curves for spatial domain and k-space domain pulse designs, 
@@ -422,7 +437,7 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{GibbsRinging}
 	\caption{Normalized error maps and RMSEs for 
@@ -435,7 +450,7 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{ReductionFactor}
 	\caption{Normalized error maps and RMSEs for spatial domain design (first row) and k-space domain design (second row), 
@@ -445,7 +460,7 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{OffResonance}
 	\caption{

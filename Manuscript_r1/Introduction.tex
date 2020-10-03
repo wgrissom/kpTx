@@ -56,7 +56,7 @@ as a pre-scan stage while the subject lies in the scanner.
 pulse design algorithm with low memory requirements, 
 that can be applied to large pulse design problems with fine parallelization. 
 The algorithm produces a sparse k-space-domain pseudoinverse pulse design matrix 
-that directly relates the Fourier transform of the target excitation pattern to the RF pulses that produce it.
+that directly relates the Fourier transform \textcolor{blue}{of a complex-valued}\revbox{R1.X} target excitation pattern to the RF pulses that produce it.
 Once the matrix is built, 
 RF pulses are instantaneously solved by a sparse matrix multiplication,
 and the matrix need not be recomputed if the target pattern changes.

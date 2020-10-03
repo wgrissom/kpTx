@@ -11,7 +11,7 @@ excitation pattern to a vector of RF pulses that together produce the pattern, a
 where $\bm{b}$ is a vector of concatenated multi-channel RF pulses with length $N_t  N_c$, 
 where $N_t$ and $N_c$ are the numbers of time points and channels, respectively,
 and $\mathcal{F}(\bm{d})$ is a length-$N_s$ vector containing the 
-Fourier transform of the desired k-space excitation pattern $\bm{d}$.
+Fourier transform of the \textcolor{blue}{complex-valued}\revbox{R1.X} target k-space excitation pattern $\bm{d}$.
 $\bm{W}$ has dimensions $N_t  N_c \times N_s$.
 Once the entries of $\bm{W}$ are computed, 
 the RF design problem can be instantaneously solved by a sparse matrix multiplication, 
