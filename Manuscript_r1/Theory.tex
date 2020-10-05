@@ -11,7 +11,7 @@ excitation pattern to a vector of RF pulses that together produce the pattern, a
 where $\bm{b}$ is a vector of concatenated multi-channel RF pulses with length $N_t  N_c$, 
 where $N_t$ and $N_c$ are the numbers of time points and channels, respectively,
 and $\mathcal{F}(\bm{d})$ is a length-$N_s$ vector containing the 
-Fourier transform of the \textcolor{blue}{complex-valued}\revbox{R1.X} target k-space excitation pattern $\bm{d}$.
+Fourier transform of the \textcolor{blue}{complex-valued}\revbox{R1.1} target k-space excitation pattern $\bm{d}$.
 $\bm{W}$ has dimensions $N_t  N_c \times N_s$.
 Once the entries of $\bm{W}$ are computed, 
 the RF design problem can be instantaneously solved by a sparse matrix multiplication, 
@@ -66,7 +66,7 @@ This means Equation \ref{eq:ScalerForm} can be modified to:
 \end{equation} 
 where $\mathbb{N}$ is the set of trajectory points in the vicinity of $\vec{k}_j$. 
 In this work `inclusion width' is defined as the distance, 
-in \textcolor{blue}{phase cycles per excitation field-of-view (cycles/FOV), }\revbox{R1.X} 
+in \textcolor{blue}{phase cycles over the excitation field-of-view (cycles/FOV), }\revbox{R1.2} 
 from each target location $\vec{k}_j$ within which which all trajectory points are accrued into $\mathbb{N}$.
 This reduced set of trajectory points reduces the column dimension of $\bm{S}$
 and both dimensions of $\bm{S}^H\bm{S}$,
@@ -197,7 +197,7 @@ We can then write the equivalent of Equation \ref{eq:MatrixForm} with the off-re
 \begin{equation}
 	\sum_{l=1}^L \bm{S}_l \textrm{diag}(b_{l}(t_i)) \bm{w}_j = \bm{\delta}_j,
 \end{equation} 
-where the matrix $\bm{S}_l$ is now formed from the $N_c  L$ Fourier transforms of the $B_1^+$ map and $h_l(\vec{x}_j)$ products.} \revbox{R1.X}  
+where the matrix $\bm{S}_l$ is now formed from the $N_c  L$ Fourier transforms of the $B_1^+$ map and $h_l(\vec{x}_j)$ products.} \revbox{R1.3}  
 Efficient construction of the $\bm{S}^{H}\bm{S}$ matrix follows much the same procedure as without
 off-resonance except that with off-resonance,
 the elements of each sub-matrix $\bm{S}_i^{H}\bm{S}_j$ in Equation \ref{eq:SHS_blocks}

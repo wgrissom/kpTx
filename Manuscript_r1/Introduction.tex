@@ -24,7 +24,7 @@ and enables flexible modeling and compensation of effects such as off-resonance,
 incorporation of regions of interest,
 and the use of non-uniform fast Fourier transforms to accelerate matrix multiplies.
 Since its introduction, 
-\textcolor{blue}{nearly all small-tip-angle parallel transmission studies have been formulated in the spatial domain \cite{padormo:2016,deniz:2019}.} \revbox{R2.X}
+\textcolor{blue}{nearly all small-tip-angle parallel transmission studies have been formulated in the spatial domain \cite{padormo:2016,deniz:2019}.} \revbox{R2.2}
 
 \par Despite the advantages of the spatial domain approach, 
 it can have prohibitive computational requirements when the number of coils and the number of dimensions become large, 
@@ -57,7 +57,7 @@ as a pre-scan stage while the subject lies in the scanner.
 pulse design algorithm with low memory requirements, 
 that can be applied to large pulse design problems with fine parallelization. 
 The algorithm produces a sparse k-space-domain pseudoinverse pulse design matrix 
-that directly relates the Fourier transform \textcolor{blue}{of a complex-valued}\revbox{R1.X} target excitation pattern to the RF pulses that produce it.
+that directly relates the Fourier transform \textcolor{blue}{of a complex-valued}\revbox{R1.1} target excitation pattern to the RF pulses that produce it.
 Once the matrix is built, 
 RF pulses are instantaneously solved by a sparse matrix multiplication,
 and the matrix need not be recomputed if the target pattern changes.
@@ -78,7 +78,7 @@ non-uniform fast Fourier transforms and the conjugate gradient algorithm.
 The application for the designs was a three-dimensional inner-volume excitation using a simulated 24-channel transmit array
 and a SPINS trajectory \cite{malik2012tailored}.
 The results show how computation time and accuracy depend on the parameters of the patch-wise parallelization,
-and how well the algorithm accommodates \textcolor{blue}{excitation k-space undersampling}\revbox{R1.X} and compensates pulses for off-resonance.
+and how well the algorithm accommodates \textcolor{blue}{excitation k-space undersampling}\revbox{R1.9} and compensates pulses for off-resonance.
 An early account of this work was provided in Ref. \cite{grissom:ismrm18}.
 
 %\par One application of subject-tailored multidimensional pTx pulses that is of particular interest of this paper is the 3D inner volume suppression (IVS) pulses for MR Corticography (MRCoG).MRCoG is a developing imaging technique which aims for submillimeter isotropic resolution whole-cortex and cortex-specific imaging. 

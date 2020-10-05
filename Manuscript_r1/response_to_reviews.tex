@@ -185,6 +185,9 @@
 \mysubsectionstar{Response to Reviewer Critiques}
 We appreciate the reviewers' enthusiasm for the work and their constructive criticism and helpful suggestions to improve the manuscript.
 Below we have numbered each specific critique and provide our responses.
+For each addition we have made, we have trimmed out other text, and now stand at a word count of \textcolor{red}{X words.} 
+\textcolor{red}{In addition, we have removed the $R = 3$ result from Figure 9 (now Figure 8), to improve readability. 
+We kept the powers-of-two reduction factors.}
 
 %\\[0.2em]
 %\indent{\it \textcolor{red}{TODO: Note that we add validation of integrated power.}}
@@ -192,49 +195,62 @@ Below we have numbered each specific critique and provide our responses.
 \mysubsectionstar{Referee 1}
 {\bf R1.1:} Please clarify from the beginning that your method is designed for a complex target pattern, i.e., specifying magnitude and phase and not only magnitude as in e.g. [13]. As you are certainly aware, this feature has severe consequences for the method. Thus also the phase pattern in the simulation setup has to be specified (page 10, I assume phase demand is simply constant). Some sentences in the discussion how you would extend your method to magnitude-only patterns would also be appreciated.
 \\[0.2em] 
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{We have added statements throughout the manuscript to clarify that the target pattern is complex-valued,
+and that the target phase we used in our simulated designs was zero.
+We also added discussion that to achieve a magnitude-least-squares design with the k-space method, 
+it could be used in a Gerchberg-Saxton-like magnitude-least-squares algorithm,
+where it would have the advantage (compared to an iterative spatial domain design) that the matrix $\bm{W}$ 
+would not need to be recomputed as the target pattern changes over iterations.}}
 \\[1.2em]
 
-{\bf R1.2:} It is not directly clear how far your method is specific for the chosen SPINS trajectory (e.g. by defining the inclusion width as cycles/FOV). Please discuss how far your method is applicable to arbitrary trajectories, or how the method needs to be adapted if other trajectories are used.
+\noindent{\bf R1.2:} It is not directly clear how far your method is specific for the chosen SPINS trajectory (e.g. by defining the inclusion width as cycles/FOV). Please discuss how far your method is applicable to arbitrary trajectories, or how the method needs to be adapted if other trajectories are used.
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{The algorithm makes no assumptions about the specific trajectory used, 
+and we have clarified this in the Discussion.
+The code we provide should work for any 2D or 3D trajectory, and could be extended to any number of dimensions. 
+We have also clarified in the Theory section that by `cycles/FOV' we mean phase cycles over the excitation FOV;
+this is a general measure that is not specific to the SPINS trajectory.}}
 \\[1.2em]
 
-{\bf R1.3:} Description of off-resonance compensation seems to be slightly less diligent as rest of theory. (a) Equation 7 contains $g_l$ (one index) but you define $g_{il}$ (two indices), then $g_l$ is used again in Eq 8 and $g_{il}$ in Eq 9, (b) the definition of $g_l$ is based on $b_l$ but I do not find definition of $b_l$, (c) shortly after you introduce $h_{lj}$, but $h_{lj}$ seems to be never used.
+\noindent{\bf R1.3:} Description of off-resonance compensation seems to be slightly less diligent as rest of theory. (a) Equation 7 contains $g_l$ (one index) but you define $g_{il}$ (two indices), then $g_l$ is used again in Eq 8 and $g_{il}$ in Eq 9, (b) the definition of $g_l$ is based on $b_l$ but I do not find definition of $b_l$, (c) shortly after you introduce $h_{lj}$, but $h_{lj}$ seems to be never used.
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
-
-{\bf R1.4:} It is not directly clear how far your method is specific for the chosen SPINS trajectory (e.g. by defining the inclusion width as cycles/FOV). Please discuss how far your method is applicable to arbitrary trajectories, or how the method needs to be adapted if other trajectories are used.
-\\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{Thank you for noticing the inconsistencies in this section; we agree and have revised the section to simplify and clarify it.}}
 \\[1.2em]
 
-{\bf R1.5:} Abstract, purpose: To underline that this paper is about acceleration of design of RF pulses and not about acceleration of RF pulses itself (which might be intuitively expected by some readers) I suggest to add a bracket like this: „To accelerate the design of (under- or oversampled) multidimensional parallel transmission pulses“
+\noindent{\bf R1.4:} Abstract, purpose: To underline that this paper is about acceleration of design of RF pulses and not about acceleration of RF pulses itself (which might be intuitively expected by some readers) I suggest to add a bracket like this: „To accelerate the design of (under- or oversampled) multidimensional parallel transmission pulses“
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{We agree and have made this addition.}}
 \\[1.2em]
 
-{\bf R1.6:} page 11, row 32: „optional structures of algorithm and off-resonance parameters“: please be more specific or skip this remark
+\noindent{\bf R1.5:} page 11, row 32: „optional structures of algorithm and off-resonance parameters“: please be more specific or skip this remark
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{We have skipped this remark to save word count.}}
 \\[1.2em]
 
-{\bf R1.7:} page 11, „MEX“ and „OpenMP“: the editor might decide if these terms need some explanation, or can be taken as known
+\noindent{\bf R1.6:} page 11, „MEX“ and „OpenMP“: the editor might decide if these terms need some explanation, or can be taken as known
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{We have defined each of these acronyms.}}
 \\[1.2em]
 
-{\bf R1.8:} page 19, rows 25-30: there are numerous studies on various types of power regularization for parallel transmission (e.g. Hamburg/Graesslin, London/Malik, Zurich/Brunner, Paris/Boulant). You might reference some of these, or reference at least a review paper on this topic like Padormo F NBM 2016, Deniz CM TMRI 2020 etc.
+\noindent{\bf R1.7:} page 19, referencing spatial-spectral designs, please add corresponding studies using parallel transmission: Setsompop K MRM 2009 and Malik S MRM 2010
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{We have added those citations, in both the Conclusion and Introduction.}}
 \\[1.2em]
 
-{\bf R1.9:} More privately, I am curious which text editor you use, which obviously removed all typos (I did not find a single typo) but does not seem to be able to show doublings:
+\noindent{\bf R1.8:} page 19, rows 25-30: there are numerous studies on various types of power regularization for parallel transmission (e.g. Hamburg/Graesslin, London/Malik, Zurich/Brunner, Paris/Boulant). You might reference some of these, or reference at least a review paper on this topic like Padormo F NBM 2016, Deniz CM TMRI 2020 etc.
+\\[0.2em]
+\indent{\it \textcolor{blue}{We apologize; there were some references we intended to include there but missed in the initial submission.
+In response to this and R2.2 and R2.3, we have added citations to the two review articles you mention, and also explicitly state that it is unclear at this time how and
+whether hard constraints could be built in to the method.}}
+\\[1.2em]
+
+\noindent{\bf R1.9:} More privately, I am curious which text editor you use, which obviously removed all typos (I did not find a single typo) but does not seem to be able to show doublings:
 - page 6, row 48: double "row"
 - page 16, row 30: double "of"
 - page 5, row 12: double "undersampling"
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{We used TexShop on the Mac - thanks for finding the doublings! 
+We found and fixed the ``of'' and ``undersampling'' ones but could not locate the ``row'' one.}}
 \\[1.2em]
 
 \mysubsectionstar{Referee 2}
@@ -249,12 +265,8 @@ They consider 196,000 spatial points.
 Channel-wise it is fair they consider 24 channels that match their array, but otherwise all three circumstances they investigate are lower than the initial problem they claim exist.
 
 They do produce a rather good compression of the design problem by the new method. I wonder why they don't stress test it better, going towards the troublesome criteria and beyond. What results would they obtain if they reached the claimed limits? How far can they go?
-\\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
-\\[1.2em]
 
-
-{\bf R2.2:} Their stress tests demonstrate finely the methods application towards the off-resonance handling, pulse acceleration, RF power regularization and RMSE of excitation patterns etc.
+Their stress tests demonstrate finely the methods application towards the off-resonance handling, pulse acceleration, RF power regularization and RMSE of excitation patterns etc.
 
 For a completely numerical paper however, I believe the stress testing should target not only what they have done, but also going to the extreme -- if they claim it is a problem they can solve.... Otherwise they should reduce their claim and state they can fix the problem partly by this proposed method.
 
@@ -264,10 +276,12 @@ I'm sure lots of pulse design will use the algorithm for other target regions (m
 
 I couldn't quite find out what the 0.5-undersampling reduction factor meant in terms of pulse duration. If it translates to 666*2 time samples then again we are not near the 10,000 samples still. But maybe this should be described in more detail...
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{red}{TODO: Clarify how the trajectory changed between the different $R$ factors. 
+We have updated the numbers in the Introduction to slightly more realistic values. 
+We will report the design times across $R$ factors.}}
 \\[1.2em]
 
-{\bf R2.3:} It is somewhat weakening that they only compare their method to another one of their methods, since a lot has been done since 2006.
+\noindent {\bf R2.2:} It is somewhat weakening that they only compare their method to another one of their methods, since a lot has been done since 2006.
 
 p3 l 32: "...nearly all parallel transmission studies have used the spatial domain method":
 
@@ -276,11 +290,8 @@ For sure a lot of pTx designs use the spatial domain method of Grissom.
 But stating "nearly all" is somewhat a guess and should be backed up by numbers. What do you mean by nearly all? It must be quite provoking for those who use another one to be diminished.
 
 We can agree that most pTx design function in the spatial domain, but to state that they are also based on the method of Grissom should be backed up.
-\\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
-\\[1.2em]
 
-{\bf R2.4:} As discussed below, another reason to include mentions of even more pulse designs is that they tackle problems the proposed method does not. Similar to Hoyos-Idrobos [15] and Brunners [14] please discuss how the proposed method will handle if at all possible hard constraints. Is it possible?
+As discussed below, another reason to include mentions of even more pulse designs is that they tackle problems the proposed method does not. Similar to Hoyos-Idrobos [15] and Brunners [14] please discuss how the proposed method will handle if at all possible hard constraints. Is it possible?
 
 I can only imagine that local SAR constraints will be quite comfortable to have with 24 channels. It is good that achieving the target profile is now faster with the proposed method, but how will the k-space domain method( and the spatial domain method for matter), handle local SAR? If you have 24 amplifiers tied together, are you all set to just rely on pulse (adaptive) regularisation or would you really desire to have hard peak and even average power constraints?
 
@@ -288,16 +299,21 @@ One can accept to only witness a comparison to the 2006 method, if the limitatio
 
 Yes, other methods might be much slower, but they handle problems you don't.
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{We agree that we need to tone down the language here. We have revised wording to indicate that nearly all parallel transmission studies have been formulated in the spatial domain, rather than being explicitly derived directly from the spatial domain method.
+We have also added in the Discussion that it is not clear at this time whether or how hard power or SAR constraints could be directly built in to the method,
+though the method would be compatible with parallel transmit VERSE methods.}}
 \\[1.2em]
 
-{\bf R2.5:}As a new pulse design method, I think the introduction should include a much broader review of other pulse designs existing already. Otherwise it paints a false picture of what has happened in the period where Grissom introduced the method they are comparing to.
+\noindent {\bf R2.3:} As a new pulse design method, I think the introduction should include a much broader review of other pulse designs existing already. Otherwise it paints a false picture of what has happened in the period where Grissom introduced the method they are comparing to.
 
 It is also an overall narrow scope they used for review. The latest pulse design method papers referenced are from 2016, and their own ISMRM abstract from 2018.
 
 New pulse design methods have appeared in more recent years. Within, all the years from 2006 to now, there are several pulse designs demonstrated for other applications than 3D pTx, but have features that translate readily to a 3D application. The Grissom-2006 method did not include a 3D pTx application. Hence, the sought-for referencing can also include pulse design with other applications and with design features that solves problems that the proposed method does not solve, even if it was not for 3D pTx.
 \\[0.2em]
-\indent{\it \textcolor{blue}{Done.}}
+\indent{\it \textcolor{blue}{While we are above our word count and cannot add a broad overview of different parallel transmit pulse design methods
+to the Introduction,
+we have added 10 more citations to the work including two review articles on parallel transmission (Deniz 2019 and Padormo 2015).
+We also added brief Discussion on possible extensions of the method for large-tip-angle and VERSE parallel transmit pulse designs.}}
 \\[1.2em]
 
 \end{document}

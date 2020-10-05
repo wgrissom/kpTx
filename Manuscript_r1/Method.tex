@@ -8,7 +8,7 @@ for imaging the human cortex.
 24-channel complex-valued $B_1^+$ maps used in the pulse designs were simulated in a male human head model using 
 Ansys High Frequency Structure Simulator (Canonsburg, PA, USA) with 1.5 mm isotropic resolution. 
 Figure \ref{fig:Target}a shows the target pattern for all pulse designs which comprised an ellipse centered on the ventricles with AP/HF/LR semi-axes of 4.8/3.2/3.2 cm,
-\textcolor{blue}{with zero phase.}\revbox{R1.X} 
+\textcolor{blue}{with zero phase.}\revbox{R1.1} 
 The pattern was smoothed by a Fermi filter that was applied in the frequency domain to match the target pattern's effective resolution to the excitation k-space trajectory's 5 mm resolution.
 This choice of target pattern was motivated by imaging applications for the 7 Tesla scanner 
 in which midbrain signals will be saturated for high-resolution, highly-accelerated imaging of the cortex. 
@@ -43,14 +43,14 @@ Except for the off-resonance-compensated designs described below,
 all spatial domain designs were parallelized using 16 threads that simultaneously computed the forward and backward 
 non-uniform fast Fourier transforms across transmit coils. 
 The proposed k-space domain algorithm was implemented based on code for the non-Cartesian GRAPPA method of Ref. \cite{luo2019grappa},
-as a function that takes as input the $B_1^+$ maps, 
-a normalized excitation k-space trajectory, \textcolor{blue}{and optional MATLAB structures of algorithm parameters such as the Tikhonov regularization parameter
-and inclusion and patch widths, and off-resonance parameters such as the off-resonance field map, the time vector and the number of time segments.}\revbox{R1.X} 
+as a function that takes as input the $B_1^+$ maps and a normalized excitation k-space trajectory.
+%, \textcolor{blue}{and optional MATLAB structures of algorithm parameters such as the Tikhonov regularization parameter
+%and inclusion and patch widths, and off-resonance parameters such as the off-resonance field map, the time vector and the number of time segments.}\revbox{R1.X} 
 Within that function the Fourier transforms of the $B_1^+$ products are calculated,
-and a C-based \textcolor{blue}{MATLAB Executable (MEX)}\revbox{R1.X} function is invoked to solve for the non-zero elements of each column of $\bm{W}$,
+and a C-based \textcolor{blue}{MATLAB Executable (MEX)}\revbox{R1.6} function is invoked to solve for the non-zero elements of each column of $\bm{W}$,
 with linear interpolation of the Fourier transforms of the $B_1^+$ map products to obtain the entries of the $\bm{S}^H\bm{S}$ matrices. 
 Those elements are then inserted into a sparse $\bm{W}$ matrix, which is the single output of the main function. 
-Parallelization was implemented across patches within the C-based MEX function using the \textcolor{blue}{Open Multi-Processing (OpenMP)}\revbox{R1.X} library. 
+Parallelization was implemented across patches within the C-based MEX function using the \textcolor{blue}{Open Multi-Processing (OpenMP)}\revbox{R1.6} library. 
 The final pulses are calculated by multiplying the sparse $\bm{W}$ matrix into the Fourier transform of the target pattern. 
 This code, the $B_1^+$ maps, and a demo script are available at https://github.com/wgrissom/kpTx. 
 All pulse designs were performed on a server (Colfax International, Santa Clara, CA, USA) 
@@ -110,7 +110,7 @@ to visualize the ringing.
 An important application of parallel transmission is the reduction of multidimensional pulse durations by excitation k-space undersampling.
 To compare the spatial domain and k-space domain methods across undersampling factors,
 the number of polar and azimuthal rotations were increased and reduced relative to the reference design described above, 
-for reduction factors of 0.5, 2, 3, and 4, 
+for reduction factors of 0.5, 2, and 4, 
 \textcolor{blue}{where the factor 0.5 trajectory comprised X additional segments for approximately 2$\times$-denser sampling of excitation k-space.} \revbox{2.X}
 
 \subsection*{Off-Resonance}
