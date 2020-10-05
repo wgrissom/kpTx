@@ -14,7 +14,7 @@ if_kpsce_MLS = false;
 
 ifOffRes = false;
 
-ifOpenMP = true; % IN OpemMP, number of thread has to be change in the .c file and then re-compile
+ifOpenMP = false; % IN OpemMP, number of thread has to be change in the .c file and then re-compile
 
 ifDoSpatialDesign = true;
 
@@ -189,6 +189,7 @@ toc
 
 
 %%
+if if_kpsce_MLS
 b1 = permute(sens,[4 1 2 3]);b1 = b1(:,:).';
 
 J = [6 6 6]; % # of neighnors used
@@ -210,7 +211,7 @@ end
 m = zeros(dimb1);m(mask) = A*rf(:);
 err = norm(col(mask.*(abs(m)-abs(d))))/norm(col(d.*mask))
 
-if if_kpsce_MLS
+
     m2=m;
     for ii=1:3
         pDes2=fftshift(fftn(fftshift(abs(d).*exp(1i*angle(m2)))));
@@ -225,88 +226,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Display final results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-mask_ring=mask;
-%err = norm(col(mask_ring.*(abs(m)-abs(d))))/norm(col(d.*mask_ring))
-
-d_plot=d.*mask_ring;
-m_plot=m.*mask_ring;
-
-if genfigs
-    maxamp = max(abs([d_plot(:);m_plot(:)]));
-    figure
-    subplot(221)
-    im(abs(d_plot),[0 maxamp]);axis image;colorbar
-    title 'Desired pattern'
-    subplot(222)
-    im(abs(m),[0 maxamp]);axis image;colorbar
-    caxis([0 1.1])
-    title(sprintf('Final pattern',Nc));
-    subplot(223)
-    im(permute(abs(abs(m_plot)-abs(d_plot)),[1 3 2]));axis image;colorbar
-    caxis([0 0.1])
-    subplot(221)
-    im(permute(abs(abs(m_plot)-abs(d_plot)),[2 3 1]));axis image;colorbar
-    caxis([0 0.1])
-    subplot(224)
-    im(abs(abs(m_plot)-abs(d_plot)));axis image;colorbar
-    caxis([0 0.1])
-    title(sprintf('Error\nNRMSE = %0.2f%%',err*100));
-end
-
-
-% m_all(:,:,:,end+1)=m;
-% end  %For slice by slice
-% m_all(:,:,:,1)=[];
-
-
-
-errmap=abs(abs(m)-abs(d.*mask));
-map=zeros(192/undersamp,128/undersamp);
-map(1:88/undersamp,1:128/undersamp)=squeeze(errmap((21-1)/undersamp+1:108/undersamp,:,48/undersamp));
-map((89-1)/undersamp+1:end,1:64/undersamp)=squeeze(flip(errmap(64/undersamp,(21-1)/undersamp+1:124/undersamp,(21-1)/undersamp+1:84/undersamp),3));
-map((97-1)/undersamp+1:184/undersamp,(65-1)/undersamp+1:end)=squeeze(flip(errmap((21-1)/undersamp+1:108/undersamp,72/undersamp,(21-1)/undersamp+1:84/undersamp),3));
-figure
-im(map,[0 0.1]);axis off;colorbar;title('');
-
-
-
-%%%%%%%%%%%%% Gmri simulation with 128x128x96 matrix (highest res)
-
-% b1_128 = permute(B1p3dxyz128,[4 1 2 3]);b1_128 = b1_128(:,:).';
-% if ifOffRes
-%     b1_128 = permute(B1p3dxyz128(:,:,:,1:2:end),[4 1 2 3]);b1_128 = b1_128(:,:).';
-% end
-% b1_128 = b1_128(Mask3dxyz128,:);
-%
-% dim=size(d_smooth);
-% J = [6 6 6]; % # of neighnors used
-% nufft_args = {dim, J, 2*dim, dim/2, 'table', 2^10, 'minmax:kb'}; % NUFFT arguments
-%
-%         if max(abs(b0(:)) > 0)
-%             tb0 = (0:size(k,1)-1)*dt/1000-size(k,1)*dt/1000;
-%             Lseg = 8;
-%             A = Gmri_SENSE([k(:,2) k(:,1) k(:,3)],Mask3dxyz128,'fov',[fov(2) fov(1) fov(3)],'sens',conj(b1_128),'ti',tb0,'zmap',-1i*2*pi*b0_128,'L',Lseg,'nufft_args',nufft_args)';
-%         else
-%             A = Gmri_SENSE([k(:,2) k(:,1) k(:,3)],Mask3dxyz128,'fov',[fov(2) fov(1) fov(3)],'sens',conj(b1_128),'nufft_args',nufft_args)';
-%         end
-%
-%
-% %A = Gmri_SENSE([k(:,2) k(:,1) k(:,3)],Mask3dxyz128,'fov',[fov(2) fov(1) fov(3)],'sens',conj(b1_128),'nufft_args',nufft_args)';
-% m = zeros(size(Mask3dxyz128));m(Mask3dxyz128) = A*rf(:);
-% err = norm(col(Mask3dxyz128.*(abs(m)-abs(d_smooth))))/norm(col(d_smooth.*Mask3dxyz128))
-%
-% errmap=abs(abs(m)-abs(d_smooth.*Mask3dxyz128));
-% %errmap=abs(abs(m));
-% map=zeros(192,128);
-% map(1:88,1:128)=squeeze(errmap(21:108,:,48));
-% map(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
-% map(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
-%
-% figure
-% im(map,[0 0.1]);axis off;colorbar;title('');
-
-%%%%%%%%%%%%
 
 
 %%%% Bloch_sim simulation
@@ -337,14 +256,68 @@ Mxy_RMSE = sqrt(mean((abs(Mxy(Mask3dxyz128_ring))-abs(d_smooth(Mask3dxyz128_ring
 
 Mz_RMSE = sqrt(mean((abs(Mz(Mask3dxyz128_ring))-abs(d_ori(Mask3dxyz128_ring)-1)).^2))
 
-errmap=abs(abs(Mxy)-abs(d_smooth)).*Mask3dxyz128_ring;
-map=zeros(192,128);
-map(1:88,1:128)=squeeze(errmap(21:108,:,48));
-map(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
-map(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
-
 figure
-im(map,[0 0.1]);axis off;colorbar;title('Mxy Error');
+subplot(1,2,1)
+errmap=abs(Mxy);
+map_Ex=zeros(192,128);
+map_Ex(1:88,1:128)=squeeze(errmap(21:108,:,48));
+map_Ex(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
+map_Ex(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
+
+im(map_Ex*100,[0 110]);axis off;colorbar;title('Excitation Pattern');
+hcb = colorbar;
+hcb.Title.String = sprintf('|Mxy| \n (%% of M_0)');
+hcb.Title.FontSize = 12;
+
+subplot(1,2,2)
+errmap=abs(abs(Mxy)-abs(d_smooth)).*Mask3dxyz128_ring;
+map_Error=zeros(192,128);
+map_Error(1:88,1:128)=squeeze(errmap(21:108,:,48));
+map_Error(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
+map_Error(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
+
+im(map_Error*100,[0 10]);axis off;title(sprintf('Error \nRMSE = %0.2f%%',Mxy_RMSE*100));
+hcb = colorbar;
+hcb.Title.String = sprintf('Mxy Error \n (%% of M_0)');
+hcb.Title.FontSize = 12;
+
+
+
+if genfigs
+    figure
+    subplot(221)
+    im(abs(Mxy(:,:,23:82))*100);axis image;
+    caxis([0 110])
+    title('Excitation Pattern Axial');
+    hcb = colorbar;
+    hcb.Title.String = sprintf('|Mxy| \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
+    
+    subplot(222)
+    im(abs(abs(Mxy(:,:,23:82))-abs(d_smooth(:,:,23:82))).*Mask3dxyz128_ring(:,:,23:82)*100);axis image;
+    caxis([0 10])
+    title('Error Axial')
+    hcb = colorbar;
+    hcb.Title.String = sprintf('Mxy Error \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
+    
+    subplot(223)
+    im(permute(flip(abs(abs(Mxy(:,20:122,:))-abs(d_smooth(:,20:122,:))).*Mask3dxyz128_ring(:,20:122,:),3),[1 3 2])*100);axis image;
+    caxis([0 10])
+    title('Error Coronal')
+    hcb = colorbar;
+    hcb.Title.String = sprintf('Mxy Error \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
+    
+    subplot(224)
+    im(permute(flip(abs(abs(Mxy(23:105,:,:))-abs(d_smooth(23:105,:,:))).*Mask3dxyz128_ring(23:105,:,:),3),[2 3 1])*100);axis image;
+    caxis([0 10])
+    title('Error Saggital')
+    hcb = colorbar;
+    hcb.Title.String = sprintf('Mxy Error \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
+end
+
 
 
 %% Spatial
@@ -390,30 +363,66 @@ if ifDoSpatialDesign
     % calculate excitation pattern
     m = zeros(dimb1);m(mask) = A*rf(:);
     
-    err = norm(col(mask.*(abs(m)-abs(d))))/norm(col(d.*mask))
+    %err = norm(col(mask.*(abs(m)-abs(d))))/norm(col(d.*mask))
     
     [a,b]=blochsim_optcont_mex(ones(Nt,1),ones(Nt,1),rf*flipAngle/180*pi,sensBloch,garea,xx,omdt,1); %rf*dt*4258*2*pi
     
-    Mxy=embed(2*conj(a).*b,Mask3dxyz128);
-    Mz=embed(1-2*abs(b).^2,Mask3dxyz128);
+    Mxy_Spatial=embed(2*conj(a).*b,Mask3dxyz128);
+    Mz_Spatial=embed(1-2*abs(b).^2,Mask3dxyz128);
     
-    Mxy_RMSE = sqrt(mean((abs(Mxy(Mask3dxyz128_ring))-abs(d_smooth(Mask3dxyz128_ring))).^2))
+    Mxy_RMSE_Spatial = sqrt(mean((abs(Mxy_Spatial(Mask3dxyz128_ring))-abs(d_smooth(Mask3dxyz128_ring))).^2))
     
-    Mz_RMSE = sqrt(mean((abs(Mz(Mask3dxyz128_ring))-abs(d_ori(Mask3dxyz128_ring)-1)).^2))
+    Mz_RMSE_Spatial = sqrt(mean((abs(Mz_Spatial(Mask3dxyz128_ring))-abs(d_ori(Mask3dxyz128_ring)-1)).^2))
     
-    %err = norm(col(Mask3dxyz128_ring.*(abs(Mxy)-abs(d_smooth))))/norm(col(d_smooth.*Mask3dxyz128_ring))
-    %err = norm(col(Mask3dxyz128.*(abs(Mxy)-abs(d_smooth))))/norm(col(d_smooth.*Mask3dxyz128))
-    
-    errmap=abs(abs(Mxy)-abs(d_smooth)).*Mask3dxyz128_ring;
-    map_spatial=zeros(192,128);
-    map_spatial(1:88,1:128)=squeeze(errmap(21:108,:,48));
-    map_spatial(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
-    map_spatial(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
     
     figure
-    subplot(1,2,1)
-    im(map_spatial,[0 0.1]);axis off;colorbar;title('Spatial Design');
-    subplot(1,2,2)
-    im(map,[0 0.1]);axis off;colorbar;title('K-space Design');
+    subplot(2,2,1)
+    errmap=abs(Mxy_Spatial);
+    map_Ex_spatial=zeros(192,128);
+    map_Ex_spatial(1:88,1:128)=squeeze(errmap(21:108,:,48));
+    map_Ex_spatial(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
+    map_Ex_spatial(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
+
+    im(map_Ex_spatial*100,[0 110]);axis off;title(sprintf('Spatial \n Excitation Pattern'));
+    hcb = colorbar;
+    hcb.Title.String = sprintf('|Mxy| \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
+
+    subplot(2,2,3)
+    errmap=abs(abs(Mxy_Spatial)-abs(d_smooth)).*Mask3dxyz128_ring;
+    map_Error_Spatial=zeros(192,128);
+    map_Error_Spatial(1:88,1:128)=squeeze(errmap(21:108,:,48));
+    map_Error_Spatial(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
+    map_Error_Spatial(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
+
+    im(map_Error_Spatial*100,[0 10]);axis off;title(sprintf('Spatial Error \n RMSE = %0.2f%%',Mxy_RMSE_Spatial*100));
+    hcb = colorbar;
+    hcb.Title.String = sprintf('Mxy Error \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
+    
+    
+    subplot(2,2,2)
+    errmap=abs(Mxy);
+    map_Ex_spatial=zeros(192,128);
+    map_Ex_spatial(1:88,1:128)=squeeze(errmap(21:108,:,48));
+    map_Ex_spatial(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
+    map_Ex_spatial(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
+
+    im(map_Ex*100,[0 110]);axis off;title(sprintf('k-Space \n Excitation Pattern'));
+     hcb = colorbar;
+    hcb.Title.String = sprintf('|Mxy| \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
+
+    subplot(2,2,4)
+    errmap=abs(abs(Mxy)-abs(d_smooth)).*Mask3dxyz128_ring;
+    map_Error=zeros(192,128);
+    map_Error(1:88,1:128)=squeeze(errmap(21:108,:,48));
+    map_Error(89:end,1:64)=squeeze(flip(errmap(64,21:124,21:84),3));
+    map_Error(97:184,65:end)=squeeze(flip(errmap(21:108,72,21:84),3));
+
+    im(map_Error*100,[0 10]);axis off;colorbar;title(sprintf('k-Space Error \n RMSE = %0.2f%%',Mxy_RMSE*100));
+    hcb = colorbar;
+    hcb.Title.String = sprintf('Mxy Error \n (%% of M_0)');
+    hcb.Title.FontSize = 12;
     
 end
