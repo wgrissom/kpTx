@@ -14,7 +14,7 @@ if_kpsce_MLS = false;
 
 ifOffRes = false;
 
-ifOpenMP = false; % IN OpemMP, number of thread has to be change in the .c file and then re-compile
+ifOpenMP = false; % Use openMP to parallelize kpTx computations
 
 ifDoSpatialDesign = true;
 
