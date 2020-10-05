@@ -13,7 +13,7 @@ the new algorithm produces much smaller matrix sizes that can be calculated more
 with the tradeoff of increased excitation error or RF power. 
 Results showed that the algorithm also enables compensation of off-resonance 
 which has not previously been described in a k-space domain design. 
-Compared to widely-used spatial domain method of Ref. \cite{Grissom:2006:MRM},
+Compared to a spatial domain design,
 the new algorithm is non-iterative and can be finely parallelized to achieve shorter design times, 
 and results showed that it can use coarser target grid sizes while avoiding Gibbs ringing, 
 again with the tradeoff of increased excitation error or RF power.
@@ -28,7 +28,8 @@ This work was initially motivated by the observation that spatial domain paralle
 for 3D problems with large grid sizes, 
 requiring both many iterations and considerable computation per iteration. 
 It is anticipated that the proposed k-space domain algorithm will be most useful for these types of large $>$2D problems,
-which include 3D spatial designs \cite{malik2012tailored,davids2016fast} and \textcolor{blue}{2D and 3D spatial-spectral designs \cite{stenger2000three,setsompop2009,Malik:2010aa,yang2010four}
+which include 3D spatial designs \cite{malik2012tailored,davids2016fast} 
+and \textcolor{blue}{2D and 3D spatial-spectral designs \cite{stenger2000three,setsompop2009,Malik:2010aa,yang2010four}
 where full matrix construction and inversion is infeasible due to the problem size, }\revbox{R1.X}
 and an iterative design can require several minutes to solve. 
 \textcolor{blue}{Furthermore, unlike an iterative spatial domain design the proposed algorithm does not need to be repeated if the target pattern changes.
@@ -44,7 +45,10 @@ or to enforce array compression by projecting the weights into the null space of
 \textcolor{blue}{among other applications \cite{padormo:2016,deniz:2019}.} \revbox{R1.X}
 In such designs, it would be beneficial to pre-compute and store the lower triangular elements of the $\bm{S}^H\bm{S}$ matrices
 so they need not be re-computed as the regularization changes over iterations.  
-\textcolor{blue}{Peak power could also be controlled in k-space domain designs using pTx VERSE \cite{Lee:2011:MRM} or the iterative re-VERSEit technique \cite{lee2009tod}.} \revbox{R2.X}
+\textcolor{blue}{Peak power could also be controlled in k-space domain designs using parallel transmission 
+VERSE \cite{Lee:2011:MRM} or the iterative re-VERSEit technique \cite{lee2009tod}.} \revbox{R2.X}
+\textcolor{blue}{It is not yet clear whether or how hard constraints on SAR and 
+peak- and integrated-power could be directly incorporated in the k-space method, as in Refs \cite{brunner2010optimal} and \cite{hoyos:tmi:2014}. }\revbox{R2.X}
 \textcolor{blue}{It may also be possible to use the k-space domain method to rapidly design large-tip-angle pulses via the direct linear class of large-tip-angle pulses method \cite{Xu:2008aa} or the additive angle method \cite{grissom:mrm:2008}; 
 the latter alternates between small-tip-angle designs that could be solved by the k-space method, 
 and Bloch simulations to update the target pattern.} \revbox{R2.X}

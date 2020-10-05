@@ -2,7 +2,7 @@
 \section*{Methods}
 \subsection*{Design and Simulation Setup}
 Simulations were performed to validate and characterize the proposed k-space domain parallel transmit pulse design method,
-with comparisons to the spatial-domain method of Ref. \cite{Grissom:2006:MRM}.
+with comparisons to a least-squares spatial-domain design \cite{Grissom:2006:MRM}.
 RF pulses were designed for a simulated 24-channel loop transmit array (Figure \ref{fig:Coil}) that is being built for a 7 Tesla scanner optimized
 for imaging the human cortex.  
 24-channel complex-valued $B_1^+$ maps used in the pulse designs were simulated in a male human head model using 
@@ -37,7 +37,7 @@ by 196,608 target k-space locations.
 
 \par All pulse designs and Bloch equation simulations were performed in MATLAB (Mathworks, Natick, MA, USA).
 For spatial domain designs, 
-RF pulses were solved using an iterative least-squares conjugate-gradient descent method \cite{Grissom:2006:MRM} with 35 iterations,
+RF pulses were solved using an iterative least-squares conjugate-gradient descent method with 35 iterations,
 which was accelerated by non-uniform fast Fourier transforms \cite{Fessler:2003fk}. 
 Except for the off-resonance-compensated designs described below, 
 all spatial domain designs were parallelized using 16 threads that simultaneously computed the forward and backward 
@@ -110,7 +110,8 @@ to visualize the ringing.
 An important application of parallel transmission is the reduction of multidimensional pulse durations by excitation k-space undersampling.
 To compare the spatial domain and k-space domain methods across undersampling factors,
 the number of polar and azimuthal rotations were increased and reduced relative to the reference design described above, 
-for reduction factors of 0.5, 2, 3, and 4. 
+for reduction factors of 0.5, 2, 3, and 4, 
+\textcolor{blue}{where the factor 0.5 trajectory comprised X additional segments for approximately 2$\times$-denser sampling of excitation k-space.} \revbox{2.X}
 
 \subsection*{Off-Resonance}
 To compare the off-resonance-compensated k-space domain designs with off-resonance-compensated spatial domain designs,
