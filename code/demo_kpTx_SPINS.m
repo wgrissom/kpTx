@@ -77,7 +77,7 @@ end
 [dimb1(1),dimb1(2),dimb1(3),Nc] = size(b1);
 
 %% Design SPINS Trajectory
-k_accelerate=1;
+k_accelerate = 1; % reduction factor
 
 kmax = 0.75/2; % cycles/cm, max k-space loc
 T = 5; % ms, duration of pulse
@@ -93,8 +93,6 @@ kx = kr.*cos(ktheta).*sin(kphi);
 ky = kr.*sin(ktheta).*sin(kphi);
 kz = kr.*cos(kphi);
 k = [kx(:) ky(:)  kz(:) ];
-Nt = size(k,1);
-NN = [Nt 0];
 
 T2=5;
 t2=0:dt:T2-dt;
@@ -109,8 +107,6 @@ ky2 = kr.*sin(ktheta).*sin(kphi);
 kz2 = kr.*cos(kphi);
 k2 = [kx2(:) ky2(:)  kz2(:) ];
 k=cat(1,k2(1:end-1,:),k);
-Nt = size(k,1);
-t = 0:dt:Nt*dt-dt;
 
 T3=5;
 t3=0:dt:T3-dt;
@@ -126,7 +122,6 @@ kz3 = kr.*cos(kphi);
 k3 = [kx3(:) ky3(:)  kz3(:) ];
 k=cat(1,k3(1:end-1,:),k);
 Nt = size(k,1);
-t = 0:dt:Nt*dt-dt;
 
 g=-flip(diff([zeros(1,3);flip(k)],1,1))/(1000*42.58*(dt/1000)/100);%mT/m
 g=g/10; %mT/m to G/cm
@@ -142,6 +137,9 @@ Nt= size(k,1);
 
 NN = [Nt 0];
 
+figure;plot3(k(:, 1), k(:, 2), k(:, 3));
+xlabel 'k_x (1/cm)', ylabel 'k_y (1/cm)', zlabel 'k_z (1/cm)'
+title(sprintf('SPINS Trajectory, R = %d, %0.1f ms', k_accelerate, Nt * dt));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 d_ori=d;

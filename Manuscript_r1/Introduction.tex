@@ -38,7 +38,7 @@ $N_c$ is the number of transmit channels, and $N_t$ is the number of time points
 the number of coils varies from 8 to 32 on ultra-high field scanners,
 and the number of time points varies from 500 to 2,500. 
 Overall, for a 3D design the spatial domain system matrix can occupy upwards of 120 gigabytes of memory,
-making it infeasible to construct and invert on most modern computers. } \revbox{R2.X}
+making it infeasible to construct and invert on most modern computers. } \revbox{R2.1}
 Explicit matrix storage and inversion can be avoided using non-uniform fast Fourier transforms to evaluate matrix multiplies,
 combined with iterative conjugate gradient solvers. 
 In such designs, parallelization can be applied across coils or across time segments in off-resonance-compensated designs,

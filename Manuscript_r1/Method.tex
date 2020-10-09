@@ -108,10 +108,12 @@ to visualize the ringing.
 
 \subsection*{Excitation k-Space Undersampling}
 An important application of parallel transmission is the reduction of multidimensional pulse durations by excitation k-space undersampling.
-To compare the spatial domain and k-space domain methods across undersampling factors,
-the number of polar and azimuthal rotations were increased and reduced relative to the reference design described above, 
-for reduction factors of 0.5, 2, and 4, 
-\textcolor{blue}{where the factor 0.5 trajectory comprised X additional segments for approximately 2$\times$-denser sampling of excitation k-space.} \revbox{2.X}
+\textcolor{blue}{To compare the spatial domain and k-space domain methods across undersampling factors,
+the number of polar and azimuthal rotations in each segment of the SPINS trajectory were increased and reduced relative to the reference design described above, 
+by factors of 0.5, 2, and 4. 
+That is, for a reduction factor of 0.5, the number of polar and azimuthal rotations in the trajectory were doubled for each of the three segments,
+and they were halved for a reduction factor of 2.
+This yielded pulse durations of 20.5 ms (reduction factor 0.5), 5.3 ms (reduction factor 2), and 2.6 ms (reduction factor 4).} \revbox{R2.1}
 
 \subsection*{Off-Resonance}
 To compare the off-resonance-compensated k-space domain designs with off-resonance-compensated spatial domain designs,
