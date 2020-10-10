@@ -38,10 +38,10 @@ by 196,608 target k-space locations.
 \par All pulse designs and Bloch equation simulations were performed in MATLAB (Mathworks, Natick, MA, USA).
 For spatial domain designs, 
 RF pulses were solved using an iterative least-squares conjugate-gradient descent method with 35 iterations,
-which was accelerated by non-uniform fast Fourier transforms \cite{Fessler:2003fk}. 
+which was accelerated by NUFFTs \cite{Fessler:2003fk}. 
 Except for the off-resonance-compensated designs described below, 
 all spatial domain designs were parallelized using 16 threads that simultaneously computed the forward and backward 
-non-uniform fast Fourier transforms across transmit coils. 
+NUFFTs across transmit coils. 
 The proposed k-space domain algorithm was implemented based on code for the non-Cartesian GRAPPA method of Ref. \cite{luo2019grappa},
 as a function that takes as input the $B_1^+$ maps and a normalized excitation k-space trajectory.
 %, \textcolor{blue}{and optional MATLAB structures of algorithm parameters such as the Tikhonov regularization parameter
@@ -86,7 +86,7 @@ patch and inclusion widths of four without $B_1^+$ map product interpolation (`E
 $B_1^+$ maps were phase-modulated to each trajectory location before Fourier transform),
 and patch and inclusion widths covering the entire design grid without $B_1^+$ map product interpolation. 
 Note that the last case is equivalent to the original k-space domain method of Ref. \cite{Katscher:2003:Magn-Reson-Med:12509830}.
-For each design, flip angle RMSE (calculated using the spatial domain non-uniform fast Fourier transform) and root-mean-square RF amplitude were
+For each design, flip angle RMSE (calculated using the spatial domain NUFFT) and root-mean-square RF amplitude were
 recorded.
 
 \subsection*{Gibbs Ringing}

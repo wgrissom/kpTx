@@ -14,8 +14,8 @@ and $\mathcal{F}(\bm{d})$ is a length-$N_s$ vector containing the
 Fourier transform of the \textcolor{blue}{complex-valued}\revbox{R1.1} target k-space excitation pattern $\bm{d}$.
 $\bm{W}$ has dimensions $N_t  N_c \times N_s$.
 Once the entries of $\bm{W}$ are computed, 
-the RF design problem can be instantaneously solved by a sparse matrix multiplication, 
-without a full matrix inversion or an iterative algorithm. 
+the RF design problem can be instantaneously solved by a sparse matrix multiplication. 
+%without a full matrix inversion or an iterative algorithm. 
 Here we describe how to break down the problem of constructing $\bm{W}$ 
 into a set of smaller independent subproblems that can be solved in parallel. 
 
@@ -27,7 +27,7 @@ $\vec{k}_j$ ($1\leq j \leq N_s$),
 then only the $j$-th column $\bm{w}_j$ of $\bm{W}$ is required to relate 
 the desired k-space pattern to the desired RF pulse. 
 In this case, the vector $\bm{w}_j$ is identical to the desired RF. 
-Therefore, the problem of finding the $j$-th column $\bm{w}_j$ of $\bm{W}$ can be restated as: 
+Therefore, the problem of finding the $j$-th column $\bm{w}_j$ of $\bm{W}$ can be stated as: 
 what should the RF pulse samples be to generate a unit delta function at the location $\vec{k}_j$ in k-space, 
 and zeros elsewhere? 
 Mathematically, the relationship that should be satisfied by the weights in column $\bm{w}_j$  can be expressed as:   
@@ -55,7 +55,7 @@ where $\bm{s}_j^{H}$ is the conjugate transpose of the $j$-th row of $\bm{S}$.
 
 \par If all points on the excitation k-space trajectory are considered in Equation \ref{eq:ScalerForm},
 then there is no reduction in computation compared to a conventional pseudoinverse-based pulse design.
-However, because $B_1^+$ maps are compact in excitation k-space and localized near DC,
+However, because $B_1^+$ maps are localized near $\vec{k} = 0$ in excitation k-space,
 only a small number ($\ll N_t$) of trajectory points near the target location $\vec{k}_j$ can contribute significantly
 to the excitation pattern at $\vec{k}_j$ or its neighbors, 
 and therefore need to be considered in the subproblem;
@@ -119,7 +119,7 @@ the matrix multiplication between $\bm{S}^{H}$ and $\bm{S}$ is also computationa
 large row dimension of $\bm{S}$, if the zero excitation condition is enforced on a large grid of points around each $\vec{k}_j$.
 The computational costs can be reduced by truncating the $B_1^+$ maps in k-space, 
 but this introduces large errors. 
-Instead, inspired by the rapid GRAPPA calibration method for arbitrary 2D/3D non-Cartesian trajectories of Ref \cite{luo2019grappa}, 
+Instead, inspired by the non-Cartesian GRAPPA method of Ref \cite{luo2019grappa}, 
 we propose to construct the Hermitian $\bm{S}^{H}\bm{S}$ matrix directly via interpolation of the Fourier transforms
 of inner products of pairs of $B_1^+$ maps. 
 The $\bm{S}^H\bm{S}$ matrix can be written in block form as:
@@ -156,24 +156,24 @@ Compared to phase-modulating and Fourier transforming each channel's $B_1^+$ map
 on the trajectory which would require $N_t  N_c$ Fourier transforms,
 to solve all the columns of $\bm{W}$ the total number of Fourier transforms needed in this efficient method is $N_c(N_c+1)/2$. 
 The storage size is also much smaller, 
-and the potentially large matrix multiplication between $\bm{S}^H$ and $\bm{S}$ is avoided.
-An alternative strategy would be to construct $\bm{S}$ by Fourier transforming each channel's $B_1^+$ map 
-and then interpolating it to be centered at each trajectory location, 
-but this again requires multiplication of the $\bm{S}^{H}$ and $\bm{S}$ matrices,
-which further involves the multiplication of interpolated values. 
-We have found empirically that this strategy introduces higher error
-than interpolating the inner product values. 
+and the matrix multiplication between $\bm{S}^H$ and $\bm{S}$ is avoided.
+%An alternative strategy would be to construct $\bm{S}$ by Fourier transforming each channel's $B_1^+$ map 
+%and then interpolating it to be centered at each trajectory location, 
+%but this again requires multiplication of the $\bm{S}^{H}$ and $\bm{S}$ matrices,
+%which further involves the multiplication of interpolated values. 
+%We have found empirically that this strategy introduces higher error
+%than interpolating the inner product values. 
 %Furthermore, to calculate each element of $\bm{S}^{H}\bm{S}$, there are $2N_s$ number of interpolations involved with this sub-optimal strategy. While with the efficient algorithm there is only one interpolation from the densely sampled Fourier Transform of the dot product of two spatial domain $B_1^+$ maps needed. The extra interpolations involved in the sub-optimal strategy would introduce a larger error to $\bm{S}^{H}\bm{S}$.  
 
 \subsection*{Off-Resonance Compensation}
 % In order to model the off-resonance into our k-space domain design, we adapted a fast implementation of the off-resonance compensation with time segmentation approximation and weighted least-squares interpolators \cite{fessler2005toeplitz}. 
 Off-resonance compensation is common in spatial-domain parallel pulse designs \cite{Grissom:2006:MRM}, 
 but has not been previously implemented in a k-space-domain design.
-Spatial domain designs based on non-uniform fast Fourier transforms make use of an approximate time-segmented
+Spatial domain designs based on NUFFTs make use of an approximate time-segmented
 model for the off-resonance term \cite{fessler2005toeplitz},
 which decouples the space- and time-dependence of off-resonant phase accrual into the product of 
-space- and time-dependent terms, which are applied on either side of the non-uniform fast Fourier transform operator. 
-Here we show that a time-segmented off-resonance model can be incorporated in the proposed k-space-domain algorithm. 
+space- and time-dependent terms, which are applied on either side of the NUFFT operator. 
+Here we show how a time-segmented off-resonance model can be incorporated in the proposed k-space-domain algorithm. 
 Mathematically, the time-segmented model is given by:
 \textcolor{blue}{
 \begin{equation}

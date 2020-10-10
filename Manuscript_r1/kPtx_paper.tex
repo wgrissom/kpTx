@@ -77,7 +77,7 @@ $^5$Department of Radiology and Radiological Sciences, Vanderbilt University, Na
 -------------------------- 
 
 \par
-Word Count: Approximately 5500 \\
+Word Count: 5630 \\
 *Corresponding author: \\
 Will Grissom\\
 Department of Biomedical Engineering\\
@@ -280,12 +280,6 @@ Hoyos-Idrobo A, Weiss P, Massire A, Amadon A, Boulant N.
   and power constraints.
 \newblock IEEE Trans Med Imag 2014;\hspace{0pt}33:739--748.
 
-\bibitem{fessler2005toeplitz}
-Fessler JA, Lee S, Olafsson VT, Shi HR, Noll DC.
-\newblock Toeplitz-based iterative image reconstruction for {MRI} with
-  correction for magnetic field inhomogeneity.
-\newblock IEEE Trans Sig Proc 2005;\hspace{0pt}53:3393--3402.
-
 \bibitem{grissom:ismrm18}
 Grissom WA.
 \newblock {k-Space} domain parallel transmit pulse design.
@@ -297,6 +291,12 @@ Luo T, Noll DC, Fessler JA, Nielsen JF.
 \newblock A {GRAPPA} algorithm for arbitrary {2D/3D} non-{Cartesian} sampling
   trajectories with rapid calibration.
 \newblock Magn Reson Med 2019;\hspace{0pt}82:1101--1112.
+
+\bibitem{fessler2005toeplitz}
+Fessler JA, Lee S, Olafsson VT, Shi HR, Noll DC.
+\newblock Toeplitz-based iterative image reconstruction for {MRI} with
+  correction for magnetic field inhomogeneity.
+\newblock IEEE Trans Sig Proc 2005;\hspace{0pt}53:3393--3402.
 
 \bibitem{lustig2008fast}
 Lustig M, Kim SJ, Pauly JM.
@@ -453,7 +453,8 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 \begin{figure}[!h]
 	\centering
 	%\includegraphics[width=\textwidth]{ReductionFactor}
-	\caption{Normalized error maps and RMSEs for spatial domain design (first row) and k-space domain design (second row), 
+	\caption{Normalized error maps, RMSEs, and computation times 
+	for spatial domain design (first row) and k-space domain design (second row), 
 	using excitation k-space trajectories with different reduction factors (third row).
 	The reduction factors are referenced to the 10 ms trajectory in Figure \ref{fig:Target} (second column).}
 	\label{fig:kspace_PTX_Acceleration}

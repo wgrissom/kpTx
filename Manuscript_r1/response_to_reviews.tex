@@ -185,9 +185,10 @@
 \mysubsectionstar{Response to Reviewer Critiques}
 We appreciate the reviewers' enthusiasm for the work and their constructive criticism and helpful suggestions to improve the manuscript.
 Below we have numbered each specific critique and provide our responses.
-For each addition we have made, we have trimmed out other text, and now stand at a word count of \textcolor{red}{X words.} 
-\textcolor{red}{In addition, we have removed the $R = 3$ result from Figure 9 (now Figure 8), to improve readability. 
-We kept the powers-of-two reduction factors.}
+We have trimmed out other text to accommodate requested additions, 
+and now stand at a word count of 5630. 
+In addition, we have removed the $R = 3$ result from Figure 9 (now Figure 8) to improve readability,
+while retaining the powers-of-two reduction factors.
 
 %\\[0.2em]
 %\indent{\it \textcolor{red}{TODO: Note that we add validation of integrated power.}}
@@ -214,7 +215,7 @@ this is a general measure that is not specific to the SPINS trajectory.}}
 
 \noindent{\bf R1.3:} Description of off-resonance compensation seems to be slightly less diligent as rest of theory. (a) Equation 7 contains $g_l$ (one index) but you define $g_{il}$ (two indices), then $g_l$ is used again in Eq 8 and $g_{il}$ in Eq 9, (b) the definition of $g_l$ is based on $b_l$ but I do not find definition of $b_l$, (c) shortly after you introduce $h_{lj}$, but $h_{lj}$ seems to be never used.
 \\[0.2em]
-\indent{\it \textcolor{blue}{Thank you for noticing the inconsistencies in this section; we agree and have revised the section to simplify and clarify it.}}
+\indent{\it \textcolor{blue}{Thank you for noticing the inconsistencies in this section; we agree and have revised the section to simplify and clarify it. It is now also a bit shorter.}}
 \\[1.2em]
 
 \noindent{\bf R1.4:} Abstract, purpose: To underline that this paper is about acceleration of design of RF pulses and not about acceleration of RF pulses itself (which might be intuitively expected by some readers) I suggest to add a bracket like this: „To accelerate the design of (under- or oversampled) multidimensional parallel transmission pulses“
@@ -250,7 +251,9 @@ whether hard constraints could be built in to the method.}}
 - page 5, row 12: double "undersampling"
 \\[0.2em]
 \indent{\it \textcolor{blue}{We used TexShop on the Mac - thanks for finding the doublings! 
-We found and fixed the ``of'' and ``undersampling'' ones but could not locate the ``row'' one.}}
+We found and fixed the ``of'' doubling, 
+and we removed the sentence containing the doubled ``undersampling'' to reduce word count, 
+but we could not locate the ``row'' doubling.}}
 \\[1.2em]
 
 \mysubsectionstar{Referee 2}
@@ -279,13 +282,15 @@ I couldn't quite find out what the 0.5-undersampling reduction factor meant in t
 \indent{\it \textcolor{blue}{The pulse design problem we evaluated in this work
 did lead to very long compute times for the spatial domain designs and very large matrix sizes for an explicit pseudoinverse design,
 so we believe the problem does represent a challenging but practical design scenario with which to evaluate the new method. 
-At the same time, we have revised the max number of time points we cite in the Introduction from 10,000 down to 2,500, 
-since even for the finest RF sampling time we know of on a major vendor scanner (4 us on GE), a 2,500 time point pulse is fairly long at 10 ms. 
+At the same time, we appreciate that the paper would be strengthened by adding information about how the k-space method's 
+performance depends on problem size,
+so we now report computation time for spatial and k-space domain designs for each reduction factor in Figure 8. 
+We have also revised the max number of time points we cite in the Introduction from 10,000 down to 2,500, 
+since even for the finest RF sampling time we know of on a major vendor scanner (4 us on GE), 
+a 2,500-time point pulse is fairly long at 10 ms. 
 We have added description to clarify how the SPINS trajectory was undersampled,
 which was by reducing (or increasing, in the reduction factor 0.5 case) the number of cycles in each of the three trajectory segments.
-We also now list the pulse durations for each reduction factor. 
-To increase the paper's rigor we also added measured design times for the spatial domain method and the new k-space method
-across reduction factors.}}
+We also now list the pulse durations for each reduction factor.}}
 \\[1.2em]
 
 \noindent {\bf R2.2:} It is somewhat weakening that they only compare their method to another one of their methods, since a lot has been done since 2006.
@@ -306,7 +311,8 @@ One can accept to only witness a comparison to the 2006 method, if the limitatio
 
 Yes, other methods might be much slower, but they handle problems you don't.
 \\[0.2em]
-\indent{\it \textcolor{blue}{We agree that we needed to tone down the language here. We have revised wording to indicate that nearly all parallel transmission studies have been formulated in the spatial domain, rather than being explicitly derived directly from the spatial domain method.
+\indent{\it \textcolor{blue}{We agree that we needed to tone down the language here. We have revised wording to indicate that most
+parallel transmission studies have been formulated in the spatial domain, rather than being explicitly derived directly from the spatial domain method.
 We have also added in the Discussion that it is not clear at this time whether or how hard power or SAR constraints could be directly built in to the method,
 though the method would be compatible with parallel transmit VERSE methods.}}
 \\[1.2em]

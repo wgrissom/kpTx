@@ -8,7 +8,7 @@ and compensation of susceptibility-induced signal loss \cite{deng:2009}.
 One of the first small-tip-angle pulse design algorithms developed to demonstrate the concept of parallel transmission was formulated in the 
 excitation k-space domain \cite{Katscher:2003:Magn-Reson-Med:12509830}.
 In that method, a dense system matrix was constructed by applying a Fourier transform to each transmit coil's $B_1^+$ map,
-forming a 2D convolution matrix for each coil, and then concatenating the coils' convolution matrices.
+forming a convolution matrix for each coil, and then concatenating the coils' convolution matrices.
 The pulses were solved by multiplying the 
 regularized pseudoinverse of the system matrix into the target excitation pattern's Fourier transform. 
 A spatial domain small-tip-angle parallel transmit pulse design algorithm 
@@ -21,10 +21,9 @@ or using an iterative method.
 % 
 The spatial domain method is mathematically straightforward 
 and enables flexible modeling and compensation of effects such as off-resonance, 
-incorporation of regions of interest,
-and the use of non-uniform fast Fourier transforms to accelerate matrix multiplies.
+and incorporation of regions of interest.
 Since its introduction, 
-\textcolor{blue}{nearly all small-tip-angle parallel transmission studies have been formulated in the spatial domain \cite{padormo:2016,deniz:2019}.} \revbox{R2.2}
+\textcolor{blue}{most small-tip-angle parallel transmission studies have been formulated in the spatial domain \cite{padormo:2016,deniz:2019}.} \revbox{R2.2}
 
 \par Despite the advantages of the spatial domain approach, 
 it can have prohibitive computational requirements when the number of coils and the number of dimensions become large, 
@@ -38,18 +37,18 @@ $N_c$ is the number of transmit channels, and $N_t$ is the number of time points
 the number of coils varies from 8 to 32 on ultra-high field scanners,
 and the number of time points varies from 500 to 2,500. 
 Overall, for a 3D design the spatial domain system matrix can occupy upwards of 120 gigabytes of memory,
-making it infeasible to construct and invert on most modern computers. } \revbox{R2.1}
-Explicit matrix storage and inversion can be avoided using non-uniform fast Fourier transforms to evaluate matrix multiplies,
+making it infeasible to construct and invert on most computers.} \revbox{R2.1}
+Explicit matrix storage and inversion can be avoided using non-uniform fast Fourier transforms (NUFFTs) to evaluate matrix multiplies,
 combined with iterative conjugate gradient solvers. 
-In such designs, parallelization can be applied across coils or across time segments in off-resonance-compensated designs,
+In such designs, parallelization can be applied across coils, % or across time segments in off-resonance-compensated designs,
 and GPU-based pulse designs have been described \cite{deng:2011}. 
 However, parallelization cannot be applied across iterations;
-hundreds of iterations are commonly used for 3D designs and thousands of iterations can be required for 
+several tens of iterations are commonly used for 3D designs and thousands of iterations can be required for 
 magnitude least-squares \cite{setsompop2008magnitude} 
 or constrained pulse designs \cite{brunner2010optimal,hoyos:tmi:2014}. 
-Furthermore, non-uniform fast Fourier transforms can require significant computation for the repeated gridding steps; 
-in image reconstruction these can be eliminated since the Gram matrix is Toeplitz and can therefore be multiplied using fast Fourier transforms \cite{fessler2005toeplitz},
-but this does not apply to parallel transmit pulse design since the Gram matrix is not Toeplitz. 
+%Furthermore, NUFFTs can require significant computation for the repeated gridding steps; 
+%in image reconstruction these can be eliminated since the Gram matrix is Toeplitz and can therefore be multiplied using fast Fourier transforms \cite{fessler2005toeplitz},
+%but this does not apply to parallel transmit pulse design since the Gram matrix is not Toeplitz. 
 A further challenge for parallel transmit pulse design is that pulses must be computed for each subject,
 as a pre-scan stage while the subject lies in the scanner. 
 
@@ -69,16 +68,16 @@ to obtain the significant entries of each column or groups of columns of the spa
 \par In the following, 
 we derive the independent solution for each column of the design matrix 
 and introduce a patch-wise parallelization that provides control over the size and accuracy of each subproblem. 
-We further accelerate the solution of each subproblem by proposing an efficient method to construct a required
+We describe an efficient method to construct a required
 matrix of $B_1^+$ map inner products while maintaining accuracy. 
 A method to incorporate off-resonance correction is also described. 
-The algorithm was characterized and validated in terms of accuracy (measured by Bloch equation simulations) 
+The algorithm was characterized and validated in terms of excitation error 
 and computation time, with comparisons to spatial domain designs using 
-non-uniform fast Fourier transforms and the conjugate gradient algorithm.
+NUFFTs and the conjugate gradient algorithm.
 The application for the designs was a three-dimensional inner-volume excitation using a simulated 24-channel transmit array
 and a SPINS trajectory \cite{malik2012tailored}.
-The results show how computation time and accuracy depend on the parameters of the patch-wise parallelization,
-and how well the algorithm accommodates \textcolor{blue}{excitation k-space undersampling}\revbox{R1.9} and compensates pulses for off-resonance.
+%The results show how computation time and accuracy depend on the parameters of the patch-wise parallelization,
+%and how well the algorithm accommodates \textcolor{blue}{excitation k-space undersampling}\revbox{R1.9} and compensates pulses for off-resonance.
 An early account of this work was provided in Ref. \cite{grissom:ismrm18}.
 
 %\par One application of subject-tailored multidimensional pTx pulses that is of particular interest of this paper is the 3D inner volume suppression (IVS) pulses for MR Corticography (MRCoG).MRCoG is a developing imaging technique which aims for submillimeter isotropic resolution whole-cortex and cortex-specific imaging. 
