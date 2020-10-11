@@ -203,6 +203,21 @@ idgrid = single(1./dgrid);
 shSolve=-[kySolve(:) kxSolve(:) kzSolve(:)];
 shSolve=single(shSolve);
 
+% Dummy runs for openMP, so big matrices can be properly passed.
+if  nThreads ~=0
+    shift_c_mex_dummy=cell(1);
+    shift_c_mex_dummy{1}=single([1;1;1]);
+    if ifOffRes
+        kTrajInds_ii_dummy=cell(1);
+        kTrajInds_ii_dummy{1}=single(1);
+        w_coeffs_dummy = kpTx_solve_w_OpenMP(shift_c_mex_dummy, nCoils*Lseg, Tik, ...
+                F_c, idgrid, shSolve', F_c_SensMapOnly, nCoils, BFull_c, ...
+                kTrajInds_ii_dummy, nThreads);
+    end
+    w_coeffs_dummy = kpTx_solve_w_OpenMP(shift_c_mex_dummy, nCoils, Tik, F_c, ...
+            idgrid, shSolve', F_c_SensMapOnly, nThreads);
+end
+
 % In this method, every individual column of W is solved with a same
 % regularizer Tik
 disp 'Solving for columns of W matrix'
