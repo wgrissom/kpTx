@@ -1,0 +1,476 @@
+\documentclass[11pt]{article}
+% Command line: pdflatex -shell-escape compulse.tex
+\usepackage{geometry} 
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{times}
+\usepackage{bm}
+\usepackage{fixltx2e}
+\usepackage[outerbars]{changebar}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{ulem}
+%\usepackage{verbatim}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\hypersetup{colorlinks=false,urlcolor=blue,linkcolor=blue}
+\usepackage{caption}
+
+\epstopdfsetup{suffix=} % to remove 'eps-to-pdf' suffix from converted images
+%\usepackage{todonotes} % use option disable to hide all comments
+
+\usepackage[sort&compress]{natbib}
+\bibpunct{[}{]}{,}{n}{,}{,}
+
+%\usepackage[noend]{algpseudocode}
+
+\usepackage{dsfont}
+\usepackage{relsize}
+
+%\usepackage{todonotes}
+
+%\graphicspath{{Figure/}}
+
+%changing the Eq. tag to use [] when numbering. use \eqref{label} to reference equations in text.
+\makeatletter
+  \def\tagform@#1{\maketag@@@{[#1]\@@italiccorr}}
+\makeatother
+
+\linespread{1.5}
+%\setlength{\parindent}{0in}
+
+% the following command can be used to mark changes made due to reviewers' concerns. Use as \revbox{Rx.y} for reviewer x, concern y.
+\newif\ifmarkedup
+\markeduptrue
+
+\ifmarkedup
+	\newcommand{\revbox}[1]{\marginpar{\framebox{\textcolor{blue}{#1}}}}
+\else
+	\newcommand{\revbox}[1]{}
+	\renewcommand{\textcolor}[1]{}
+	\renewcommand{\sout}[1]{}
+\fi
+
+%\newcommand{\bop}{$\vert B_1^+ \vert$}
+\newcommand{\kt}{$k_\textrm{T}$}
+\newcommand{\bmap}{$B_1^+$}
+\newcommand{\mytilde}{\raise.17ex\hbox{$\scriptstyle\mathtt{\sim}$}}  % tilde symbol
+\mathchardef\mhyphen="2D
+
+\begin{document}
+
+\title{k-Space Domain Parallel Transmit Pulse Design}
+\author{Jun Ma$^{1,2}$, Bernhard Gruber$^{3,4}$, Xinqiang Yan$^{1,5}$, and William A. Grissom$^{1,2,5*}$}
+\maketitle
+\begin{flushleft}
+\vspace{-0.5cm}
+$^1$Vanderbilt University Institute of Imaging Science, Nashville, TN, United States\\
+$^2$Department of Biomedical Engineering, Vanderbilt University, Nashville, TN, United States\\
+$^3$A. A. Martinos Center for Biomedical Imaging, Massachusetts General Hospital, Harvard Medical School, Charlestown, MA, United States\\
+$^4$Division MR Physics, Center for Medical Physics and Biomedical Engineering, Medical University Vienna, Vienna, Austria\\
+$^5$Department of Radiology and Radiological Sciences, Vanderbilt University, Nashville, TN, United States\\    
+
+\par
+-------------------------- 
+
+\par
+Word Count: 5630 \\
+*Corresponding author: \\
+Will Grissom\\
+Department of Biomedical Engineering\\
+Vanderbilt University\\
+5824 Stevenson Center\\
+Nashville, TN 37235 USA \\
+E-mail: will.grissom@vanderbilt.edu \\
+Twitter: @wgrissom
+
+\par Submitted to Magnetic Resonance in Medicine for consideration as a Full Paper.
+
+\par
+Acknowledgment: This work was supported by NIH grants R01 EB016695 and U01 EB 025162.
+
+\end{flushleft}
+\thispagestyle{plain}
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%% Abstract %%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{\underline{Abstract}} 
+{\bf Purpose:}
+To accelerate the design of \textcolor{blue}{(under- or oversampled)}\revbox{R1.4} multidimensional parallel transmission pulses. 
+\\[1em]
+{\bf Methods:}
+A k-space domain parallel transmission pulse design algorithm was proposed that
+produces a sparse matrix relating a \textcolor{blue}{complex-valued}\revbox{R1.1} target excitation pattern to the pulses that produce it, 
+and can be finely parallelized. 
+The algorithm was applied in simulations to the design of 3D SPINS pulses for inner volume excitation in the brain at 7 Tesla.
+It was characterized in terms of the dependence of computation time, excitation error, and required memory
+on algorithm parameters,
+and it was compared to the spatial domain pulse design method in terms computation time, excitation error,
+Gibbs ringing, and ability to compensate off-resonance.
+\\[1em]
+{\bf Results:}
+The proposed algorithm achieved approximately 90\% faster pulse design compared to 
+an iterative spatial domain method, with the same number of parallel threads,
+with the tradeoff of increased excitation error and RMS RF amplitude. 
+It reduced the memory required to store the design matrix by 98\% compared to a full matrix solution.
+Even with a coarse design grid, the algorithm produced patterns that were free of Gibbs ringing.
+It was similarly sensitive to k-space undersampling as the spatial domain method,
+and was similarly capable of compensating for off-resonance.
+\\[1em]
+{\bf Conclusion:}
+The proposed k-space domain algorithm accelerates and finely parallelizes parallel transmission pulse design,
+with a modest tradeoff of excitation error and RMS RF amplitude.
+\\[1em]
+{\bf \noindent Key words:} Parallel Transmission; RF pulses; Ultra-high field MRI; RF pulse design; Selective excitation.
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%% Main Text %%%%%%%%%%%%%%%%%%%%%%%
+
+\input{Introduction}
+
+\input{Theory}
+
+\input{Method}
+
+\input{Result}
+
+\input{Conclusion}
+
+
+
+\pagebreak
+
+\bibliographystyle{cse}
+%\bibliography{kPtx_paper}
+
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{Katscher:2003:Magn-Reson-Med:12509830}
+Katscher U, B{\"o}rnert P, Leussler C, van~den Brink JS.
+\newblock Transmit {SENSE}.
+\newblock Magn Reson Med 2003;\hspace{0pt}49:144--150.
+
+\bibitem{zhu2004parallel}
+Zhu Y.
+\newblock Parallel excitation with an array of transmit coils.
+\newblock Magn Reson Med 2004;\hspace{0pt}51:775--784.
+
+\bibitem{malik:mrm:2015}
+Malik SJ, Hajnal JV.
+\newblock Phase relaxed localized excitation pulses for inner volume fast spin
+  echo imaging.
+\newblock Magn Reson Med 2016;\hspace{0pt}76:848--861.
+
+\bibitem{mooiweer:2016}
+Mooiweer R, Sbrizzi A, Raaijmakers AJE, Van~den Berg CAT, Luijten PR, Hoogduin
+  H.
+\newblock Combining a reduced field of excitation with {SENSE}-based parallel
+  imaging for maximum imaging efficiency.
+\newblock Magn Reson Med 2016;\hspace{0pt}78:88--96.
+
+\bibitem{Zhang:2007:Magn-Reson-Med:16526012}
+Zhang Z, Yip CY, Grissom W, Noll DC, Boada FE, Stenger VA.
+\newblock Reduction of transmitter {B1} inhomogeneity with transmit {SENSE}
+  slice-select pulses.
+\newblock Magn Reson Med 2007;\hspace{0pt}57:842--847.
+
+\bibitem{cloos:kpstd:2012}
+Cloos MA, Boulant N, Luong M, Ferrand G, Giacomini E, Le~Bihan D, Amadon A.
+\newblock {$k_T$}-{Points}: {Short} three-dimensional tailored {RF} pulses for
+  flip-angle homogenization over an extended volume.
+\newblock Magn Reson Med 2011;\hspace{0pt}67:72--80.
+
+\bibitem{deng:2009}
+Deng W, Yang C, Alagappan V, Wald LL, Boada FE, Stenger VA.
+\newblock Simultaneous z-shim method for reducing susceptibility artifacts with
+  multiple transmitters.
+\newblock Magn Reson Med 2009;\hspace{0pt}61:255--259.
+
+\bibitem{Grissom:2006:MRM}
+Grissom WA, Yip CY, Zhang Z, Stenger VA, Fessler JA, Noll DC.
+\newblock Spatial domain method for the design of {RF} pulses in multicoil
+  parallel excitation.
+\newblock Magn Reson Med 2006;\hspace{0pt}56:620--9.
+
+\bibitem{padormo:2016}
+F.~Padormo, A.~Beqiri, J.~V. Hajnal, and S.~J. Malik.
+\newblock Parallel transmission for ultrahigh-field imaging.
+\newblock {NMR} Biomed 2016; 29(9):1145--1161.
+
+\bibitem{deniz:2019}
+C.~M. Deniz.
+\newblock Parallel transmission for ultrahigh field {MRI}.
+\newblock Top Magn Reson Imaging 2019; 28(3):159--171.
+
+\bibitem{malik2012tailored}
+Malik SJ, Keihaninejad S, Hammers A, Hajnal JV.
+\newblock Tailored excitation in {3D} with spiral nonselective {(SPINS) RF}
+  pulses.
+\newblock Magn Reson Med 2012;\hspace{0pt}67:1303--1315.
+
+\bibitem{davids2016fast}
+Davids M, Schad LR, Wald LL, Guerin B.
+\newblock Fast three-dimensional inner volume excitations using parallel
+  transmission and optimized k-space trajectories.
+\newblock Magn Reson Med 2016;\hspace{0pt}76:1170--1182.
+
+\bibitem{setsompop2009}
+K.~Setsompop, V.~Alagappan, B.~A. Gagoski, A.~Potthast, F.~Hebrank, U.~Fontius,
+  F.~Schmitt, L.~L. Wald, and E.~Adalsteinsson.
+\newblock Broadband slab selection with $b_1^+$ mitigation at 7{T} via parallel
+  spectral-spatial excitation.
+\newblock Magn Reson Med 2009; 61:493--500.
+
+\bibitem{Malik:2010aa}
+S.~J. Malik, D.~J. Larkman, D.~P. O'Regan, and J.~V. Hajnal.
+\newblock Subject-specific water-selective imaging using parallel transmission.
+\newblock Magn Reson Med 2010; 63(4):988--997.
+
+\bibitem{stenger2000three}
+Stenger VA, Boada FE, Noll DC.
+\newblock Three-dimensional tailored {RF} pulses for the reduction of
+  susceptibility artifacts in {$T_2^*$}-weighted functional {MRI}.
+\newblock Magn Reson Med 2000;\hspace{0pt}44:525--531.
+
+\bibitem{yang2010four}
+Yang C, Deng W, Alagappan V, Wald LL, Stenger VA.
+\newblock Four-dimensional spectral-spatial {RF} pulses for simultaneous
+  correction of {B1+} inhomogeneity and susceptibility artifacts in
+  {T2*}-weighted {MRI}.
+\newblock Magn Reson Med 2010;\hspace{0pt}64:1--8.
+
+\bibitem{orzada:2019}
+Orzada S, Solbach K, Gratz M, Brunheim S, Fiedler TM, Johst S, Bitz AK,
+  Shooshtary S, Abuelhaija A, Voelker MN, Rietsch SHG, Kraff O, Maderwald S,
+  Fl\"oser M, Oehmigen M, Quick HH, Ladd ME.
+\newblock A 32-channel parallel transmit system add-on for {7T MRI}.
+\newblock PLOS ONE 2019;\hspace{0pt}14:1--20.
+
+\bibitem{deng:2011}
+Deng W, Yang C, Stenger VA.
+\newblock Accelerated multidimensional radiofrequency pulse design for parallel
+  transmission using concurrent computation on multiple graphics processing
+  units.
+\newblock Magn Reson Med 2011;\hspace{0pt}65:363--369.
+
+\bibitem{setsompop2008magnitude}
+Setsompop K, Wald L, Alagappan V, Gagoski B, Adalsteinsson E.
+\newblock Magnitude least squares optimization for parallel radio frequency
+  excitation design demonstrated at 7 {Tesla} with eight channels.
+\newblock Magn Reson Med 2008;\hspace{0pt}59:908--915.
+
+\bibitem{brunner2010optimal}
+Brunner DO, Pruessmann KP.
+\newblock Optimal design of multiple-channel {RF} pulses under strict power and
+  {SAR} constraints.
+\newblock Magn Reson Med 2010;\hspace{0pt}63:1280--1291.
+
+\bibitem{hoyos:tmi:2014}
+Hoyos-Idrobo A, Weiss P, Massire A, Amadon A, Boulant N.
+\newblock On variant strategies to solve the magnitude least squares
+  optimization problem in parallel transmission pulse design under strict {SAR}
+  and power constraints.
+\newblock IEEE Trans Med Imag 2014;\hspace{0pt}33:739--748.
+
+\bibitem{grissom:ismrm18}
+Grissom WA.
+\newblock {k-Space} domain parallel transmit pulse design.
+\newblock In Proceedings 26th Scientific Meeting, International Society for
+  Magnetic Resonance in Medicine, Paris. 2018;\hspace{0pt} p. 3396.
+
+\bibitem{luo2019grappa}
+Luo T, Noll DC, Fessler JA, Nielsen JF.
+\newblock A {GRAPPA} algorithm for arbitrary {2D/3D} non-{Cartesian} sampling
+  trajectories with rapid calibration.
+\newblock Magn Reson Med 2019;\hspace{0pt}82:1101--1112.
+
+\bibitem{fessler2005toeplitz}
+Fessler JA, Lee S, Olafsson VT, Shi HR, Noll DC.
+\newblock Toeplitz-based iterative image reconstruction for {MRI} with
+  correction for magnetic field inhomogeneity.
+\newblock IEEE Trans Sig Proc 2005;\hspace{0pt}53:3393--3402.
+
+\bibitem{lustig2008fast}
+Lustig M, Kim SJ, Pauly JM.
+\newblock A fast method for designing time-optimal gradient waveforms for
+  arbitrary k-space trajectories.
+\newblock {IEEE} Trans Med Imag 2008;\hspace{0pt}27:866--873.
+
+\bibitem{Fessler:2003fk}
+Fessler JA, Sutton BP.
+\newblock Nonuniform fast {Fourier} transforms using min-max interpolation.
+\newblock IEEE Trans Sig Proc 2003;\hspace{0pt}51:560--574.
+
+\bibitem{Yip:2005:Magn-Reson-Med:16155881}
+Yip CY, Fessler JA, Noll DC.
+\newblock Iterative {RF} pulse design for multidimensional, small-tip-angle
+  selective excitation.
+\newblock Magn Reson Med 2005;\hspace{0pt}54:908--917.
+
+\bibitem{cao2016array}
+Cao Z, Yan X, Grissom WA.
+\newblock Array-compressed parallel transmit pulse design.
+\newblock Magn Reson Med 2016;\hspace{0pt}76:1158--1169.
+
+\bibitem{Lee:2011:MRM}
+D.~Lee, W.~A. Grissom, M.~Lustig, A.~B. Kerr, P.~P. Stang, and J.~M. Pauly.
+\newblock {VERSE}-guided numerical {RF} pulse design: A fast method for peak
+  {RF} power control.
+\newblock Magn Reson Med 2012; 67:353--362.
+
+\bibitem{lee2009tod}
+D.~Lee, M.~Lustig, W.~A. Grissom, and J.~M. Pauly.
+\newblock Time-optimal design for multidimensional and parallel transmit
+  variable-rate selective excitation.
+\newblock Magn Reson Med 2009, 61(6):1471--1479.
+
+\bibitem{Xu:2008aa}
+D.~Xu, K.~F. King, Y.~Zhu, G.~C. McKinnon, and Z.-P. Liang.
+\newblock Designing multichannel, multidimensional, arbitrary flip angle {RF}
+  pulses using an optimal control approach.
+\newblock Magn Reson Med 2008, 59(3):547--560.
+
+\bibitem{grissom:mrm:2008}
+W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
+\newblock Additive angle method for fast large-tip-angle {RF} pulse design in
+  parallel excitation.
+\newblock Magn Reson Med 2008, 59(4):779--87.
+
+
+
+
+
+\end{thebibliography}
+
+\pagebreak
+
+\section*{Tables}
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{c | c}
+Inclusion Width & $\bm{W}$ Matrix Size (GB) \\
+\hline
+$\infty$ & 24.4 \\
+8 & 2.73 \\
+6 & 1.37 \\
+4 & 0.53 \\
+2 & 0.14
+\end{tabular}
+\caption{$\bm{W}$ matrix sizes in gigabytes (GB) versus inclusion width in cycles/FOV. 
+An inclusion width of $\infty$ corresponds to a full matrix solution.}
+\label{fig:wsize}
+\end{table}
+
+\pagebreak
+%(Please see main document for caption with intended math typesetting)
+
+\section*{Figure Captions}
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{kspace_PTX_Patch}
+	\caption{(a) A target point $\vec{k}_j$ and the nearby trajectory points that are included when calculating 
+	RF pulse weight contributions from this point.
+	Inclusion width is defined as the distance from each target location $\vec{k}_j$ within which 
+	which all trajectory points are considered when solving for the $j$-th column of the design ($\bm{W}$) matrix.
+	(b) Calculation of the $\bm{W}$ matrix can be performed column-by-column for each target location $\vec{k}_j$,
+	or patches of target points can be solved for jointly. 
+	Here the 16 columns of $\bm{W}$ for a 4 $\times$ 4 patch of target points are solved together,
+	and an inclusion width of 4 cycles/FOV dictates that all trajectory points within a 12 $\times$ 12 region
+	centered on the patch are considered in the calculation.}
+	\label{fig:Patch}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=6cm]{kspace_PTX_Coil}
+	\caption{The 24-channel loop Tx array that was simulated in a human head model to obtain $B_1^+$ maps. 
+	The array has diameter 32 cm and height 28 cm. The 16 cm $\times$ 11 cm rectangular loops are arranged in 3 rows of 8.}
+	\label{fig:Coil}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{kSpace_PTX_Pattern_Trajectory}
+	\caption{(a) Middle axial, sagittal, and coronal slices of the target excitation pattern used for all pulse designs. 
+	(b) The SPINS trajectory used in the designs. 
+	(c) 10 ms minimum-time gradient waveforms that produce the SPINS trajectory.}
+	\label{fig:Target}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{ErrorMap}
+	\caption{ %\textcolor{red}{WAG: I think this is the figure that your example in Github should replicate.}
+	Normalized excitation patterns (top row) and error maps (bottom row) in central axial, sagittal and coronal slices 
+	for k-space domain (left) and spatial domain designs (right).}
+	\label{fig:ErrorMap}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{ComputationTime}
+	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4 cycles/FOV. 
+	(b) Computation time (blue axis) and RMSE (red axis) versus patch width, for an inclusion width of 4 cycles/FOV and 16 threads. 
+	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 and 8 cycles/FOV, and 16 threads.}
+	\label{fig:ComputationTime}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{L_curve}
+	\caption{L-curves for spatial domain and k-space domain pulse designs, 
+	repeated across five orders of magnitude of the methods' Tikhonov regularization parameters.
+	The k-space domain designs were repeated using patch and inclusion widths of four versus solving for the entire domain at once (`Patch / Inclusion Widths = 4' versus `Patch / Inclusion Widths = $\infty$'),
+	and using $B_1^+$ map product interpolation versus phase modulation to each trajectory location (`Interpolated Matrices' versus
+	`Exact Matrices').}
+	\label{fig:LCurves}
+\end{figure}
+
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{GibbsRinging}
+	\caption{Normalized error maps and RMSEs for 
+	(a) pulses designed using a trajectory that reaches 6 mm isotropic resolution
+	and the spatial domain algorithm with a 32$\times$32$\times$24 grid, 
+	(b) pulses designed using the same trajectory and the spatial domain algorithm with a 64$\times$64$\times$48 grid,  
+	and (c) pulses designed using the same trajectory and the k-space domain algorithm with a 32$\times$32$\times$24 design grid. 
+	Red arrows indicate Gibbs ringing in the 32$\times$32$\times$24 spatial domain design.}
+	\label{fig:GibbsRing}
+\end{figure}
+
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{ReductionFactor}
+	\caption{Normalized error maps, RMSEs, and computation times 
+	for spatial domain design (first row) and k-space domain design (second row), 
+	using excitation k-space trajectories with different reduction factors (third row).
+	The reduction factors are referenced to the 10 ms trajectory in Figure \ref{fig:Target} (second column).}
+	\label{fig:kspace_PTX_Acceleration}
+\end{figure}
+
+
+\begin{figure}[!h]
+	\centering
+	%\includegraphics[width=\textwidth]{OffResonance}
+	\caption{
+	(a) Normalized off-resonance map containing a Gaussian distortion centered above the frontal sinus, 
+	to mimic air-tissue susceptibility difference-induced $B_0$ inhomogeneity.
+	(b) Normalized excitation maps and RMSEs for spatial domain design with off-resonance correction (first row), 
+	and k-space domain design without and with off-resonance correction (second and third rows).}
+	\label{fig:kspace_PTX_B0}
+\end{figure}
+
+
+\end{document}
