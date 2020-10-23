@@ -110,14 +110,14 @@ and can be finely parallelized.
 The algorithm was applied in simulations to the design of 3D SPINS pulses for inner volume excitation in the brain at 7 Tesla.
 It was characterized in terms of the dependence of computation time, excitation error, and required memory
 on algorithm parameters,
-and it was compared to the spatial domain pulse design method in terms computation time, excitation error,
+and it was compared to the spatial domain pulse design method in terms of computation time, excitation error,
 Gibbs ringing, and ability to compensate off-resonance.
 \\[1em]
 {\bf Results:}
-The proposed algorithm achieved approximately 90\% faster pulse design compared to 
+The proposed algorithm achieved approximately 80\% faster pulse design compared to 
 an iterative spatial domain method, with the same number of parallel threads,
 with the tradeoff of increased excitation error and RMS RF amplitude. 
-It reduced the memory required to store the design matrix by 98\% compared to a full matrix solution.
+It reduced the memory required to store the design matrix by 99\% compared to a full matrix solution.
 Even with a coarse design grid, the algorithm produced patterns that were free of Gibbs ringing.
 It was similarly sensitive to k-space undersampling as the spatial domain method,
 and was similarly capable of compensating for off-resonance.
@@ -359,11 +359,11 @@ W.~A. Grissom, C.~Y. Yip, S.~M. Wright, J.~A. Fessler, and D.~C. Noll.
 \begin{tabular}{c | c}
 Inclusion Width & $\bm{W}$ Matrix Size (GB) \\
 \hline
-$\infty$ & 24.4 \\
-8 & 2.73 \\
-6 & 1.37 \\
-4 & 0.53 \\
-2 & 0.14
+$\infty$ & 78.7 \\
+8 & 4.09 \\
+6 & 2.04 \\
+4 & 0.79 \\
+2 & 0.21
 \end{tabular}
 \caption{$\bm{W}$ matrix sizes in gigabytes (GB) versus inclusion width in cycles/FOV. 
 An inclusion width of $\infty$ corresponds to a full matrix solution.}
@@ -380,8 +380,7 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 	%\includegraphics[width=\textwidth]{kspace_PTX_Patch}
 	\caption{(a) A target point $\vec{k}_j$ and the nearby trajectory points that are included when calculating 
 	RF pulse weight contributions from this point.
-	Inclusion width is defined as the distance from each target location $\vec{k}_j$ within which 
-	which all trajectory points are considered when solving for the $j$-th column of the design ($\bm{W}$) matrix.
+	Inclusion width is defined as the distance from each target location $\vec{k}_j$ within which all trajectory points are considered when solving for the $j$-th column of the design ($\bm{W}$) matrix.
 	(b) Calculation of the $\bm{W}$ matrix can be performed column-by-column for each target location $\vec{k}_j$,
 	or patches of target points can be solved for jointly. 
 	Here the 16 columns of $\bm{W}$ for a 4 $\times$ 4 patch of target points are solved together,
@@ -421,7 +420,7 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 	%\includegraphics[width=\textwidth]{ComputationTime}
 	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4 cycles/FOV. 
 	(b) Computation time (blue axis) and RMSE (red axis) versus patch width, for an inclusion width of 4 cycles/FOV and 16 threads. 
-	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 and 8 cycles/FOV, and 16 threads.}
+	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 cycles/FOV, and 16 threads.}
 	\label{fig:ComputationTime}
 \end{figure}
 

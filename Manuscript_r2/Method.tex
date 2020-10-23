@@ -25,12 +25,12 @@ The SPINS trajectory comprised three segments with radii ranging between 1-0.625
 The number of polar and azimuthal rotations were 15.5/2.125, 20.66/2.833, 15.5/2.125 for each segment, respectively.
 The SPINS trajectories were first designed analytically and the final gradient waveforms and excitation k-space trajectories were designed from them 
 using the minimum-time gradient waveform design method \cite{lustig2008fast}, 
-for a 15 {\textmu}s dwell time and subject to the scanner's gradient amplitude and slew rate constraints of 200 mT/m and 700 T/m/s, respectively (Figure \ref{fig:Target}c). 
+for a 10 {\textmu}s dwell time and subject to the scanner's gradient amplitude and slew rate constraints of 200 mT/m and 700 T/m/s, respectively (Figure \ref{fig:Target}c). 
 The durations of the three segments after minimum-time gradient design were 4.174, 4.326, and 1.5 ms, respectively.
 With the exception of the simulations across undersampling factors, 
 all pulse designs used this 10 ms trajectory.
 With this trajectory and the 64$\times$64$\times$48 design grid size, 
-the dimensions of the $\bm{W}$ matrix were 16,632 RF pulse samples, 
+the dimensions of the $\bm{W}$ matrix were 25,008 RF pulse samples, 
 by 196,608 target k-space locations. 
 
 
@@ -68,7 +68,7 @@ pulse designs were done across numbers of threads (i.e., how many patches were s
 patch widths (1 to 16 cycles/FOV), and inclusion widths (2 to 8 cycles/FOV). 
 The number of threads were varied while holding the patch width and inclusion width both at 4 cycles/FOV.
 The patch width was varied while holding the number of threads at 16, and the inclusion width at 4 cycles/FOV,
-and the inclusion width was varied (2, 4, 6, and 8 cycles/FOV) while holding the number of threads at 16, and the patch width at 4 and 8 cycles/FOV. 
+and the inclusion width was varied (2, 4, 6, and 8 cycles/FOV) while holding the number of threads at 16, and the patch width at 4 cycles/FOV. 
 The sizes of the $\bm{W}$ matrices were also recorded, holding patch width constant at 4 cycles/FOV and varying the inclusion width. 
 
 \subsection*{L-Curves}
@@ -86,7 +86,7 @@ patch and inclusion widths of four without $B_1^+$ map product interpolation (`E
 $B_1^+$ maps were phase-modulated to each trajectory location before Fourier transform),
 and patch and inclusion widths covering the entire design grid without $B_1^+$ map product interpolation. 
 Note that the last case is equivalent to the original k-space domain method of Ref. \cite{Katscher:2003:Magn-Reson-Med:12509830}.
-For each design, flip angle RMSE (calculated using the spatial domain NUFFT) and root-mean-square RF amplitude were
+For each design, flip angle RMSE (calculated using the spatial domain non-uniform discrete Fourier transforms) and root-mean-square RF amplitude were
 recorded.
 
 \subsection*{Gibbs Ringing}
@@ -113,7 +113,7 @@ the number of polar and azimuthal rotations in each segment of the SPINS traject
 by factors of 0.5, 2, and 4. 
 That is, for a reduction factor of 0.5, the number of polar and azimuthal rotations in the trajectory were doubled for each of the three segments,
 and they were halved for a reduction factor of 2.
-This yielded pulse durations of 20.5 ms (reduction factor 0.5), 5.3 ms (reduction factor 2), and 2.6 ms (reduction factor 4).} \revbox{R2.1}
+This yielded pulse durations of 20.7 ms (reduction factor 0.5), 5.2 ms (reduction factor 2), and 2.7 ms (reduction factor 4).} \revbox{R2.1}
 
 \subsection*{Off-Resonance}
 To compare the off-resonance-compensated k-space domain designs with off-resonance-compensated spatial domain designs,

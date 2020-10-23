@@ -67,7 +67,7 @@ This means Equation \ref{eq:ScalerForm} can be modified to:
 where $\mathbb{N}$ is the set of trajectory points in the vicinity of $\vec{k}_j$. 
 In this work `inclusion width' is defined as the distance, 
 in \textcolor{blue}{phase cycles over the excitation field-of-view (cycles/FOV), }\revbox{R1.2} 
-from each target location $\vec{k}_j$ within which which all trajectory points are accrued into $\mathbb{N}$.
+from each target location $\vec{k}_j$ within which all trajectory points are accrued into $\mathbb{N}$.
 This reduced set of trajectory points reduces the column dimension of $\bm{S}$
 and both dimensions of $\bm{S}^H\bm{S}$,
 and implies that the design matrix $\bm{W}$ is sparse.
@@ -134,7 +134,7 @@ The $\bm{S}^H\bm{S}$ matrix can be written in block form as:
 where each sub-matrix $\bm{S}_i^H\bm{S}_j$ contains inner products of the Fourier transforms of channel $i$ and channel $j$'s 
 $B_1^+$ maps, after they are shifted to be centered different points on the excitation trajectory corresponding to the row 
 and column indices of the sub-matrix.
-These inner products can be calculated by interpolating the Fourier transform of the inner product of 
+These inner products can be calculated by interpolating the Fourier transform of the dot product of 
 channel $i$ and channel $j$'s $B_1^+$ maps. 
 In other words, each element in the Hermitian matrix $\bm{S}_i^{H}\bm{S}_j$ 
 is the vector sum of channel $i$ and channel $j$'s shifted k-space $B_1^+$ maps, 
