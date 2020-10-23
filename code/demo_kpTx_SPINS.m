@@ -81,7 +81,7 @@ k_accelerate = 1; % reduction factor
 
 kmax = 0.75/2; % cycles/cm, max k-space loc
 T = 5; % ms, duration of pulse
-dt = 15e-3;
+dt = 10e-3;
 t = 0:dt:T-dt;
 kr = linspace(kmax,0,length(t));
 u = 2*pi/(T/31);v = 2*pi/(T/17);% for kmax=1.5,dur 10ms
