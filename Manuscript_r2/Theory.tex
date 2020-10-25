@@ -11,7 +11,7 @@ excitation pattern to a vector of RF pulses that together produce the pattern, a
 where $\bm{b}$ is a vector of concatenated multi-channel RF pulses with length $N_t  N_c$, 
 where $N_t$ and $N_c$ are the numbers of time points and channels, respectively,
 and $\mathcal{F}(\bm{d})$ is a length-$N_s$ vector containing the 
-Fourier transform of the \textcolor{blue}{complex-valued}\revbox{R1.1} target k-space excitation pattern $\bm{d}$.
+Fourier transform of the complex-valued target k-space excitation pattern $\bm{d}$.
 $\bm{W}$ has dimensions $N_t  N_c \times N_s$.
 Once the entries of $\bm{W}$ are computed, 
 the RF design problem can be instantaneously solved by a sparse matrix multiplication. 
@@ -28,7 +28,7 @@ then only the $j$-th column $\bm{w}_j$ of $\bm{W}$ is required to relate
 the desired k-space pattern to the desired RF pulse. 
 In this case, the vector $\bm{w}_j$ is identical to the desired RF. 
 Therefore, the problem of finding the $j$-th column $\bm{w}_j$ of $\bm{W}$ can be stated as: 
-what should the RF pulse samples be to generate a unit delta function at the location $\vec{k}_j$ in k-space, 
+what should the RF pulse samples be to generate a unit delta function at $\vec{k}_j$, 
 and zeros elsewhere? 
 Mathematically, the relationship that should be satisfied by the weights in column $\bm{w}_j$  can be expressed as:   
 \begin{equation}\label{eq:ScalerForm}
@@ -41,11 +41,11 @@ and $s_c(\vec{k}-\vec{k}_i)$ is the Fourier transform of channel-$c$'s $B_1^+$ m
 shifted to be centered at excitation k-space location $\vec{k}_i$. 
 Equation \ref{eq:ScalerForm} can be restated in matrix-vector form as:                                       
 \begin{equation}\label{eq:MatrixForm}
-\bm{Sw}_j=\bm{\delta}_j,
+\bm{Sw}_j=\bm{e}_j,
 \end{equation}
 where $\bm{S}$ is a $N_s \times N_c  N_t$ 
 matrix containing values of $s_c(\vec{k}-\vec{k}_i)$ for all $c$ and $i$,
-and $\bm{\delta}_j$ is a vector containing a one in the entry corresponding to excitation k-space location
+and $\bm{e}_j$ is a vector containing a one in the entry corresponding to excitation k-space location
 $\vec{k}_j$, and zeros in all other entries. 
 The regularized pseudoinverse solution for $\bm{w}_j$ is:                      
 \begin{equation}\label{eq:Solution}
@@ -66,7 +66,7 @@ This means Equation \ref{eq:ScalerForm} can be modified to:
 \end{equation} 
 where $\mathbb{N}$ is the set of trajectory points in the vicinity of $\vec{k}_j$. 
 In this work `inclusion width' is defined as the distance, 
-in \textcolor{blue}{phase cycles over the excitation field-of-view (cycles/FOV), }\revbox{R1.2} 
+in phase cycles over the excitation field-of-view (cycles/FOV), 
 from each target location $\vec{k}_j$ within which all trajectory points are accrued into $\mathbb{N}$.
 This reduced set of trajectory points reduces the column dimension of $\bm{S}$
 and both dimensions of $\bm{S}^H\bm{S}$,
@@ -134,22 +134,22 @@ The $\bm{S}^H\bm{S}$ matrix can be written in block form as:
 where each sub-matrix $\bm{S}_i^H\bm{S}_j$ contains inner products of the Fourier transforms of channel $i$ and channel $j$'s 
 $B_1^+$ maps, after they are shifted to be centered different points on the excitation trajectory corresponding to the row 
 and column indices of the sub-matrix.
-These inner products can be calculated by interpolating the Fourier transform of the dot product of 
+These inner products can be calculated by interpolating the Fourier transform of the product of 
 channel $i$ and channel $j$'s $B_1^+$ maps. 
 In other words, each element in the Hermitian matrix $\bm{S}_i^{H}\bm{S}_j$ 
 is the vector sum of channel $i$ and channel $j$'s shifted k-space $B_1^+$ maps, 
 which is also a single point of their k-space convolution. 
 Via the multiplication property of the Fourier transform, 
-this convolution in k-space can be calculated from the Fourier transform of the dot product of the two spatial domain $B_1^+$ maps. 
+this convolution in k-space can be calculated from the Fourier transform of the product of the two spatial domain $B_1^+$ maps. 
 For further details, please refer to Ref. \cite{luo2019grappa}.
 %In practice, $\bm{S}^{H}\bm{S}$ is constructed in the following way. 
 %We first represent the $\bm{S}^{H}\bm{S}$ matrix with block matrices. Each block matrix $\bm{S}_i^{H}\bm{S}_j$ is of size $N_n$ by $N_n$, and $\bm{S}_i$ and $\bm{S}_j$ are the columns of $\bm{S}$ related to the k-space sensitivity maps of the $i$-th and $j$-th coils respectively.
 
-\par Since $\bm{S}^{H}\bm{S}$ and its sub-matrices are Hermitian, 
+\par Since $\bm{S}^{H}\bm{S}$ is Hermitian, 
 we only need to find the values within the lower triangle of the matrix, 
-which are the sub-matrices $\bm{S}_i^{H}\bm{S}_j$ with $i>j$ that are themselves lower triangular. 
+which are the sub-matrices $\bm{S}_i^{H}\bm{S}_j$ with $i>j$. % that are themselves lower triangular. 
 The elements of a given sub-matrix $\bm{S}_i^{H}\bm{S}_j$ 
-are interpolated from a densely sampled Fourier transform of the dot product of the spatial domain $B_1^+$ maps of the $i$-th and $j$-th channels. 
+are interpolated from a densely sampled Fourier transform of the product of the spatial domain $B_1^+$ maps of the $i$-th and $j$-th channels. 
 The $(m,n)$-th element is the value interpolated at a position $\vec{k}_m-\vec{k}_n$ away from DC,
 where $\vec{k}_m$ and $\vec{k}_n$ are the excitation k-space trajectory locations corresponding to row $m$ and column $n$.
 Compared to phase-modulating and Fourier transforming each channel's $B_1^+$ map for each point 
@@ -175,7 +175,6 @@ which decouples the space- and time-dependence of off-resonant phase accrual int
 space- and time-dependent terms, which are applied on either side of the NUFFT operator. 
 Here we show how a time-segmented off-resonance model can be incorporated in the proposed k-space-domain algorithm. 
 Mathematically, the time-segmented model is given by:
-\textcolor{blue}{
 \begin{equation}
 e^{\imath \Delta\omega(\vec{x}_j) (t_i-T) }\approx\sum_{l=1}^{L} b_l(t_i) h_{l}(\vec{x}_j) ,
 \end{equation}
@@ -195,9 +194,9 @@ where $\tilde{s}_{cl}(\vec{k})$ is the Fourier transform of the product of chann
 off-resonance phase shift $h_l(\vec{x}_j)$. 
 We can then write the equivalent of Equation \ref{eq:MatrixForm} with the off-resonance model:
 \begin{equation}
-	\sum_{l=1}^L \bm{S}_l \textrm{diag}(b_{l}(t_i)) \bm{w}_j = \bm{\delta}_j,
+	\sum_{l=1}^L \bm{S}_l \textrm{diag}(b_{l}(t_i)) \bm{w}_j = \bm{e}_j,
 \end{equation} 
-where the matrix $\bm{S}_l$ is now formed from the $N_c  L$ Fourier transforms of the $B_1^+$ map and $h_l(\vec{x}_j)$ products.} \revbox{R1.3}  
+where the matrix $\bm{S}_l$ is now formed from the $N_c  L$ Fourier transforms of the $B_1^+$ map and $h_l(\vec{x}_j)$ products.  
 Efficient construction of the $\bm{S}^{H}\bm{S}$ matrix follows much the same procedure as without
 off-resonance except that with off-resonance,
 the elements of each sub-matrix $\bm{S}_i^{H}\bm{S}_j$ in Equation \ref{eq:SHS_blocks}

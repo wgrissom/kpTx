@@ -8,7 +8,7 @@ for imaging the human cortex.
 24-channel complex-valued $B_1^+$ maps used in the pulse designs were simulated in a male human head model using 
 Ansys High Frequency Structure Simulator (Canonsburg, PA, USA) with 1.5 mm isotropic resolution. 
 Figure \ref{fig:Target}a shows the target pattern for all pulse designs which comprised an ellipse centered on the ventricles with AP/HF/LR semi-axes of 4.8/3.2/3.2 cm,
-\textcolor{blue}{with zero phase.}\revbox{R1.1} 
+with zero phase.
 The pattern was smoothed by a Fermi filter that was applied in the frequency domain to match the target pattern's effective resolution to the excitation k-space trajectory's 5 mm resolution.
 This choice of target pattern was motivated by imaging applications for the 7 Tesla scanner 
 in which midbrain signals will be saturated for high-resolution, highly-accelerated imaging of the cortex. 
@@ -25,12 +25,12 @@ The SPINS trajectory comprised three segments with radii ranging between 1-0.625
 The number of polar and azimuthal rotations were 15.5/2.125, 20.66/2.833, 15.5/2.125 for each segment, respectively.
 The SPINS trajectories were first designed analytically and the final gradient waveforms and excitation k-space trajectories were designed from them 
 using the minimum-time gradient waveform design method \cite{lustig2008fast}, 
-for a 10 {\textmu}s dwell time and subject to the scanner's gradient amplitude and slew rate constraints of 200 mT/m and 700 T/m/s, respectively (Figure \ref{fig:Target}c). 
+for a \textcolor{blue}{10}\revbox{R2.1} {\textmu}s dwell time and subject to the scanner's gradient amplitude and slew rate constraints of 200 mT/m and 700 T/m/s, respectively (Figure \ref{fig:Target}c). 
 The durations of the three segments after minimum-time gradient design were 4.174, 4.326, and 1.5 ms, respectively.
 With the exception of the simulations across undersampling factors, 
 all pulse designs used this 10 ms trajectory.
 With this trajectory and the 64$\times$64$\times$48 design grid size, 
-the dimensions of the $\bm{W}$ matrix were 25,008 RF pulse samples, 
+the dimensions of the $\bm{W}$ matrix were \textcolor{blue}{25,008}\revbox{R2.1} RF pulse samples, 
 by 196,608 target k-space locations. 
 
 
@@ -47,10 +47,10 @@ as a function that takes as input the $B_1^+$ maps and a normalized excitation k
 %, \textcolor{blue}{and optional MATLAB structures of algorithm parameters such as the Tikhonov regularization parameter
 %and inclusion and patch widths, and off-resonance parameters such as the off-resonance field map, the time vector and the number of time segments.}\revbox{R1.X} 
 Within that function the Fourier transforms of the $B_1^+$ products are calculated,
-and a C-based \textcolor{blue}{MATLAB Executable (MEX)}\revbox{R1.6} function is invoked to solve for the non-zero elements of each column of $\bm{W}$,
+and a C-based MATLAB Executable (MEX) function is invoked to solve for the non-zero elements of each column of $\bm{W}$,
 with linear interpolation of the Fourier transforms of the $B_1^+$ map products to obtain the entries of the $\bm{S}^H\bm{S}$ matrices. 
 Those elements are then inserted into a sparse $\bm{W}$ matrix, which is the single output of the main function. 
-Parallelization was implemented across patches within the C-based MEX function using the \textcolor{blue}{Open Multi-Processing (OpenMP)}\revbox{R1.6} library. 
+Parallelization was implemented across patches within the C-based MEX function using the Open Multi-Processing (OpenMP) library. 
 The final pulses are calculated by multiplying the sparse $\bm{W}$ matrix into the Fourier transform of the target pattern. 
 This code, the $B_1^+$ maps, and a demo script are available at https://github.com/wgrissom/kpTx. 
 All pulse designs were performed on a server (Colfax International, Santa Clara, CA, USA) 
@@ -69,7 +69,7 @@ patch widths (1 to 16 cycles/FOV), and inclusion widths (2 to 8 cycles/FOV).
 The number of threads were varied while holding the patch width and inclusion width both at 4 cycles/FOV.
 The patch width was varied while holding the number of threads at 16, and the inclusion width at 4 cycles/FOV,
 and the inclusion width was varied (2, 4, 6, and 8 cycles/FOV) while holding the number of threads at 16, and the patch width at 4 cycles/FOV. 
-The sizes of the $\bm{W}$ matrices were also recorded, holding patch width constant at 4 cycles/FOV and varying the inclusion width. 
+The sizes of the $\bm{W}$ matrices were also recorded while holding the patch width constant at 4 cycles/FOV and varying the inclusion width. 
 
 \subsection*{L-Curves}
 To compare the tradeoff between excitation error (measured by root-mean-square error)
@@ -79,10 +79,10 @@ over five orders of magnitude.
 The k-space domain designs were repeated four times to investigate the two main sources of error:
 finite patch and inclusion widths, 
 and $B_1^+$ map product interpolation when building the $\bm{S}^H\bm{S}$ matrices. 
-Specifically, for each $\lambda$ a design was performed using patch and inclusion widths of four (`Patch/Inclusion Widths = 4')
+Specifically, for each $\lambda$ a design was performed using patch and inclusion widths of 4 cycles/FOV (`Patch/Inclusion Widths = 4')
 with interpolated $B_1^+$ map products (`Interpolated Matrices'),
 patch and inclusion widths covering the entire design grid (`Patch/Inclusion Widths = $\infty$') with interpolated $B_1^+$ map products,
-patch and inclusion widths of four without $B_1^+$ map product interpolation (`Exact Matrices'; 
+patch and inclusion widths of 4 cycles/FOV without $B_1^+$ map product interpolation (`Exact Matrices'; 
 $B_1^+$ maps were phase-modulated to each trajectory location before Fourier transform),
 and patch and inclusion widths covering the entire design grid without $B_1^+$ map product interpolation. 
 Note that the last case is equivalent to the original k-space domain method of Ref. \cite{Katscher:2003:Magn-Reson-Med:12509830}.
@@ -108,20 +108,20 @@ to visualize the ringing.
 
 \subsection*{Excitation k-Space Undersampling}
 An important application of parallel transmission is the reduction of multidimensional pulse durations by excitation k-space undersampling.
-\textcolor{blue}{To compare the spatial domain and k-space domain methods across undersampling factors,
+To compare the spatial domain and k-space domain methods across undersampling factors,
 the number of polar and azimuthal rotations in each segment of the SPINS trajectory were increased and reduced relative to the reference design described above, 
 by factors of 0.5, 2, and 4. 
 That is, for a reduction factor of 0.5, the number of polar and azimuthal rotations in the trajectory were doubled for each of the three segments,
 and they were halved for a reduction factor of 2.
-This yielded pulse durations of 20.7 ms (reduction factor 0.5), 5.2 ms (reduction factor 2), and 2.7 ms (reduction factor 4).} \revbox{R2.1}
+This yielded pulse durations of 20.7 ms (reduction factor 0.5), 5.2 ms (reduction factor 2), and 2.7 ms (reduction factor 4).
 
 \subsection*{Off-Resonance}
-To compare the off-resonance-compensated k-space domain designs with off-resonance-compensated spatial domain designs,
-we incorporated a Gaussian ($\sigma = 3$ cm) field map centered above the frontal sinus, 
-which was designed to mimic the characteristic susceptibility-induced $B_0$ inhomogeneity in this part of the human brain. 
-The field maps were than scaled so that the maximum off-resonance reached +200 Hz and +400 Hz.
+To compare off resonance-compensated k-space and spatial domain designs,
+a field map was generated with a Gaussian-shaped ($\sigma = 3$ cm) offset centered above the frontal sinus, 
+which mimicked susceptibility-induced $B_0$ inhomogeneity in this part of the human brain. 
+The field maps were then scaled so that the maximum off-resonance was +200 Hz and +400 Hz.
 A time-segmented approximate off-resonance model was calculated using the method of Ref. \cite{fessler2005toeplitz} with $L = 4$ time segments,
-and this model was used in both spatial domain and k-space domain designs. 
-Both spatial domain and k-space domain designs used 32 parallel threads. 
+and this model was used in both spatial and k-space domain designs. 
+Both spatial and k-space domain designs used 32 parallel threads. 
 
 

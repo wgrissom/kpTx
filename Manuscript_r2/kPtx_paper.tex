@@ -44,7 +44,7 @@
 
 % the following command can be used to mark changes made due to reviewers' concerns. Use as \revbox{Rx.y} for reviewer x, concern y.
 \newif\ifmarkedup
-\markeduptrue
+%\markeduptrue
 
 \ifmarkedup
 	\newcommand{\revbox}[1]{\marginpar{\framebox{\textcolor{blue}{#1}}}}
@@ -101,21 +101,21 @@ Acknowledgment: This work was supported by NIH grants R01 EB016695 and U01 EB 02
 
 \section*{\underline{Abstract}} 
 {\bf Purpose:}
-To accelerate the design of \textcolor{blue}{(under- or oversampled)}\revbox{R1.4} multidimensional parallel transmission pulses. 
+To accelerate the design of (under- or oversampled) multidimensional parallel transmission pulses. 
 \\[1em]
 {\bf Methods:}
 A k-space domain parallel transmission pulse design algorithm was proposed that
-produces a sparse matrix relating a \textcolor{blue}{complex-valued}\revbox{R1.1} target excitation pattern to the pulses that produce it, 
+produces a sparse matrix relating a complex-valued target excitation pattern to the pulses that produce it, 
 and can be finely parallelized. 
 The algorithm was applied in simulations to the design of 3D SPINS pulses for inner volume excitation in the brain at 7 Tesla.
 It was characterized in terms of the dependence of computation time, excitation error, and required memory
 on algorithm parameters,
-and it was compared to the spatial domain pulse design method in terms of computation time, excitation error,
+and it was compared to an iterative spatial domain pulse design method in terms of computation time, excitation error,
 Gibbs ringing, and ability to compensate off-resonance.
 \\[1em]
 {\bf Results:}
 The proposed algorithm achieved approximately 80\% faster pulse design compared to 
-an iterative spatial domain method, with the same number of parallel threads,
+the spatial domain method with the same number of parallel threads,
 with the tradeoff of increased excitation error and RMS RF amplitude. 
 It reduced the memory required to store the design matrix by 99\% compared to a full matrix solution.
 Even with a coarse design grid, the algorithm produced patterns that were free of Gibbs ringing.
@@ -383,8 +383,8 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 	Inclusion width is defined as the distance from each target location $\vec{k}_j$ within which all trajectory points are considered when solving for the $j$-th column of the design ($\bm{W}$) matrix.
 	(b) Calculation of the $\bm{W}$ matrix can be performed column-by-column for each target location $\vec{k}_j$,
 	or patches of target points can be solved for jointly. 
-	Here the 16 columns of $\bm{W}$ for a 4 $\times$ 4 patch of target points are solved together,
-	and an inclusion width of 4 cycles/FOV dictates that all trajectory points within a 12 $\times$ 12 region
+	Here the 16 columns of $\bm{W}$ for a 4 $\times$ 4 (cycles/FOV)$^2$ patch of target points are solved together,
+	and an inclusion width of 4 cycles/FOV dictates that all trajectory points within a 12 $\times$ 12 (cycles/FOV)$^2$ region
 	centered on the patch are considered in the calculation.}
 	\label{fig:Patch}
 \end{figure}
@@ -420,7 +420,7 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 	%\includegraphics[width=\textwidth]{ComputationTime}
 	\caption{(a) k-Space computation time versus number of parallel threads, for patch and inclusion widths of 4 cycles/FOV. 
 	(b) Computation time (blue axis) and RMSE (red axis) versus patch width, for an inclusion width of 4 cycles/FOV and 16 threads. 
-	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for patch widths of 4 cycles/FOV, and 16 threads.}
+	(c) Computation time (blue axis) and RMSE (red axis) versus inclusion width, for a patch width of 4 cycles/FOV, and 16 threads.}
 	\label{fig:ComputationTime}
 \end{figure}
 
@@ -429,7 +429,7 @@ An inclusion width of $\infty$ corresponds to a full matrix solution.}
 	%\includegraphics[width=\textwidth]{L_curve}
 	\caption{L-curves for spatial domain and k-space domain pulse designs, 
 	repeated across five orders of magnitude of the methods' Tikhonov regularization parameters.
-	The k-space domain designs were repeated using patch and inclusion widths of four versus solving for the entire domain at once (`Patch / Inclusion Widths = 4' versus `Patch / Inclusion Widths = $\infty$'),
+	The k-space domain designs were repeated using patch and inclusion widths of 4 cycles/FOV versus solving for the entire domain at once (`Patch / Inclusion Widths = 4' versus `Patch / Inclusion Widths = $\infty$'),
 	and using $B_1^+$ map product interpolation versus phase modulation to each trajectory location (`Interpolated Matrices' versus
 	`Exact Matrices').}
 	\label{fig:LCurves}

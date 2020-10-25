@@ -2,16 +2,16 @@
 \section*{Results}
 
 
-Figure \ref{fig:ErrorMap} shows simulated excitation patterns and error maps for the reference spatial and k-space domain designs. 
+Figure \ref{fig:ErrorMap} shows simulated excitation patterns and error maps for the spatial and k-space domain designs. 
 Both designs were performed with 16 parallel threads and the 64$\times$64$\times$48 grid size (3 mm isotropic resolution), 
 and the excitation patterns were evaluated against the target pattern on a 128$\times$128$\times$96 grid size (1.5 mm iso-resolution). 
-The k-space domain design used patch and inclusion widths of 4.
-The calculated root-mean-squared errors (RMSEs) were 2.13\% (spatial domain) and 2.31\% (k-space domain), 
+The k-space domain design used patch and inclusion widths of 4 cycles/FOV.
+The calculated root-mean-squared errors (RMSEs) were \textcolor{blue}{2.13\% (spatial domain) and 2.31\% (k-space domain)}\revbox{R2.1}, 
 respectively. 
 For both design methods, most of the errors appeared at the edges of the transition band, 
 and errors elsewhere were lower than 5\% of the target flip angle. 
 This indicates uniform inner volume excitation while maintaining the outer volume intact. 
-The parallelized k-space domain design required 6.7 seconds computation versus 30.3 seconds for the spatial domain method, a 78\% decrease.
+The parallelized k-space domain design required \textcolor{blue}{6.7 seconds computation versus 30.3 seconds for the spatial domain method, a 78\% decrease.}\revbox{R2.1}
 
 
 \subsection*{k-Space Algorithm Parameters}
@@ -42,7 +42,7 @@ As inclusion width increases, more excitation trajectory points are used in the 
 until the entire trajectory is used for each location (inclusion width = $\infty$ in the table),
 corresponding to a full solution. 
 With the inclusion width of 4 cycles/FOV used here, 
-the matrix size was 99\% smaller than that of a full solution.  
+the matrix size was \textcolor{blue}{99\%}\revbox{R2.1} smaller than that of a full solution.  
 
 
 
@@ -64,8 +64,9 @@ used alone.
 Overall, these results and the results in Figure \ref{fig:ComputationTime} and Table \ref{fig:wsize}
 show that the k-space domain method allows a tradeoff between computation time and memory usage versus
 excitation error and RMS RF amplitude.
-The dots on the spatial domain and k-space domain curves indicate the knees \textcolor{blue}{of}\revbox{R1.9} the curves corresponding to
-the $\lambda$ values used for the designs in Figures \ref{fig:ErrorMap}, \ref{fig:ComputationTime}, \ref{fig:kspace_PTX_Acceleration}, and \ref{fig:kspace_PTX_B0}.
+The dots on the spatial domain and k-space domain curves indicate the knees of the curves corresponding to
+the $\lambda$ values used for the designs in Figures \ref{fig:ErrorMap}, 
+\ref{fig:ComputationTime}, \ref{fig:kspace_PTX_Acceleration}, and \ref{fig:kspace_PTX_B0}.
 Note that the RMSE's in Figure \ref{fig:LCurves} are slightly lower for the spatial domain designs
 and slightly higher for the k-space domain designs compared to other figures,
 because the flip angle errors in Figure \ref{fig:LCurves} were calculated using 
@@ -76,12 +77,13 @@ to provide a more direct measure of the design error.
 
 \subsection*{Gibbs Ringing}
 Figure \ref{fig:GibbsRing}a shows slices of the excitation error pattern produced by pulses designed by the spatial domain method
-on a 32$\times$32$\times$24 grid, which were Bloch-simulated on the original 128$\times$128$\times$96 grid. 
+on a 32$\times$32$\times$24 grid, 
+which were Bloch-simulated on the original 128$\times$128$\times$96 grid. 
 There is significant Gibbs ringing in the pattern (indicated by the red arrows),
-and the pulses incur a higher RMSE (4.90\%) than pulses designed using either the spatial domain method with a finer 64$\times$64$\times$48 grid
-(2.43\%; Figure \ref{fig:GibbsRing}b) or the k-space domain method with a 32$\times$32$\times$24 grid (2.96\%; Figure \ref{fig:GibbsRing}c). 
+and the pulses incur a higher RMSE \textcolor{blue}{(4.90\%)}\revbox{R2.1} than pulses designed using either the spatial domain method with a finer 64$\times$64$\times$48 grid
+(\textcolor{blue}{2.43\%}\revbox{R2.1}; Figure \ref{fig:GibbsRing}b) or the k-space domain method with a 32$\times$32$\times$24 grid (\textcolor{blue}{2.96\%}\revbox{R2.1}; Figure \ref{fig:GibbsRing}c). 
 Gibbs ringing is not apparent in either the 64$\times$64$\times$48 spatial domain error pattern or the 32$\times$32$\times$24 k-space domain error pattern. 
-The RMS RF amplitudes of the low resolution designs were both 0.004. 
+The RMS RF amplitudes of the low resolution designs were both \textcolor{blue}{0.004.}\revbox{R2.1} 
 Note that the error of the 64$\times$64$\times$48 spatial domain design is slightly higher than designs presented in other figures
 due to the lower-resolution excitation trajectory. 
 From a spatial domain point of view, 
@@ -105,13 +107,13 @@ for different trajectory reduction factors which resulted in the SPINS trajector
 For each design the k-space domain-designed pulses had higher error, 
 but error increased smoothly with increasing reduction factor, 
 as it did for the spatial domain designs. 
-\textcolor{blue}{Figure \ref{fig:kspace_PTX_Acceleration} also reports mean computation time for each design.
+Figure \ref{fig:kspace_PTX_Acceleration} also reports mean computation time for each design.
 The spatial domain times were fairly constant across reduction factors despite the decreasing number of time samples with increasing reduction factor.
 This was because the size of the FFT operations in the NUFFTs 
 depended not on the length of the trajectory but on the size of the target pattern which did not change with reduction factor,
 and the FFT operations dominated the NUFFT computation times relative to the gridding operations. % for these three-dimensional problems,
 Conversely, the k-space domain times did decrease with reduction factor since the number and sizes of the $\bm{S}^H\bm{S}$
-matrices depend on the trajectory length.} \revbox{R2.1}
+matrices depend on the trajectory length.
 
 
 

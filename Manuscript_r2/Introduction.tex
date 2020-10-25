@@ -7,9 +7,9 @@ transmit field ($B_1^+$) inhomogeneity compensation \cite{Zhang:2007:Magn-Reson-
 and compensation of susceptibility-induced signal loss \cite{deng:2009}.
 One of the first small-tip-angle pulse design algorithms developed to demonstrate the concept of parallel transmission was formulated in the 
 excitation k-space domain \cite{Katscher:2003:Magn-Reson-Med:12509830}.
-In that method, a dense system matrix was constructed by applying a Fourier transform to each transmit coil's $B_1^+$ map,
+In that method, a dense system matrix is constructed by applying a Fourier transform to each transmit coil's $B_1^+$ map,
 forming a convolution matrix for each coil, and then concatenating the coils' convolution matrices.
-The pulses were solved by multiplying the 
+The pulses are solved by multiplying the 
 regularized pseudoinverse of the system matrix into the target excitation pattern's Fourier transform. 
 A spatial domain small-tip-angle parallel transmit pulse design algorithm 
 \cite{Grissom:2006:MRM} was proposed soon after,
@@ -23,7 +23,7 @@ The spatial domain method is mathematically straightforward
 and enables flexible modeling and compensation of effects such as off-resonance, 
 and incorporation of regions of interest.
 Since its introduction, 
-\textcolor{blue}{most small-tip-angle parallel transmission studies have been formulated in the spatial domain \cite{padormo:2016,deniz:2019}.} \revbox{R2.2}
+most small-tip-angle parallel transmission studies have been formulated in the spatial domain \cite{padormo:2016,deniz:2019}.
 
 \par Despite the advantages of the spatial domain approach, 
 it can have prohibitive computational requirements when the number of coils and the number of dimensions become large, 
@@ -33,15 +33,15 @@ and when off-resonance compensation is used.
 The spatial domain system matrix typically has dimensions $N_s \times (N_c \cdot N_t)$, 
 where $N_s$ is the number of spatial and spectral locations defined in the target excitation pattern,
 $N_c$ is the number of transmit channels, and $N_t$ is the number of time points in the pulse.
-\textcolor{blue}{Typical values for $N_s$ range from 1,000 for 2D designs to 250,000 for 3D designs,
+Typical values for $N_s$ range from 1,000 for 2D designs to 250,000 for 3D designs,
 the number of coils varies from 8 to 32 on ultra-high field scanners,
 and the number of time points varies from 500 to 2,500. 
 Overall, for a 3D design the spatial domain system matrix can occupy upwards of 120 gigabytes of memory,
-making it infeasible to construct and invert on most computers.} \revbox{R2.1}
+making it infeasible to construct and invert on most computers.
 Explicit matrix storage and inversion can be avoided using non-uniform fast Fourier transforms (NUFFTs) to evaluate matrix multiplies,
 combined with iterative conjugate gradient solvers. 
 In such designs, parallelization can be applied across coils, % or across time segments in off-resonance-compensated designs,
-and GPU-based pulse designs have been described \cite{deng:2011}. 
+and graphics processing unit (GPU)-based pulse designs have been described \cite{deng:2011}. 
 However, parallelization cannot be applied across iterations;
 several tens of iterations are commonly used for 3D designs and thousands of iterations can be required for 
 magnitude least-squares \cite{setsompop2008magnitude} 
@@ -49,14 +49,14 @@ or constrained pulse designs \cite{brunner2010optimal,hoyos:tmi:2014}.
 %Furthermore, NUFFTs can require significant computation for the repeated gridding steps; 
 %in image reconstruction these can be eliminated since the Gram matrix is Toeplitz and can therefore be multiplied using fast Fourier transforms \cite{fessler2005toeplitz},
 %but this does not apply to parallel transmit pulse design since the Gram matrix is not Toeplitz. 
-A further challenge for parallel transmit pulse design is that pulses must be computed for each subject,
+A further challenge for parallel transmit pulse design is that pulses usually must be computed for each subject,
 as a pre-scan stage while the subject lies in the scanner. 
 
 \par Here we describe a single-step (non-iterative) small-tip-angle excitation k-space-domain 
-pulse design algorithm with low memory requirements, 
+pulse design algorithm with low memory requirements 
 that can be applied to large pulse design problems with fine parallelization. 
 The algorithm produces a sparse k-space-domain pseudoinverse pulse design matrix 
-that directly relates the Fourier transform \textcolor{blue}{of a complex-valued}\revbox{R1.1} target excitation pattern to the RF pulses that produce it.
+that directly relates the Fourier transform of a complex-valued target excitation pattern to the RF pulses that produce it.
 Once the matrix is built, 
 RF pulses are instantaneously solved by a sparse matrix multiplication,
 and the matrix need not be recomputed if the target pattern changes.
