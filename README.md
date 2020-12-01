@@ -14,4 +14,4 @@ The following sites were helpful in figuring this out:
 - [https://stackoverflow.com/questions/43555410/enable-openmp-support-in-clang-in-mac-os-x-sierra-mojave](https://stackoverflow.com/questions/43555410/enable-openmp-support-in-clang-in-mac-os-x-sierra-mojave)
 
 The simulated 24-channel B1+ maps used in the demo script can be downloaded rom: 
-[https://www.dropbox.com/s/2jsfo29c3gvxd9m/Mask3dxyz128_ring.mat?dl=0](https://www.dropbox.com/s/2jsfo29c3gvxd9m/Mask3dxyz128_ring.mat?dl=0)
+[https://www.dropbox.com/s/eexadmjhqsll3ht/MGH24loop_head1_128_2.mat?dl=0](https://www.dropbox.com/s/eexadmjhqsll3ht/MGH24loop_head1_128_2.mat?dl=0)
